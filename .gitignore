@@ -1,0 +1,10 @@
+/build
+/.idea/
+/.gradle/
+/gradle/
+/andserver/build/
+/andserver/andserver.iml
+/sample/build/
+/sample/sample.iml
+/AndServer.iml
+/local.properties
