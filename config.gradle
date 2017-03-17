@@ -1,0 +1,29 @@
+ext {
+    plugin = [
+            library    : 'com.android.library',
+            application: 'com.android.application',
+            maven      : 'com.github.dcendents.android-maven',
+            bintray    : 'com.jfrog.bintray'
+    ]
+
+    android = [
+            applicationId    : "com.yanzhenjie.andserver.sample",
+            compileSdkVersion: 25,
+            buildToolsVersion: "25.0.2",
+
+            minSdkVersion    : 14,
+            targetSdkVersion : 22,
+
+            versionCode      : 11,
+            versionName      : "1.1",
+
+            jackOptions      : true
+    ]
+
+    dependencies = [
+            andserver: 'com.yanzhenjie:andserver:1.0.2',
+            appCompat: 'com.android.support:appcompat-v7:25.2.0',
+            design   : 'com.android.support:design:25.2.0',
+            nohttp   : 'com.yanzhenjie.nohttp:nohttp:1.1.1'
+    ]
+}

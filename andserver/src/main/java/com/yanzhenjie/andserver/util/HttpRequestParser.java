@@ -1,14 +1,22 @@
 /*
  * Copyright © Yan Zhenjie. All Rights Reserved
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- * implied. See the License for the specific language governing permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.yanzhenjie.andserver.util;
+
+import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
@@ -22,12 +30,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * <p>
- * Parsing {@link HttpRequest}.
- * </p>
- * Created on 2016/6/13.
- *
- * @author Yan Zhenjie.
+ * <p>Parsing {@link HttpRequest}.</p>
+ * Created by Yan Zhenjie on 2016/6/13.
  */
 public class HttpRequestParser {
 
@@ -46,12 +50,12 @@ public class HttpRequestParser {
      * Parse params from {@link HttpRequest}.
      *
      * @param request        {@link HttpRequest}.
-     * @param lowerCaseNames Whether to put all keys are converted to lowercase.
+     * @param lowerCaseNames key to lowercase.
      * @return parameter key-value pairs.
      * @throws IOException if it is a POST request IO exception might occur when get the data.
      */
     public static Map<String, String> parse(HttpRequest request, boolean lowerCaseNames) throws IOException {
-        String content = getContentForGet(request);
+        String content = getContent(request);
         return splitHttpParams(content, lowerCaseNames);
     }
 
@@ -59,11 +63,11 @@ public class HttpRequestParser {
      * Split http params.
      *
      * @param content        target content.
-     * @param lowerCaseNames Whether to put all keys are converted to lowercase.
+     * @param lowerCaseNames key to lowercase.
      * @return parameter key-value pairs.
      */
     public static Map<String, String> splitHttpParams(String content, boolean lowerCaseNames) {
-        Map<String, String> paramMap = new HashMap<String, String>();
+        Map<String, String> paramMap = new HashMap<>();
         StringTokenizer tokenizer = new StringTokenizer(content, "&");
         while (tokenizer.hasMoreElements()) {
             String keyValue = tokenizer.nextToken();
@@ -138,6 +142,21 @@ public class HttpRequestParser {
     public static boolean isPosterMethod(HttpRequest request) {
         String method = request.getRequestLine().getMethod();
         return "POST".equalsIgnoreCase(method);
+    }
+
+    /**
+     * Get file {@code ContentType}.
+     *
+     * @param fileName file name.
+     * @return get contentType based on file name, if not {@code application/octet-stream}.
+     */
+    public static String getMimeType(String fileName) {
+        String mimeType = "application/octet-stream";
+        if (!TextUtils.isEmpty(fileName)) {
+            String extension = MimeTypeMap.getFileExtensionFromUrl(fileName);
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+        }
+        return mimeType;
     }
 
 }

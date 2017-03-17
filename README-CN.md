@@ -1,18 +1,18 @@
-# AndServer
-`AndServer` is a Web server of Android, support for the deployment of static website, dynamic website, support dynamic interface (Equivalent to Servelt of java ).
+# AndServer-CN
+`AndServer`ÊÇÒ»¸ö`Android`µÄ`Web`·şÎñÆ÷, Ö§³Ö²¿Êğ¶¯Ì¬ÍøÕ¾ºÍ¾²Ì¬ÍøÕ¾, Ö§³ÖĞ´`Http`½Ó¿Ú£¬ºÍ`Java`µÄ`Servlet`Ò»Ñù¡£
 
-**[ä¸­æ–‡æ–‡æ¡£](./README-CN.md)**
+QQ¼¼Êõ½»Á÷Èº£º46523908£¬¼ÓÈºÇëÔÄ¶Á[ÈºĞĞÎª¹æ·¶](https://github.com/yanzhenjie/SkillGroupRule)¡£
 
 ----
 
-# Features
-1. Dynamic website deployment.
-2. Static website deployment.
-3. Dynamic http API.
-4. Upload file to android application.
-5. Download file from android application.
+# ÌØµã
+1. ²¿Êğ¶¯Ì¬ÍøÕ¾¡£
+2. ²¿Êğ¾²Ì¬ÍøÕ¾¡£
+3. ¶¯Ì¬Http API£¬¾ÍÊÇÎÒÃÇÍ¨³£ËµµÄ·şÎñÆ÷½Ó¿Ú¡£
+4. ½ÓÊÜ¿Í»§¶ËÎÄ¼şÉÏ´«¡£
+5. ½ÓÊÜ¿Í»§¶ËÏÂÔØÎÄ¼ş¡£
 
-# Dependencies
+# ÒÀÀµ
 * Gradle
 ```groovy
 compile 'com.yanzhenjie:andserver:1.0.2'
@@ -31,57 +31,56 @@ compile 'com.yanzhenjie:andserver:1.0.2'
 * Eclipse
 [Download Jar File](./Jar/andserver.jar?raw=true)
 
-# Usage
-The best tutorial is sample, recommended download preview.
+# Ê¹ÓÃ·½·¨
+×îºÃµÄ½Ì³ÌÊÇ`sample`£¬ÇëÏÂÔØ²é¿´£¬È»ºó½áºÏ**README**¾Í¸üÇåÎúÁË¡£
 
-## Create Server
+## ´´½¨·şÎñÆ÷
 ```java
 AndServer andServer = new AndServer.Build()
     ...
     .build();
 
-// Create server.
+// ´´½¨·şÎñÆ÷¡£
 Server mServer = andServer.createServer();
 ...
 
-// Start server.
+// Æô¶¯·şÎñÆ÷¡£
 mServer.start();
 ...
 
-// Stop server.
+// Í£Ö¹·şÎñÆ÷¡£
 mServer.stop();
 ...
 
-// Server is running ?
+// ·şÎñÆ÷ÕıÔÚÔËĞĞÂğ£¿
 boolean running = mServer.isRunning();
 ```
 
-## Port & Response Timeout
+## ¶Ë¿ÚºÅºÍÏìÓ¦³¬Ê±ÉèÖÃ
 ```java
 AndServer andServer = new AndServer.Build()
-    .port(8080) // Default 8080, can be any port.
-    .timeout(10 * 1000) // But for MS, the default is 10 * 1000 ms.
+    .port(8080) // Ä¬ÈÏÊÇ8080£¬AndroidÆ½Ì¨ÔÊĞíµÄ¶Ë¿ÚºÅ¶¼¿ÉÒÔ¡£
+    .timeout(10 * 1000) // Ä¬ÈÏ10 * 1000ºÁÃë¡£
     ...
     .build();
 ...
 ```
 
-## Website deployment
-The deployment website is through the `Website` interface, you can implement it. `AndServer` provides two default implementations:  
+## ²¿ÊğÍøÕ¾
+²¿ÊğÍøÕ¾ÊÇÍ¨¹ı`Website`½Ó¿Ú£¬ÄãÒ²¿ÉÒÔ×Ô¼ºÊµÏÖÕâ¸ö½Ó¿Ú£¬µ±È»`AndServer`ÒÑ¾­Ìá¹©ÁËÁ½¸öÄ¬ÈÏÊµÏÖ£º  
 
 * [AssetsWebsite](./andserver/src/main/java/com/yanzhenjie/andserver/website/AssetsWebsite.java)
 * [StorageWebsite](./andserver/src/main/java/com/yanzhenjie/andserver/website/StorageWebsite.java)
 
-Through their registered website, the default home page isï¼š  
+Èç¹ûÓÃÉÏÃæÁ½¸öÊµÏÖ×¢²áÄãµÄÍøÕ¾£¬ÄÇÃ´ÄãµÄÄ¬ÈÏÊ×Ò³£¨`index.html`£©ÊÇ£º  
+`http://ip:port/`  
+`http://ip:port/youPath`  
+`http://ip:port/youPath/index.html`  
 
-* `http://ip:port/`
-* `http://ip:port/youPath`
-* `http://ip:port/youPath/index.html`
-
-### Register the website
+### ×¢²áÍøÕ¾µ½AndServer
 ```java
 Wesite wesite = new AssetsWebsite(AssetManager, youPath);
-// or
+// »òÕß
 Wesite wesite = new StorageWebsite(youPath);
 
 AndServer andServer = new AndServer.Build()
@@ -90,52 +89,52 @@ AndServer andServer = new AndServer.Build()
     .build();
 ```
 
-### AssetsWebsite usage
-Use it when your static site content is placed under assets.  
+### AssetsWebsiteµÄÊ¹ÓÃ
+Èç¹ûÄãµÄÍøÕ¾ÔÚ`assets`ÏÂ£¬ÄÇÃ´Äã¾ÍÓÃ`AssetsWebsite`À´²¿ÊğÄãµÄÍøÕ¾¡£  
 
-The way to use is:  
+Ê¹ÓÃ·½·¨ÊÇ£º  
 ```java
 AssetManager mAssetManager = getAssets(); //AssetManager can not be closed.
 
 Wesite wesite = new AssetsWebsite(mAssetManager, youPath);
 ```
 
-* If the website root directory under the assets, then the incoming `""`, such as:  
+* Èç¹ûÄãµÄÍøÕ¾ÔÚ`assets`¸ùÄ¿Â¼ÏÂ, ÄãµÄ`path`¾ÍÌî`""`£¬±ÈÈç£º  
 ![web_assets.png](./image/web_assets.png)
 ```java
 Wesite wesite = new AssetsWebsite(mAssetManager, "");
 ```
 
-Then your default home page is:  
+ÄÇÃ´ÄãµÄÄ¬ÈÏÊ×Ò³·ÃÎÊµØÖ·¾ÍÊÇ£º  
 `http://ip:port`  
 `http://ip:port/index.html`  
 
-Other page addresses is:  
+ÄÇÃ´ÄãµÄÆäËüÒ³Ãæ·ÃÎÊµØÖ·ÊÇ£º  
 `http://ip:port/login.html`  
 `http://ip:port/error.html`  
 
-For example:  
+±ÈÈç£º  
 ```
 http://192.168.1.12:8080/index.html  
 http://192.168.1.12:8080/login.html
 ```
 
-* If the root directory of the site is in the subdirectory of assets, then the relative path to the directory, such as the site in the assets `/web/website` directory, such as:  
+* Èç¹ûÄãµÄÍøÕ¾¸ùÄ¿Â¼ÔÚ`assets`µÄ×ÓÄ¿Â¼ÏÂ£¬ÄÇÃ´Äã´«Èë`assets`µÄÏà¶ÔÄ¿Â¼µØÖ·¾ÍºÃÁË±ÈÈçÄãµÄÍøÕ¾ÔÚ`assets`ÏÂ`/web/website`Ä¿Â¼£¬ÀıÈç£º  
 ![web_assets.png](./image/web_assets_son.png)
 ```java
 Wesite wesite = new AssetsWebsite(mAssetManager, "web/www");
 ```
 
-Then your default home page is:  
+ÄÇÃ´ÄãµÄÄ¬ÈÏÊ×Ò³·ÃÎÊµØÖ·¾ÍÊÇ£º  
 `http://ip:port`  
 `http://ip:port/web/www`  
 `http://ip:port/web/www/index.html`  
 
-Other page addresses is:  
+ÄÇÃ´ÄãµÄÆäËüÒ³Ãæ·ÃÎÊµØÖ·ÊÇ£º  
 `http://ip:port/web/www/login.html`  
 `http://ip:port/web/www/error.html`  
 
-For example:  
+ÀıÈç£º  
 ```
 http://192.168.1.12:8080/
 http://192.168.1.12:8080/index.html
@@ -144,15 +143,15 @@ http://192.168.1.12:8080/web/www/index.html
 http://192.168.1.12:8080/web/www/login.html
 ```
 
-### StorageWebsite usage
-Use it when your static site is on a storage device, such as your site under SD card.  
+### StorageWebsiteµÄÊ¹ÓÃ
+Èç¹ûÄãµÄÍøÕ¾ÔÚ`assets`ÏÂ£¬ÄÇÃ´Äã¾ÍÓÃ`StorageWebsite`À´²¿ÊğÄãµÄÍøÕ¾£¬±ÈÈçÄãµÄÍøÕ¾ÔÚSD¿¨ÏÂÊ±¡£
 
-The way to use is:  
+Ê¹ÓÃ·½·¨ÊÇ£º  
 ```java
 Wesite wesite = new StorageWebsite(youPath);
 ```
 
-It is simple, the absolute path into your website root directory on it, for example, your site in the SD card under the `www` directory:  
+ËüºÜ¼òµ¥£¬Ö»Òª´«ÈëÄãµÄÍøÕ¾µÄ´æ´¢Ä¿Â¼µØÖ·¼´¿É£¬ÀıÈçÄãµÄÍøÕ¾ÔÚSD¿¨ÏÂµÄ`www`Ä¿Â¼£º  
 ```java
 File file = new File(Environment.getExternalStorageDirectory(), "www");
 String websiteDirectory = file.getAbsolutePath();
@@ -160,12 +159,12 @@ String websiteDirectory = file.getAbsolutePath();
 Wesite wesite = new StorageWebsite(websiteDirectory);
 ```
 
-Access address and `AssetsWebsite` the same reason.
+·ÃÎÊµØÖ·ºÍ`AssetsWebsite`µÄµÀÀíÏàÍ¬¡£
 
 ## Http API
-Http API is through the `RequestHandler` interface registration, it is a `java interface`, it's the same as `JavaEE's Servlet`.  
+Http APIÊÇÍ¨¹ı`RequestHandler`½Ó¿ÚÀ´×¢²áµÄ£¬ËüÊÇÒ»¸ö`java interface`£¬ËüºÍ`Java`µÄ`Servlet`Ò»Ñù¡£  
 
-You need to `implement` it, and then registered to `AndServer` on it, such as:  
+ÄãĞèÒªÊµÏÖÕâ¸ö½Ó¿Ú£¬È»ºóÔÚ`AndServer`×¢²á¼´¿É£¬ÀıÈç£º  
 ```java
 public class RequestLoginHandler implements RequestHandler {
 
@@ -188,7 +187,7 @@ public class RequestLoginHandler implements RequestHandler {
 }
 ```
 
-And then register it in `AndServer`:    
+È»ºóÔÚ`AndServer`ÖĞ×¢²á£º  
 ```java
 AndServer andServer = new AndServer.Build()
     ...
@@ -196,39 +195,39 @@ AndServer andServer = new AndServer.Build()
     .build();
 ```
 
-Now you can get a unique access address: `http://ip:port/login`, for example:  
+ÏÖÔÚÄã¾ÍµÃµ½ÁËÒ»¸öÎ¨Ò»µÄ·ÃÎÊµØÖ·£º`http://ip:port/login`, ÀıÈç£º  
 ```
 http://192.168.1.12:8080/login?username=123&password=123
 ```
 
-For example of file download and file upload, please refer to sample.
+ÎÄ¼şÏÂÔØºÍÎÄ¼şÉÏ´«µÄÀı×ÓÇëÏÂÔØ`sample`²é¿´¡£
 
-## Html submit form
-In the `action` of the `Html's form` fill in you register RequestHandler key, and then you can get the form parameters in the `handle(HttpRequest, HttpResponse, HttpContext)` method of the `RequestHandler`.  
+## Html±íµ¥Ìá½»
+ÔÚ`Html`µÄ`form`µÄ`action`ÖĞÌîÈëÄã×¢²á`RequestHandler`Ê±µÄ`key`¾Í£¬È»ºóÔÚ`RequestHandler`µÄ`handle(HttpRequest, HttpResponse, HttpContext)`·½·¨¾Í¿ÉÒÔ»ñÈ¡`form`Ìá½»µÄ²ÎÊıÁË¡£  
 
-Such as the top of the `Login RequestHandler`:  
+±ÈÈçÎÒÃÇÉÏÃæ×¢²á`Login RequestHandler`ÔÚ`form`ÖĞÕâÑùÊ¹ÓÃ:  
 ```html
 <form id="form1" method="post" action="login">
 ...
 </form>
 ```
 
-## Listens on server status
+## ¼àÌı·şÎñÆ÷µÄ×´Ì¬
 ```java
 private Server.Listener mListener = new Server.Listener() {
     @Override
     public void onStarted() {
-        // The server started successfully.
+        // ·şÎñÆ÷Æô¶¯³É¹¦.
     }
 
     @Override
     public void onStopped() {
-        // The server stops.
+        // ·şÎñÆ÷Í£Ö¹ÁË£¬Ò»°ãÊÇ¿ª·¢Õßµ÷ÓÃserver.stop()²Å»áÍ£Ö¹¡£
     }
 
     @Override
     public void onError(Exception e) {
-        // There was an error when starting the server, usually the port was occupied.
+        // ·şÎñÆ÷Æô¶¯·¢Éú´íÎó£¬Ò»°ãÊÇ¶Ë¿Ú±»Õ¼ÓÃ¡£
     }
 };
 

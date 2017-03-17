@@ -15,7 +15,9 @@
  */
 package com.yanzhenjie.andserver.sample.response;
 
-import com.yanzhenjie.andserver.AndServerRequestHandler;
+import android.util.Log;
+
+import com.yanzhenjie.andserver.RequestHandler;
 import com.yanzhenjie.andserver.util.HttpRequestParser;
 
 import org.apache.http.HttpException;
@@ -28,26 +30,26 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * <p>其它测试接口。</p>
- * Created on 2016/6/13.
- *
- * @author Yan Zhenjie.
+ * <p>Login Handler.</p>
+ * Created by Yan Zhenjie on 2016/6/13.
  */
-public class AndServerTestHandler implements AndServerRequestHandler {
+public class RequestLoginHandler implements RequestHandler {
 
     @Override
     public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
-        // 拿到客户端参数key-value。
         Map<String, String> params = HttpRequestParser.parse(request);
 
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<String, String> entry : params.entrySet()) {
-            stringBuilder.append(entry.getKey() + ": " + entry.getValue() + "\r\n");
-        }
-        System.out.println("客户端提交的参数：" + stringBuilder.toString());
+        Log.i("AndServer", "Params: " + params.toString());
 
-        StringEntity stringEntity = new StringEntity("请求已成功处理", "utf-8");
-        response.setEntity(stringEntity);
-        // 如果要更新UI，这里用Handler或者广播发送过去。
+        String userName = params.get("username");
+        String password = params.get("password");
+
+        if ("123".equals(userName) && "123".equals(password)) {
+            StringEntity stringEntity = new StringEntity("Login Succeed", "utf-8");
+            response.setEntity(stringEntity);
+        } else {
+            StringEntity stringEntity = new StringEntity("Login Failed", "utf-8");
+            response.setEntity(stringEntity);
+        }
     }
 }

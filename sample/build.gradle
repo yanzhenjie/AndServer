@@ -1,26 +1,30 @@
-apply plugin: 'com.android.application'
+apply plugin: rootProject.ext.plugin.application
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.yanzhenjie.andserver.sample"
-        minSdkVersion 15
-        targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        applicationId rootProject.ext.android.applicationId
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+
+        jackOptions {
+            enabled rootProject.ext.android.jackOptions
+        }
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', includes: ['*.jar'])
-    compile 'com.yanzhenjie:andserver:1.0.1'
-    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile rootProject.ext.dependencies.andserver
+    compile rootProject.ext.dependencies.design
+    compile rootProject.ext.dependencies.appCompat
+    compile rootProject.ext.dependencies.nohttp
 }

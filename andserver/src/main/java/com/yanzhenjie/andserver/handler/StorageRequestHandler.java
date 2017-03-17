@@ -13,33 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver;
+package com.yanzhenjie.andserver.handler;
+
+import com.yanzhenjie.andserver.util.HttpRequestParser;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.protocol.HttpContext;
-import org.apache.http.protocol.HttpRequestHandler;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
+ * <p>Storage file handler.</p>
  * Created by Yan Zhenjie on 2017/3/15.
  */
 
-public class DefaultHttpRequestHandler implements HttpRequestHandler {
+public class StorageRequestHandler extends BasicRequestHandler {
 
-    private RequestHandler mRequestHandler;
+    /**
+     * Target file path.
+     */
+    private String mFilePath;
 
-    public DefaultHttpRequestHandler(RequestHandler requestHandler) {
-        this.mRequestHandler = requestHandler;
+    /**
+     * Create a handler for file.
+     *
+     * @param mFilePath absolute file path.
+     */
+    public StorageRequestHandler(String mFilePath) {
+        this.mFilePath = mFilePath;
     }
 
     @Override
     public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
-        // 跨域请求需要在头中声明。
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Server", "AndServer");
-        this.mRequestHandler.handle(request, response, context);
+        File file = new File(mFilePath);
+        if (!file.exists()) {
+            requestInvalid(response);
+        } else {
+            response.setStatusCode(200);
+            response.setEntity(new FileEntity(file, HttpRequestParser.getMimeType(file.getName())));
+        }
     }
+
 }

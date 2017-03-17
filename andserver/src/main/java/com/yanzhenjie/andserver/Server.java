@@ -13,29 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.util;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+package com.yanzhenjie.andserver;
 
 /**
- * Created on 2016/6/13.
- *
- * @author Yan Zhenjie.
+ * <p>The control of the server.</p>
+ * Created by Yan Zhenjie on 2016/6/13.
  */
-public class AndWebUtil {
+public interface Server {
 
     /**
-     * 单线程。
+     * Start server.
      */
-    private final static ExecutorService EXECUTORSERVICE = Executors.newCachedThreadPool();
+    void start();
 
     /**
-     * 执行。
+     * Stop server.
+     */
+    void stop();
+
+    /**
+     * Is the server running?
      *
-     * @param command {@link Runnable}.
+     * @return return true, not return false.
      */
-    public static void executeRunnable(Runnable command) {
-        EXECUTORSERVICE.execute(command);
+    boolean isRunning();
+
+    interface Listener {
+
+        /**
+         * The server is started.
+         */
+        void onStarted();
+
+        /**
+         * The server is stopped.
+         */
+        void onStopped();
+
+        /**
+         * An error occurred.
+         *
+         * @param e error.
+         */
+        void onError(Exception e);
+
     }
 }

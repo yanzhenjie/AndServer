@@ -24,11 +24,9 @@ import java.io.IOException;
 
 /**
  * <p>Dealing with the client's request.</p>
- * Created on 2016/6/13.
- *
- * @author Yan Zhenjie.
+ * Created by Yan Zhenjie on 2016/6/13.
  */
-public interface AndServerRequestHandler {
+public interface RequestHandler {
 
     /**
      * When is the client request is triggered.
@@ -40,5 +38,4 @@ public interface AndServerRequestHandler {
      * @throws IOException   read data.
      */
     void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException;
-
 }

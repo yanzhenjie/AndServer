@@ -15,90 +15,123 @@
  */
 package com.yanzhenjie.andserver.sample;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.yanzhenjie.andserver.AndServer;
-import com.yanzhenjie.andserver.AndServerBuild;
-import com.yanzhenjie.andserver.sample.response.AndServerPingHandler;
-import com.yanzhenjie.andserver.sample.response.AndServerTestHandler;
-import com.yanzhenjie.andserver.sample.response.AndServerUploadHandler;
+import com.yanzhenjie.nohttp.tools.NetUtil;
 
 /**
- * Created on 2016/6/13.
- *
- * @author Yan Zhenjie.
+ * Created by Yan Zhenjie on 2016/6/13.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private Intent mService;
+    /**
+     * Accept and server status.
+     */
+    private ServerStatusReceiver mReceiver;
 
     /**
-     * AndServer。
+     * Show message
      */
-    private AndServer mAndServer;
+    private TextView mTvMessage;
+
+    private ProgressDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViewById(R.id.btn_start).setOnClickListener(onClickListener);
-        findViewById(R.id.btn_stop).setOnClickListener(onClickListener);
-    }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-    /**
-     * 按钮监听。
-     */
-    private View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v.getId() == R.id.btn_start) {
-                if (mAndServer == null || !mAndServer.isRunning()) {// 服务器没启动。
-                    startAndServer();// 启动服务器。
-                } else {
-                    Toast.makeText(MainActivity.this, "AndServer已经启动，请不要重复启动。", Toast.LENGTH_LONG).show();
-                }
-            } else if (v.getId() == R.id.btn_stop) {
-                if (mAndServer == null || !mAndServer.isRunning()) {
-                    Toast.makeText(MainActivity.this, "AndServer还没有启动。", Toast.LENGTH_LONG).show();
-                } else {// 关闭服务器。
-                    mAndServer.close();
-                    Toast.makeText(MainActivity.this, "AndServer已经停止。", Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-    };
+        findViewById(R.id.btn_start).setOnClickListener(this);
+        findViewById(R.id.btn_stop).setOnClickListener(this);
 
-    // 这里为了简单就写在Activity中了，强烈建议写在服务中。
+        mTvMessage = (TextView) findViewById(R.id.tv_message);
 
-    /**
-     * 启动服务器。
-     */
-    private void startAndServer() {
-        if (mAndServer == null || !mAndServer.isRunning()) {
+        // AndServer run in the service.
+        mService = new Intent(this, CoreService.class);
+        mReceiver = new ServerStatusReceiver(this);
 
-            AndServerBuild andServerBuild = AndServerBuild.create();
-            andServerBuild.setPort(4477);// 指定端口号。
-
-            // 添加普通接口。
-            andServerBuild.add("ping", new AndServerPingHandler());// 到时候在浏览器访问是：http://localhost:4477/ping
-            andServerBuild.add("test", new AndServerTestHandler());// 到时候在浏览器访问是：http://localhost:4477/test
-
-            // 添加接受客户端上传文件的接口。
-            andServerBuild.add("upload", new AndServerUploadHandler());// 到时候在浏览器访问是：http://localhost:4477/upload
-            mAndServer = andServerBuild.build();
-
-            // 启动服务器。
-            mAndServer.launch();
-            Toast.makeText(this, "AndServer已经成功启动", Toast.LENGTH_LONG).show();
-        }
+        mReceiver.register();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mAndServer != null && mAndServer.isRunning()) {
-            mAndServer.close();
+        mReceiver.unRegister();
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.btn_start: {
+                showDialog();
+                startService(mService);
+                break;
+            }
+            case R.id.btn_stop: {
+                stopService(mService);
+            }
         }
     }
+
+    /**
+     * Start notify.
+     */
+    public void serverStart() {
+        closeDialog();
+        String message = getString(R.string.server_start_succeed);
+
+        String ip = NetUtil.getLocalIPAddress();
+        if (!TextUtils.isEmpty(ip)) {
+            message += ("\nhttp://" + ip + ":8080/\n"
+                    + "http://" + ip + ":8080/login\n"
+                    + "http://" + ip + ":8080/upload\n"
+                    + "http://" + ip + ":8080/index\n"
+                    + "http://" + ip + ":8080/error.html\n"
+                    + "http://" + ip + ":8080/login.html\n"
+                    + "http://" + ip + ":8080/image/image.jpg");
+        }
+        mTvMessage.setText(message);
+    }
+
+    /**
+     * Started notify.
+     */
+    public void serverHasStarted() {
+        Toast.makeText(this, R.string.server_started, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Stop notify.
+     */
+    public void serverStop() {
+        mTvMessage.setText(R.string.server_stop_succeed);
+    }
+
+    private void showDialog() {
+        if (mDialog == null) {
+            mDialog = new ProgressDialog(this);
+            mDialog.setCancelable(false);
+            mDialog.setCanceledOnTouchOutside(false);
+            mDialog.setMessage("Loading");
+        }
+        if (!mDialog.isShowing()) mDialog.show();
+    }
+
+    private void closeDialog() {
+        if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
+    }
+
+
 }

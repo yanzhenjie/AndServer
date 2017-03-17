@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
+    <meta id="viewport" name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1; user-scalable=no;"/>
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+
+    <title>Sign In</title>
+
+</head>
+<body class="sec_body">
+<div class="center_father">
+    <h1 class="center" style="margin:0 0;font-size:x-large;padding:0;">Sign In</h1>
+</div>
+<form id="form1" method="post" action="login"> <!-- Need register RequestLoginHandler. -->
+    <table align="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <td width="100" align="right">Account:&nbsp;&nbsp;</td>
+            <td width="276"><input name="username" type="text" id="username" value="123"/></td>
+        </tr>
+        <tr>
+            <td width="100">&nbsp;&nbsp;</td>
+            <td width="276">&nbsp;&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="right">Password:&nbsp;&nbsp;</td>
+            <td><input name="password" type="password" id="password" value="123"/></td>
+        </tr>
+        <tr>
+            <td width="100">&nbsp;&nbsp;</td>
+            <td width="276">&nbsp;&nbsp;</td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <input type="submit" name="Submit" value="Sign In"/>
+            </td>
+        </tr>
+    </table>
+    <p>Account:&nbsp;123, Password:&nbsp;123</p>
+</form>
+</body>
+</html>

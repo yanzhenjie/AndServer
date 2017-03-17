@@ -1,18 +1,17 @@
-apply plugin: 'com.android.library'
+apply plugin: rootProject.ext.plugin.library
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
-    resourcePrefix "andserver_res_"
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 23
-        versionCode 1
-        versionName '1.0.1'
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', includes: ['*.jar'])
 }
+
+apply from: "maven.gradle"
