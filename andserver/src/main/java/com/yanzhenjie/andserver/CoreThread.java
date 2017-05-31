@@ -47,7 +47,6 @@ import java.util.Map;
 /**
  * Created by Yan Zhenjie on 2017/3/13.
  */
-
 class CoreThread extends Thread {
 
     /**
@@ -175,13 +174,13 @@ class CoreThread extends Thread {
         // HTTP Attribute.
         HttpParams httpParams = createHttpParams();
 
-        // 协议拦截。
+        // Protocol intercept.
         HttpProcessor httpProcessor = createHttpProcessor();
 
-        // 注册Http接口。
+        // Register handler.
         HttpRequestHandlerResolver handlerRegistry = registerRequestHandler();
 
-        // 创建HTTP服务。
+        // Create server.
         HttpService httpService = createHttpService(httpParams, httpProcessor, handlerRegistry);
 
         try {

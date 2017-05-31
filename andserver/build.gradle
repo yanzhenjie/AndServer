@@ -1,12 +1,12 @@
-apply plugin: rootProject.ext.plugin.library
+apply plugin: rootProject.ext.plugins.library
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion rootProject.ext.android.minSdkVersion
-        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        minSdkVersion rootProject.ext.android.libraryMinSdkVersion
+        targetSdkVersion rootProject.ext.android.libraryTargetSdkVersion
     }
 }
 
@@ -14,4 +14,4 @@ dependencies {
     compile fileTree(dir: 'libs', includes: ['*.jar'])
 }
 
-apply from: "maven.gradle"
+apply from: "../maven.gradle"

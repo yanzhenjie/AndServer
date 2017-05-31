@@ -1,21 +1,25 @@
 # AndServer-CN
-`AndServer`ÊÇÒ»¸ö`Android`µÄ`Web`·şÎñÆ÷, Ö§³Ö²¿Êğ¶¯Ì¬ÍøÕ¾ºÍ¾²Ì¬ÍøÕ¾, Ö§³ÖĞ´`Http`½Ó¿Ú£¬ºÍ`Java`µÄ`Servlet`Ò»Ñù¡£
+`AndServer`æ˜¯ä¸€ä¸ª`Android`çš„`Web`æœåŠ¡å™¨, æ”¯æŒéƒ¨ç½²åŠ¨æ€ç½‘ç«™å’Œé™æ€ç½‘ç«™, æ”¯æŒå†™`Http`æ¥å£ï¼Œå’Œ`Java`çš„`Servlet`ä¸€æ ·ã€‚  
 
-QQ¼¼Êõ½»Á÷Èº£º46523908£¬¼ÓÈºÇëÔÄ¶Á[ÈºĞĞÎª¹æ·¶](https://github.com/yanzhenjie/SkillGroupRule)¡£
+QQæŠ€æœ¯äº¤æµç¾¤ï¼š547839514  
+æˆ‘çš„å¾®åšï¼š[weibo.com/yanzhenjieit](http://weibo.com/yanzhenjieit)  
+æˆ‘çš„ä¸»é¡µï¼š[www.yanzhenjie.com](http://www.yanzhenjie.com)  
+æˆ‘çš„åšå®¢ï¼š[blog.yanzhenjie.com](http://blog.yanzhenjie.com)  
 
 ----
 
-# ÌØµã
-1. ²¿Êğ¶¯Ì¬ÍøÕ¾¡£
-2. ²¿Êğ¾²Ì¬ÍøÕ¾¡£
-3. ¶¯Ì¬Http API£¬¾ÍÊÇÎÒÃÇÍ¨³£ËµµÄ·şÎñÆ÷½Ó¿Ú¡£
-4. ½ÓÊÜ¿Í»§¶ËÎÄ¼şÉÏ´«¡£
-5. ½ÓÊÜ¿Í»§¶ËÏÂÔØÎÄ¼ş¡£
+# ç‰¹ç‚¹
+1. éƒ¨ç½²åŠ¨æ€ç½‘ç«™ã€‚
+2. éƒ¨ç½²é™æ€ç½‘ç«™ã€‚
+3. åŠ¨æ€Http APIï¼Œå°±æ˜¯æˆ‘ä»¬é€šå¸¸è¯´çš„æœåŠ¡å™¨æ¥å£ã€‚
+4. æ¥å—å®¢æˆ·ç«¯æ–‡ä»¶ä¸Šä¼ ã€‚
+5. æ¥å—å®¢æˆ·ç«¯ä¸‹è½½æ–‡ä»¶ã€‚
+6. æ”¯æŒé«˜å¹¶å‘ã€‚
 
-# ÒÀÀµ
+# ä¾èµ–
 * Gradle
 ```groovy
-compile 'com.yanzhenjie:andserver:1.0.2'
+compile 'com.yanzhenjie:andserver:1.0.3'
 ```
 
 * Maven
@@ -23,7 +27,7 @@ compile 'com.yanzhenjie:andserver:1.0.2'
 <dependency>
   <groupId>com.yanzhenjie</groupId>
   <artifactId>andserver</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <type>pom</type>
 </dependency>
 ```
@@ -31,56 +35,56 @@ compile 'com.yanzhenjie:andserver:1.0.2'
 * Eclipse
 [Download Jar File](./Jar/andserver.jar?raw=true)
 
-# Ê¹ÓÃ·½·¨
-×îºÃµÄ½Ì³ÌÊÇ`sample`£¬ÇëÏÂÔØ²é¿´£¬È»ºó½áºÏ**README**¾Í¸üÇåÎúÁË¡£
+# ä½¿ç”¨æ–¹æ³•
+æœ€å¥½çš„æ•™ç¨‹æ˜¯`sample`ï¼Œè¯·ä¸‹è½½æŸ¥çœ‹ï¼Œç„¶åç»“åˆ**README**å°±æ›´æ¸…æ™°äº†ã€‚
 
-## ´´½¨·şÎñÆ÷
+## åˆ›å»ºæœåŠ¡å™¨
 ```java
 AndServer andServer = new AndServer.Build()
     ...
     .build();
 
-// ´´½¨·şÎñÆ÷¡£
+// åˆ›å»ºæœåŠ¡å™¨ã€‚
 Server mServer = andServer.createServer();
 ...
 
-// Æô¶¯·şÎñÆ÷¡£
+// å¯åŠ¨æœåŠ¡å™¨ã€‚
 mServer.start();
 ...
 
-// Í£Ö¹·şÎñÆ÷¡£
+// åœæ­¢æœåŠ¡å™¨ã€‚
 mServer.stop();
 ...
 
-// ·şÎñÆ÷ÕıÔÚÔËĞĞÂğ£¿
+// æœåŠ¡å™¨æ­£åœ¨è¿è¡Œå—ï¼Ÿ
 boolean running = mServer.isRunning();
 ```
 
-## ¶Ë¿ÚºÅºÍÏìÓ¦³¬Ê±ÉèÖÃ
+## ç«¯å£å·å’Œå“åº”è¶…æ—¶è®¾ç½®
 ```java
 AndServer andServer = new AndServer.Build()
-    .port(8080) // Ä¬ÈÏÊÇ8080£¬AndroidÆ½Ì¨ÔÊĞíµÄ¶Ë¿ÚºÅ¶¼¿ÉÒÔ¡£
-    .timeout(10 * 1000) // Ä¬ÈÏ10 * 1000ºÁÃë¡£
+    .port(8080) // é»˜è®¤æ˜¯8080ï¼ŒAndroidå¹³å°å…è®¸çš„ç«¯å£å·éƒ½å¯ä»¥ã€‚
+    .timeout(10 * 1000) // é»˜è®¤10 * 1000æ¯«ç§’ã€‚
     ...
     .build();
 ...
 ```
 
-## ²¿ÊğÍøÕ¾
-²¿ÊğÍøÕ¾ÊÇÍ¨¹ı`Website`½Ó¿Ú£¬ÄãÒ²¿ÉÒÔ×Ô¼ºÊµÏÖÕâ¸ö½Ó¿Ú£¬µ±È»`AndServer`ÒÑ¾­Ìá¹©ÁËÁ½¸öÄ¬ÈÏÊµÏÖ£º  
+## éƒ¨ç½²ç½‘ç«™
+éƒ¨ç½²ç½‘ç«™æ˜¯é€šè¿‡`Website`æ¥å£ï¼Œä½ ä¹Ÿå¯ä»¥è‡ªå·±å®ç°è¿™ä¸ªæ¥å£ï¼Œå½“ç„¶`AndServer`å·²ç»æä¾›äº†ä¸¤ä¸ªé»˜è®¤å®ç°ï¼š  
 
 * [AssetsWebsite](./andserver/src/main/java/com/yanzhenjie/andserver/website/AssetsWebsite.java)
 * [StorageWebsite](./andserver/src/main/java/com/yanzhenjie/andserver/website/StorageWebsite.java)
 
-Èç¹ûÓÃÉÏÃæÁ½¸öÊµÏÖ×¢²áÄãµÄÍøÕ¾£¬ÄÇÃ´ÄãµÄÄ¬ÈÏÊ×Ò³£¨`index.html`£©ÊÇ£º  
+å¦‚æœç”¨ä¸Šé¢ä¸¤ä¸ªå®ç°æ³¨å†Œä½ çš„ç½‘ç«™ï¼Œé‚£ä¹ˆä½ çš„é»˜è®¤é¦–é¡µï¼ˆ`index.html`ï¼‰æ˜¯ï¼š  
 `http://ip:port/`  
 `http://ip:port/youPath`  
 `http://ip:port/youPath/index.html`  
 
-### ×¢²áÍøÕ¾µ½AndServer
+### æ³¨å†Œç½‘ç«™åˆ°AndServer
 ```java
 Wesite wesite = new AssetsWebsite(AssetManager, youPath);
-// »òÕß
+// æˆ–è€…
 Wesite wesite = new StorageWebsite(youPath);
 
 AndServer andServer = new AndServer.Build()
@@ -89,69 +93,71 @@ AndServer andServer = new AndServer.Build()
     .build();
 ```
 
-### AssetsWebsiteµÄÊ¹ÓÃ
-Èç¹ûÄãµÄÍøÕ¾ÔÚ`assets`ÏÂ£¬ÄÇÃ´Äã¾ÍÓÃ`AssetsWebsite`À´²¿ÊğÄãµÄÍøÕ¾¡£  
+### AssetsWebsiteçš„ä½¿ç”¨
+å¦‚æœä½ çš„ç½‘ç«™åœ¨`assets`ä¸‹ï¼Œé‚£ä¹ˆä½ å°±ç”¨`AssetsWebsite`æ¥éƒ¨ç½²ä½ çš„ç½‘ç«™ã€‚  
 
-Ê¹ÓÃ·½·¨ÊÇ£º  
+ä½¿ç”¨æ–¹æ³•æ˜¯ï¼š  
 ```java
 AssetManager mAssetManager = getAssets(); //AssetManager can not be closed.
 
 Wesite wesite = new AssetsWebsite(mAssetManager, youPath);
 ```
 
-* Èç¹ûÄãµÄÍøÕ¾ÔÚ`assets`¸ùÄ¿Â¼ÏÂ, ÄãµÄ`path`¾ÍÌî`""`£¬±ÈÈç£º  
+* å¦‚æœä½ çš„ç½‘ç«™åœ¨`assets`æ ¹ç›®å½•ä¸‹, ä½ çš„`path`å°±å¡«`""`ï¼Œæ¯”å¦‚ï¼š  
+
 ![web_assets.png](./image/web_assets.png)
 ```java
 Wesite wesite = new AssetsWebsite(mAssetManager, "");
 ```
 
-ÄÇÃ´ÄãµÄÄ¬ÈÏÊ×Ò³·ÃÎÊµØÖ·¾ÍÊÇ£º  
+é‚£ä¹ˆä½ çš„é»˜è®¤é¦–é¡µè®¿é—®åœ°å€å°±æ˜¯ï¼š  
 `http://ip:port`  
 `http://ip:port/index.html`  
 
-ÄÇÃ´ÄãµÄÆäËüÒ³Ãæ·ÃÎÊµØÖ·ÊÇ£º  
+é‚£ä¹ˆä½ çš„å…¶å®ƒé¡µé¢è®¿é—®åœ°å€æ˜¯ï¼š  
 `http://ip:port/login.html`  
 `http://ip:port/error.html`  
 
-±ÈÈç£º  
+æ¯”å¦‚ï¼š  
 ```
 http://192.168.1.12:8080/index.html  
 http://192.168.1.12:8080/login.html
 ```
 
-* Èç¹ûÄãµÄÍøÕ¾¸ùÄ¿Â¼ÔÚ`assets`µÄ×ÓÄ¿Â¼ÏÂ£¬ÄÇÃ´Äã´«Èë`assets`µÄÏà¶ÔÄ¿Â¼µØÖ·¾ÍºÃÁË±ÈÈçÄãµÄÍøÕ¾ÔÚ`assets`ÏÂ`/web/website`Ä¿Â¼£¬ÀıÈç£º  
+* å¦‚æœä½ çš„ç½‘ç«™æ ¹ç›®å½•åœ¨`assets`çš„å­ç›®å½•ä¸‹ï¼Œé‚£ä¹ˆä½ ä¼ å…¥`assets`çš„ç›¸å¯¹ç›®å½•åœ°å€å°±å¥½äº†æ¯”å¦‚ä½ çš„ç½‘ç«™åœ¨`assets`ä¸‹`web`ç›®å½•ï¼Œä¾‹å¦‚ï¼š  
+
 ![web_assets.png](./image/web_assets_son.png)
 ```java
-Wesite wesite = new AssetsWebsite(mAssetManager, "web/www");
+Wesite wesite = new AssetsWebsite(mAssetManager, "web");
 ```
 
-ÄÇÃ´ÄãµÄÄ¬ÈÏÊ×Ò³·ÃÎÊµØÖ·¾ÍÊÇ£º  
+é‚£ä¹ˆä½ çš„é»˜è®¤é¦–é¡µè®¿é—®åœ°å€å°±æ˜¯ï¼š  
 `http://ip:port`  
-`http://ip:port/web/www`  
-`http://ip:port/web/www/index.html`  
+`http://ip:port/web`  
+`http://ip:port/web/index.html`  
 
-ÄÇÃ´ÄãµÄÆäËüÒ³Ãæ·ÃÎÊµØÖ·ÊÇ£º  
-`http://ip:port/web/www/login.html`  
-`http://ip:port/web/www/error.html`  
+é‚£ä¹ˆä½ çš„å…¶å®ƒé¡µé¢è®¿é—®åœ°å€æ˜¯ï¼š  
+`http://ip:port/web/login.html`  
+`http://ip:port/web/error.html`  
 
-ÀıÈç£º  
+ä¾‹å¦‚ï¼š  
 ```
-http://192.168.1.12:8080/
-http://192.168.1.12:8080/index.html
-http://192.168.1.12:8080/web/www/index.html
-http://192.168.1.12:8080/web/www/index.html  
-http://192.168.1.12:8080/web/www/login.html
+http://192.168.1.12:8080
+http://192.168.1.12:8080/web
+http://192.168.1.12:8080/web/index.html
+http://192.168.1.12:8080/web/index.html  
+http://192.168.1.12:8080/web/login.html
 ```
 
-### StorageWebsiteµÄÊ¹ÓÃ
-Èç¹ûÄãµÄÍøÕ¾ÔÚ`assets`ÏÂ£¬ÄÇÃ´Äã¾ÍÓÃ`StorageWebsite`À´²¿ÊğÄãµÄÍøÕ¾£¬±ÈÈçÄãµÄÍøÕ¾ÔÚSD¿¨ÏÂÊ±¡£
+### StorageWebsiteçš„ä½¿ç”¨
+å¦‚æœä½ çš„ç½‘ç«™åœ¨`assets`ä¸‹ï¼Œé‚£ä¹ˆä½ å°±ç”¨`StorageWebsite`æ¥éƒ¨ç½²ä½ çš„ç½‘ç«™ï¼Œæ¯”å¦‚ä½ çš„ç½‘ç«™åœ¨SDå¡ä¸‹æ—¶ã€‚
 
-Ê¹ÓÃ·½·¨ÊÇ£º  
+ä½¿ç”¨æ–¹æ³•æ˜¯ï¼š  
 ```java
 Wesite wesite = new StorageWebsite(youPath);
 ```
 
-ËüºÜ¼òµ¥£¬Ö»Òª´«ÈëÄãµÄÍøÕ¾µÄ´æ´¢Ä¿Â¼µØÖ·¼´¿É£¬ÀıÈçÄãµÄÍøÕ¾ÔÚSD¿¨ÏÂµÄ`www`Ä¿Â¼£º  
+å®ƒå¾ˆç®€å•ï¼Œåªè¦ä¼ å…¥ä½ çš„ç½‘ç«™çš„å­˜å‚¨ç›®å½•åœ°å€å³å¯ï¼Œä¾‹å¦‚ä½ çš„ç½‘ç«™åœ¨SDå¡ä¸‹çš„`www`ç›®å½•ï¼š  
 ```java
 File file = new File(Environment.getExternalStorageDirectory(), "www");
 String websiteDirectory = file.getAbsolutePath();
@@ -159,12 +165,12 @@ String websiteDirectory = file.getAbsolutePath();
 Wesite wesite = new StorageWebsite(websiteDirectory);
 ```
 
-·ÃÎÊµØÖ·ºÍ`AssetsWebsite`µÄµÀÀíÏàÍ¬¡£
+è®¿é—®åœ°å€å’Œ`AssetsWebsite`çš„é“ç†ç›¸åŒã€‚
 
 ## Http API
-Http APIÊÇÍ¨¹ı`RequestHandler`½Ó¿ÚÀ´×¢²áµÄ£¬ËüÊÇÒ»¸ö`java interface`£¬ËüºÍ`Java`µÄ`Servlet`Ò»Ñù¡£  
+Http APIæ˜¯é€šè¿‡`RequestHandler`æ¥å£æ¥æ³¨å†Œçš„ï¼Œå®ƒæ˜¯ä¸€ä¸ª`java interface`ï¼Œå®ƒå’Œ`Java`çš„`Servlet`ä¸€æ ·ã€‚  
 
-ÄãĞèÒªÊµÏÖÕâ¸ö½Ó¿Ú£¬È»ºóÔÚ`AndServer`×¢²á¼´¿É£¬ÀıÈç£º  
+ä½ éœ€è¦å®ç°è¿™ä¸ªæ¥å£ï¼Œç„¶ååœ¨`AndServer`æ³¨å†Œå³å¯ï¼Œä¾‹å¦‚ï¼š  
 ```java
 public class RequestLoginHandler implements RequestHandler {
 
@@ -187,7 +193,7 @@ public class RequestLoginHandler implements RequestHandler {
 }
 ```
 
-È»ºóÔÚ`AndServer`ÖĞ×¢²á£º  
+ç„¶ååœ¨`AndServer`ä¸­æ³¨å†Œï¼š  
 ```java
 AndServer andServer = new AndServer.Build()
     ...
@@ -195,39 +201,39 @@ AndServer andServer = new AndServer.Build()
     .build();
 ```
 
-ÏÖÔÚÄã¾ÍµÃµ½ÁËÒ»¸öÎ¨Ò»µÄ·ÃÎÊµØÖ·£º`http://ip:port/login`, ÀıÈç£º  
+ç°åœ¨ä½ å°±å¾—åˆ°äº†ä¸€ä¸ªå”¯ä¸€çš„è®¿é—®åœ°å€ï¼š`http://ip:port/login`, ä¾‹å¦‚ï¼š  
 ```
 http://192.168.1.12:8080/login?username=123&password=123
 ```
 
-ÎÄ¼şÏÂÔØºÍÎÄ¼şÉÏ´«µÄÀı×ÓÇëÏÂÔØ`sample`²é¿´¡£
+æ–‡ä»¶ä¸‹è½½å’Œæ–‡ä»¶ä¸Šä¼ çš„ä¾‹å­è¯·ä¸‹è½½`sample`æŸ¥çœ‹ã€‚
 
-## Html±íµ¥Ìá½»
-ÔÚ`Html`µÄ`form`µÄ`action`ÖĞÌîÈëÄã×¢²á`RequestHandler`Ê±µÄ`key`¾Í£¬È»ºóÔÚ`RequestHandler`µÄ`handle(HttpRequest, HttpResponse, HttpContext)`·½·¨¾Í¿ÉÒÔ»ñÈ¡`form`Ìá½»µÄ²ÎÊıÁË¡£  
+## Htmlè¡¨å•æäº¤
+åœ¨`Html`çš„`form`çš„`action`ä¸­å¡«å…¥ä½ æ³¨å†Œ`RequestHandler`æ—¶çš„`key`å°±ï¼Œç„¶ååœ¨`RequestHandler`çš„`handle(HttpRequest, HttpResponse, HttpContext)`æ–¹æ³•å°±å¯ä»¥è·å–`form`æäº¤çš„å‚æ•°äº†ã€‚  
 
-±ÈÈçÎÒÃÇÉÏÃæ×¢²á`Login RequestHandler`ÔÚ`form`ÖĞÕâÑùÊ¹ÓÃ:  
+æ¯”å¦‚æˆ‘ä»¬ä¸Šé¢æ³¨å†Œ`Login RequestHandler`åœ¨`form`ä¸­è¿™æ ·ä½¿ç”¨:  
 ```html
 <form id="form1" method="post" action="login">
 ...
 </form>
 ```
 
-## ¼àÌı·şÎñÆ÷µÄ×´Ì¬
+## ç›‘å¬æœåŠ¡å™¨çš„çŠ¶æ€
 ```java
 private Server.Listener mListener = new Server.Listener() {
     @Override
     public void onStarted() {
-        // ·şÎñÆ÷Æô¶¯³É¹¦.
+        // æœåŠ¡å™¨å¯åŠ¨æˆåŠŸ.
     }
 
     @Override
     public void onStopped() {
-        // ·şÎñÆ÷Í£Ö¹ÁË£¬Ò»°ãÊÇ¿ª·¢Õßµ÷ÓÃserver.stop()²Å»áÍ£Ö¹¡£
+        // æœåŠ¡å™¨åœæ­¢äº†ï¼Œä¸€èˆ¬æ˜¯å¼€å‘è€…è°ƒç”¨server.stop()æ‰ä¼šåœæ­¢ã€‚
     }
 
     @Override
     public void onError(Exception e) {
-        // ·şÎñÆ÷Æô¶¯·¢Éú´íÎó£¬Ò»°ãÊÇ¶Ë¿Ú±»Õ¼ÓÃ¡£
+        // æœåŠ¡å™¨å¯åŠ¨å‘ç”Ÿé”™è¯¯ï¼Œä¸€èˆ¬æ˜¯ç«¯å£è¢«å ç”¨ã€‚
     }
 };
 
@@ -237,7 +243,12 @@ AndServer andServer = new AndServer.Build()
     .build();
 ```
 
-#License
+# æˆ‘çš„å…¬ä¼—å·
+æˆ‘æ—¶å¸¸ä¼šæ¨é€ä¸€äº›æŠ€æœ¯æ–‡ç« å’Œç”Ÿæ´»è¶£äº‹ï¼Œå¾®ä¿¡æœç´¢**ä¸¥æŒ¯æ°**æˆ–è€…æ‰«ç ä¸‹æ–¹äºŒç»´ç å…³æ³¨æˆ‘çš„å…¬ä¼—å·ã€‚  
+
+![å¾®ä¿¡å…¬ä¼—å·](./image/wechat.jpg)
+
+# License
 ```text
 Copyright 2017 Yan Zhenjie
 

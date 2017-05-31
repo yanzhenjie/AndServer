@@ -54,7 +54,7 @@
             android:id="@+id/btn_stop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/start_server"
+            android:text="@string/stop_server"
             android:textAllCaps="false"/>
 
         <TextView

@@ -15,7 +15,6 @@
  */
 package com.yanzhenjie.andserver.sample;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +24,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yanzhenjie.loading.dialog.LoadingDialog;
 import com.yanzhenjie.nohttp.tools.NetUtil;
 
 /**
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private TextView mTvMessage;
 
-    private ProgressDialog mDialog;
+    private LoadingDialog mDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // AndServer run in the service.
         mService = new Intent(this, CoreService.class);
         mReceiver = new ServerStatusReceiver(this);
-
         mReceiver.register();
     }
 
@@ -97,10 +96,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             message += ("\nhttp://" + ip + ":8080/\n"
                     + "http://" + ip + ":8080/login\n"
                     + "http://" + ip + ":8080/upload\n"
-                    + "http://" + ip + ":8080/index\n"
-                    + "http://" + ip + ":8080/error.html\n"
-                    + "http://" + ip + ":8080/login.html\n"
-                    + "http://" + ip + ":8080/image/image.jpg");
+                    + "http://" + ip + ":8080/web/index.html\n"
+                    + "http://" + ip + ":8080/web/error.html\n"
+                    + "http://" + ip + ":8080/web/login.html\n"
+                    + "http://" + ip + ":8080/web/image/image.jpg");
         }
         mTvMessage.setText(message);
     }
@@ -109,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Started notify.
      */
     public void serverHasStarted() {
+        closeDialog();
         Toast.makeText(this, R.string.server_started, Toast.LENGTH_SHORT).show();
     }
 
@@ -116,16 +116,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Stop notify.
      */
     public void serverStop() {
+        closeDialog();
         mTvMessage.setText(R.string.server_stop_succeed);
     }
 
     private void showDialog() {
-        if (mDialog == null) {
-            mDialog = new ProgressDialog(this);
-            mDialog.setCancelable(false);
-            mDialog.setCanceledOnTouchOutside(false);
-            mDialog.setMessage("Loading");
-        }
+        if (mDialog == null)
+            mDialog = new LoadingDialog(this);
         if (!mDialog.isShowing()) mDialog.show();
     }
 

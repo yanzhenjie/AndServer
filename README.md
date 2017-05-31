@@ -11,11 +11,12 @@
 3. Dynamic http API.
 4. Upload file to android application.
 5. Download file from android application.
+6. Support high concurrency.
 
 # Dependencies
 * Gradle
 ```groovy
-compile 'com.yanzhenjie:andserver:1.0.2'
+compile 'com.yanzhenjie:andserver:1.0.3'
 ```
 
 * Maven
@@ -23,7 +24,7 @@ compile 'com.yanzhenjie:andserver:1.0.2'
 <dependency>
   <groupId>com.yanzhenjie</groupId>
   <artifactId>andserver</artifactId>
-  <version>1.0.2</version>
+  <version>1.0.3</version>
   <type>pom</type>
 </dependency>
 ```
@@ -101,6 +102,7 @@ Wesite wesite = new AssetsWebsite(mAssetManager, youPath);
 ```
 
 * If the website root directory under the assets, then the incoming `""`, such as:  
+
 ![web_assets.png](./image/web_assets.png)
 ```java
 Wesite wesite = new AssetsWebsite(mAssetManager, "");
@@ -120,28 +122,29 @@ http://192.168.1.12:8080/index.html
 http://192.168.1.12:8080/login.html
 ```
 
-* If the root directory of the site is in the subdirectory of assets, then the relative path to the directory, such as the site in the assets `/web/website` directory, such as:  
+* If the root directory of the site is in the subdirectory of assets, then the relative path to the directory, such as the site in the assets `web` directory, such as:  
+
 ![web_assets.png](./image/web_assets_son.png)
 ```java
-Wesite wesite = new AssetsWebsite(mAssetManager, "web/www");
+Wesite wesite = new AssetsWebsite(mAssetManager, "web");
 ```
 
 Then your default home page is:  
 `http://ip:port`  
-`http://ip:port/web/www`  
-`http://ip:port/web/www/index.html`  
+`http://ip:port/web`  
+`http://ip:port/web/index.html`  
 
 Other page addresses is:  
-`http://ip:port/web/www/login.html`  
-`http://ip:port/web/www/error.html`  
+`http://ip:port/web/login.html`  
+`http://ip:port/web/error.html`  
 
 For example:  
 ```
-http://192.168.1.12:8080/
-http://192.168.1.12:8080/index.html
-http://192.168.1.12:8080/web/www/index.html
-http://192.168.1.12:8080/web/www/index.html  
-http://192.168.1.12:8080/web/www/login.html
+http://192.168.1.12:8080
+http://192.168.1.12:8080/web
+http://192.168.1.12:8080/web/index.html
+http://192.168.1.12:8080/web/error.html  
+http://192.168.1.12:8080/web/login.html  
 ```
 
 ### StorageWebsite usage
@@ -238,7 +241,7 @@ AndServer andServer = new AndServer.Build()
     .build();
 ```
 
-#License
+# License
 ```text
 Copyright 2017 Yan Zhenjie
 

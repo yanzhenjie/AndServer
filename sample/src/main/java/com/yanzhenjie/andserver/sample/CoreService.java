@@ -50,7 +50,7 @@ public class CoreService extends Service {
                 .registerHandler("login", new RequestLoginHandler())
                 // .registerHandler("download", new RequestFileHandler("Your file path"))
                 .registerHandler("upload", new RequestUploadHandler())
-                .website(new AssetsWebsite(mAssetManager, ""))
+                .website(new AssetsWebsite(mAssetManager, "web"))
                 .listener(mListener)
                 .build();
 

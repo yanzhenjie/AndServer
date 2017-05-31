@@ -92,7 +92,7 @@ public class HttpRequestParser {
     public static String getContent(HttpRequest request) throws IOException {
         if (isGetMethod(request)) {
             return getContentForGet(request);
-        } else if (isPosterMethod(request)) {
+        } else if (isPostMethod(request)) {
             return getContentForPost(request);
         }
         return "";
@@ -107,7 +107,8 @@ public class HttpRequestParser {
      */
     public static String getContentForPost(HttpRequest request) throws IOException {
         HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
-        return EntityUtils.toString(entity);
+        String charset = parseHeadValue(entity.getContentType().getValue(), "charset", "utf-8");
+        return EntityUtils.toString(entity, charset);
     }
 
     /**
@@ -139,6 +140,19 @@ public class HttpRequestParser {
      * @param request {@link HttpRequest}.
      * @return returns true, not return false.
      */
+    public static boolean isPostMethod(HttpRequest request) {
+        String method = request.getRequestLine().getMethod();
+        return "POST".equalsIgnoreCase(method);
+    }
+
+    /**
+     * If a POST request.
+     *
+     * @param request {@link HttpRequest}.
+     * @return returns true, not return false.
+     * @deprecated use {@link #isPostMethod(HttpRequest)} instead.
+     */
+    @Deprecated
     public static boolean isPosterMethod(HttpRequest request) {
         String method = request.getRequestLine().getMethod();
         return "POST".equalsIgnoreCase(method);
@@ -157,6 +171,32 @@ public class HttpRequestParser {
             mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         }
         return mimeType;
+    }
+
+    /**
+     * A value of the header information.
+     *
+     * @param content      like {@code text/html;charset=utf-8}.
+     * @param key          like {@code charset}.
+     * @param defaultValue list {@code utf-8}.
+     * @return If you have a value key, you will return the parsed value if you don't return the default value.
+     */
+    public static String parseHeadValue(String content, String key, String defaultValue) {
+        if (!TextUtils.isEmpty(content) && !TextUtils.isEmpty(key)) {
+            StringTokenizer stringTokenizer = new StringTokenizer(content, ";");
+            while (stringTokenizer.hasMoreElements()) {
+                String valuePair = stringTokenizer.nextToken();
+                int index = valuePair.indexOf('=');
+                if (index > 0) {
+                    String name = valuePair.substring(0, index).trim();
+                    if (key.equalsIgnoreCase(name)) {
+                        defaultValue = valuePair.substring(index + 1).trim();
+                        break;
+                    }
+                }
+            }
+        }
+        return defaultValue;
     }
 
 }

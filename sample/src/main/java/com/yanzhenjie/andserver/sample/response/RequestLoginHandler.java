@@ -27,6 +27,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.Map;
 
 /**
@@ -41,8 +42,11 @@ public class RequestLoginHandler implements RequestHandler {
 
         Log.i("AndServer", "Params: " + params.toString());
 
-        String userName = params.get("username");
-        String password = params.get("password");
+        String userName = URLDecoder.decode(params.get("username"), "utf-8");
+        String password = URLDecoder.decode(params.get("password"), "utf-8");
+
+        System.out.println("The Username: " + userName);
+        System.out.println("The Password: " + password);
 
         if ("123".equals(userName) && "123".equals(password)) {
             StringEntity stringEntity = new StringEntity("Login Succeed", "utf-8");

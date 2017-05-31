@@ -1,5 +1,5 @@
 ext {
-    plugin = [
+    plugins = [
             library    : 'com.android.library',
             application: 'com.android.application',
             maven      : 'com.github.dcendents.android-maven',
@@ -7,23 +7,54 @@ ext {
     ]
 
     android = [
-            applicationId    : "com.yanzhenjie.andserver.sample",
-            compileSdkVersion: 25,
-            buildToolsVersion: "25.0.2",
+            applicationId          : "com.yanzhenjie.andserver.sample",
+            compileSdkVersion      : 25,
+            buildToolsVersion      : "25.0.3",
 
-            minSdkVersion    : 14,
-            targetSdkVersion : 22,
+            libraryMinSdkVersion   : 8,
+            libraryTargetSdkVersion: 25,
+            sampleMinSdkVersion    : 11,
+            sampleTargetSdkVersion : 22,
 
-            versionCode      : 11,
-            versionName      : "1.1",
+            versionCode            : 12,
+            versionName            : "1.1.0",
+    ]
 
-            jackOptions      : true
+    maven = [
+            // library
+            version       : "1.0.3",
+
+            siteUrl       : 'https://github.com/yanzhenjie/AndServer',
+            gitUrl        : 'git@github.com:yanzhenjie/AndServer.git',
+
+            group         : "com.yanzhenjie",
+
+            // project
+            packaging     : 'aar',
+            name          : 'AndServer',
+            description   : 'Android web server',
+
+            // project.license
+            licenseName   : 'The Apache Software License, Version 2.0',
+            licenseUrl    : 'http://www.apache.org/licenses/LICENSE-2.0.txt',
+
+            // project.developers
+            developerId   : 'yanzhenjie',
+            developerName : 'yanzhenjie',
+            developerEmail: 'smallajax@foxmail.com',
+
+            // bintray
+            binrayLibrary : "andserver",
+            bintrayRepo   : "maven",
+            bintrayUser   : 'yolanda',
+            bintrayLicense: "Apache-2.0"
     ]
 
     dependencies = [
-            andserver: 'com.yanzhenjie:andserver:1.0.2',
-            appCompat: 'com.android.support:appcompat-v7:25.2.0',
-            design   : 'com.android.support:design:25.2.0',
-            nohttp   : 'com.yanzhenjie.nohttp:nohttp:1.1.1'
+            andserver: 'com.yanzhenjie:andserver:1.0.3',
+            appCompat: 'com.android.support:appcompat-v7:25.3.1',
+            design   : 'com.android.support:design:25.3.1',
+            nohttp   : 'com.yanzhenjie.nohttp:nohttp:1.1.2',
+            loading  : 'com.yanzhenjie:loading:1.0.0'
     ]
 }
