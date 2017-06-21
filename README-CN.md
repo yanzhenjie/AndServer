@@ -83,13 +83,13 @@ AndServer andServer = new AndServer.Build()
 
 ### 注册网站到AndServer
 ```java
-Wesite wesite = new AssetsWebsite(AssetManager, youPath);
+Website website = new AssetsWebsite(AssetManager, youPath);
 // 或者
-Wesite wesite = new StorageWebsite(youPath);
+Website website = new StorageWebsite(youPath);
 
 AndServer andServer = new AndServer.Build()
     ...
-    .website(wesite);
+    .website(website);
     .build();
 ```
 
@@ -100,14 +100,14 @@ AndServer andServer = new AndServer.Build()
 ```java
 AssetManager mAssetManager = getAssets(); //AssetManager can not be closed.
 
-Wesite wesite = new AssetsWebsite(mAssetManager, youPath);
+Website website = new AssetsWebsite(mAssetManager, youPath);
 ```
 
 * 如果你的网站在`assets`根目录下, 你的`path`就填`""`，比如：  
 
 ![web_assets.png](./image/web_assets.png)
 ```java
-Wesite wesite = new AssetsWebsite(mAssetManager, "");
+Website website = new AssetsWebsite(mAssetManager, "");
 ```
 
 那么你的默认首页访问地址就是：  
@@ -128,7 +128,7 @@ http://192.168.1.12:8080/login.html
 
 ![web_assets.png](./image/web_assets_son.png)
 ```java
-Wesite wesite = new AssetsWebsite(mAssetManager, "web");
+Website website = new AssetsWebsite(mAssetManager, "web");
 ```
 
 那么你的默认首页访问地址就是：  
@@ -154,7 +154,7 @@ http://192.168.1.12:8080/web/login.html
 
 使用方法是：  
 ```java
-Wesite wesite = new StorageWebsite(youPath);
+Website website = new StorageWebsite(youPath);
 ```
 
 它很简单，只要传入你的网站的存储目录地址即可，例如你的网站在SD卡下的`www`目录：  
@@ -162,7 +162,7 @@ Wesite wesite = new StorageWebsite(youPath);
 File file = new File(Environment.getExternalStorageDirectory(), "www");
 String websiteDirectory = file.getAbsolutePath();
 
-Wesite wesite = new StorageWebsite(websiteDirectory);
+Website website = new StorageWebsite(websiteDirectory);
 ```
 
 访问地址和`AssetsWebsite`的道理相同。

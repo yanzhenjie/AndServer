@@ -81,13 +81,13 @@ Through their registered website, the default home page is：
 
 ### Register the website
 ```java
-Wesite wesite = new AssetsWebsite(AssetManager, youPath);
+Website website = new AssetsWebsite(AssetManager, youPath);
 // or
-Wesite wesite = new StorageWebsite(youPath);
+Website website = new StorageWebsite(youPath);
 
 AndServer andServer = new AndServer.Build()
     ...
-    .website(wesite);
+    .website(website);
     .build();
 ```
 
@@ -98,14 +98,14 @@ The way to use is:
 ```java
 AssetManager mAssetManager = getAssets(); //AssetManager can not be closed.
 
-Wesite wesite = new AssetsWebsite(mAssetManager, youPath);
+Website website = new AssetsWebsite(mAssetManager, youPath);
 ```
 
 * If the website root directory under the assets, then the incoming `""`, such as:  
 
 ![web_assets.png](./image/web_assets.png)
 ```java
-Wesite wesite = new AssetsWebsite(mAssetManager, "");
+Website website = new AssetsWebsite(mAssetManager, "");
 ```
 
 Then your default home page is:  
@@ -126,7 +126,7 @@ http://192.168.1.12:8080/login.html
 
 ![web_assets.png](./image/web_assets_son.png)
 ```java
-Wesite wesite = new AssetsWebsite(mAssetManager, "web");
+Website website = new AssetsWebsite(mAssetManager, "web");
 ```
 
 Then your default home page is:  
@@ -152,7 +152,7 @@ Use it when your static site is on a storage device, such as your site under SD 
 
 The way to use is:  
 ```java
-Wesite wesite = new StorageWebsite(youPath);
+Website website = new StorageWebsite(youPath);
 ```
 
 It is simple, the absolute path into your website root directory on it, for example, your site in the SD card under the `www` directory:  
@@ -160,7 +160,7 @@ It is simple, the absolute path into your website root directory on it, for exam
 File file = new File(Environment.getExternalStorageDirectory(), "www");
 String websiteDirectory = file.getAbsolutePath();
 
-Wesite wesite = new StorageWebsite(websiteDirectory);
+Website website = new StorageWebsite(websiteDirectory);
 ```
 
 Access address and `AssetsWebsite` the same reason.
