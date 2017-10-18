@@ -1,5 +1,5 @@
 # AndServer
-`AndServer` is a Web server of Android, support for the deployment of static website, dynamic website, support dynamic interface (Equivalent to Servelt of java ).
+`AndServer` is a Web server of Android, support for the deployment of static website, dynamic website, support dynamic interface (Equivalent to Servlet of java ).
 
 **[中文文档](./README-CN.md)**
 
