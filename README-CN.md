@@ -33,7 +33,7 @@ compile 'com.yanzhenjie:andserver:1.0.3'
 ```
 
 * Eclipse
-  [Download Jar File](./Jar/andserver.jar?raw=true)
+[Download Jar File](./Jar/andserver.jar?raw=true)
 
 # 使用方法
 最好的教程是`sample`，请下载查看，然后结合**README**就更清晰了。
