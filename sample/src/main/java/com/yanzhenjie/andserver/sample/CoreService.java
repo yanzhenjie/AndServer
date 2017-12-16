@@ -90,8 +90,9 @@ public class CoreService extends Service {
 
         stopServer(); // Stop server.
 
-        if (mAssetManager != null)
-            mAssetManager.close();
+        // If close assetManager here, the app will crash when create this service immediately
+//        if (mAssetManager != null)
+//            mAssetManager.close();
     }
 
     /**
