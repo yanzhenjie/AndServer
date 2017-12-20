@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.website;
+package com.yanzhenjie.andserver.exception;
 
-import com.yanzhenjie.andserver.RequestHandler;
-
-import org.apache.httpcore.HttpRequest;
-import org.apache.httpcore.protocol.HttpContext;
+import com.yanzhenjie.andserver.RequestMethod;
 
 /**
- * <p>
- * Registration website interface.
- * </p>
- * Created by Yan Zhenjie on 2017/3/15.
+ * Created by YanZhenjie on 2017/12/19.
  */
-public interface WebSite extends RequestHandler {
+public class MethodNotSupported extends BaseException {
 
-    boolean intercept(HttpRequest request, HttpContext context);
+    public MethodNotSupported(RequestMethod method) {
+        super(405, String.format("The %1$s method is not supported.", method.getValue()));
+    }
 }

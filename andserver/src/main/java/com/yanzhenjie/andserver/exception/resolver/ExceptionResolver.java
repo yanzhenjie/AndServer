@@ -13,20 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.website;
-
-import com.yanzhenjie.andserver.RequestHandler;
+package com.yanzhenjie.andserver.exception.resolver;
 
 import org.apache.httpcore.HttpRequest;
+import org.apache.httpcore.HttpResponse;
 import org.apache.httpcore.protocol.HttpContext;
 
 /**
- * <p>
- * Registration website interface.
- * </p>
- * Created by Yan Zhenjie on 2017/3/15.
+ * Created by YanZhenjie on 2017/12/18.
  */
-public interface WebSite extends RequestHandler {
-
-    boolean intercept(HttpRequest request, HttpContext context);
+public interface ExceptionResolver {
+    /**
+     * Solve the exception.
+     */
+    void resolveException(Exception e, HttpRequest request, HttpResponse response, HttpContext context);
 }

@@ -13,20 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.website;
-
-import com.yanzhenjie.andserver.RequestHandler;
-
-import org.apache.httpcore.HttpRequest;
-import org.apache.httpcore.protocol.HttpContext;
+package com.yanzhenjie.andserver.exception;
 
 /**
- * <p>
- * Registration website interface.
- * </p>
- * Created by Yan Zhenjie on 2017/3/15.
+ * Created by YanZhenjie on 2017/12/18.
  */
-public interface WebSite extends RequestHandler {
+public class NotFoundException extends BaseException {
 
-    boolean intercept(HttpRequest request, HttpContext context);
+    public NotFoundException(String path) {
+        super(404, String.format("The resource [%1$s] does not exist.", path));
+    }
 }

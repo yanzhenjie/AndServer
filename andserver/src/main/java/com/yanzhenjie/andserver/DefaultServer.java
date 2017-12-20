@@ -15,60 +15,62 @@
  */
 package com.yanzhenjie.andserver;
 
+import com.yanzhenjie.andserver.exception.resolver.ExceptionResolver;
+import com.yanzhenjie.andserver.interceptor.Interceptor;
+import com.yanzhenjie.andserver.ssl.SSLSocketInitializer;
 import com.yanzhenjie.andserver.website.WebSite;
 
+import java.net.InetAddress;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLContext;
 
 /**
- * <p>Server CoreThread. Mainly is to establish the service side, distribute the requests.</p>
+ * <p>
+ * Server Core. Mainly is to establish the service side, distribute the requests.
+ * </p>
  * Created by Yan Zhenjie on 2016/6/13.
  */
 class DefaultServer implements Server {
 
-    /**
-     * Socket mPort.
-     */
-    private final int mPort;
-
-    /**
-     * Timeout.
-     */
-    private final int mTimeout;
-
-    /**
-     * Intercept list.
-     */
-    private final Map<String, RequestHandler> mHandlerMap;
-
-    /**
-     * Website.
-     */
-    private final WebSite mWebSite;
-
-    /**
-     * Server listener.
-     */
-    private Server.Listener mListener;
+    static Builder newBuilder() {
+        return new Builder();
+    }
 
     /**
      * Core Thread.
      */
-    private CoreThread mCore;
+    private Core mCore;
 
-    DefaultServer(int port, int timeout, Map<String, RequestHandler> handlerMap, WebSite webSite, Server.Listener listener) {
-        this.mPort = port;
-        this.mTimeout = timeout;
-        this.mHandlerMap = handlerMap;
-        this.mWebSite = webSite;
-        this.mListener = listener;
+    private DefaultServer(Builder builder) {
+        mCore = Core.newBuilder()
+                .setInetAddress(builder.mInetAddress)
+                .setPort(builder.mPort)
+                .setTimeout(builder.mTimeout)
+                .setSSLContext(builder.mSSLContext)
+                .setSSLSocketInitializer(builder.mSSLSocketInitializer)
+                .setInterceptor(builder.mInterceptor)
+                .setExceptionResolver(builder.mExceptionResolver)
+                .setRequestHandlerMap(builder.mRequestHandlerMap)
+                .setWebsite(builder.mWebSite)
+                .setStartupListener(builder.mListener)
+                .build();
     }
 
     @Override
     public void start() {
         if (!isRunning()) {
-            mCore = new CoreThread(mPort, mTimeout, mHandlerMap, mWebSite, mListener);
             mCore.start();
         }
+    }
+
+    @Override
+    public InetAddress getInetAddress() {
+        if (isRunning())
+            return mCore.getInetAddress();
+        return null;
     }
 
     @Override
@@ -80,5 +82,89 @@ class DefaultServer implements Server {
     @Override
     public boolean isRunning() {
         return mCore != null && mCore.isRunning();
+    }
+
+    private static final class Builder implements Server.Builder {
+
+        private InetAddress mInetAddress;
+        private int mPort;
+        private int mTimeout;
+        private SSLContext mSSLContext;
+        private SSLSocketInitializer mSSLSocketInitializer;
+        private Interceptor mInterceptor;
+        private ExceptionResolver mExceptionResolver;
+        private Map<String, RequestHandler> mRequestHandlerMap;
+        private WebSite mWebSite;
+        private Server.Listener mListener;
+
+        private Builder() {
+            this.mRequestHandlerMap = new LinkedHashMap<>();
+        }
+
+        @Override
+        public Server.Builder inetAddress(InetAddress inetAddress) {
+            this.mInetAddress = inetAddress;
+            return this;
+        }
+
+        @Override
+        public Server.Builder port(int port) {
+            this.mPort = port;
+            return this;
+        }
+
+        @Override
+        public Server.Builder timeout(int timeout, TimeUnit timeUnit) {
+            long timeoutMs = timeUnit.toMillis(timeout);
+            this.mTimeout = (int) Math.min(timeoutMs, Integer.MAX_VALUE);
+            return this;
+        }
+
+        @Override
+        public Server.Builder sslContext(SSLContext sslContext) {
+            this.mSSLContext = sslContext;
+            return this;
+        }
+
+        @Override
+        public Server.Builder sslSocketInitializer(SSLSocketInitializer initializer) {
+            this.mSSLSocketInitializer = initializer;
+            return this;
+        }
+
+        @Override
+        public Server.Builder interceptor(Interceptor interceptor) {
+            this.mInterceptor = interceptor;
+            return this;
+        }
+
+        @Override
+        public Server.Builder exceptionResolver(ExceptionResolver resolver) {
+            this.mExceptionResolver = resolver;
+            return this;
+        }
+
+        @Override
+        public Server.Builder registerHandler(String path, RequestHandler handler) {
+            this.mRequestHandlerMap.put(path, handler);
+            return this;
+        }
+
+        @Override
+        public Server.Builder website(WebSite webSite) {
+            this.mWebSite = webSite;
+            return this;
+        }
+
+        @Override
+        public Server.Builder listener(Listener listener) {
+            this.mListener = listener;
+            return this;
+        }
+
+        @Override
+        public Server build() {
+            return new DefaultServer(this);
+        }
     }
 }

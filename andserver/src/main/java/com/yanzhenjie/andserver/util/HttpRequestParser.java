@@ -16,12 +16,15 @@
 package com.yanzhenjie.andserver.util;
 
 import android.text.TextUtils;
-import android.webkit.MimeTypeMap;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpRequest;
-import org.apache.http.util.EntityUtils;
+import com.yanzhenjie.andserver.RequestMethod;
+import com.yanzhenjie.andserver.upload.HttpUploadContext;
+
+import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.httpcore.HttpEntity;
+import org.apache.httpcore.HttpEntityEnclosingRequest;
+import org.apache.httpcore.HttpRequest;
+import org.apache.httpcore.util.EntityUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,7 +33,9 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * <p>Parsing {@link HttpRequest}.</p>
+ * <p>
+ * Parsing {@link HttpRequest}.
+ * </p>
  * Created by Yan Zhenjie on 2016/6/13.
  */
 public class HttpRequestParser {
@@ -42,8 +47,8 @@ public class HttpRequestParser {
      * @return parameter key-value pairs.
      * @throws IOException if it is a POST request IO exception might occur when get the data.
      */
-    public static Map<String, String> parse(HttpRequest request) throws IOException {
-        return parse(request, false);
+    public static Map<String, String> parseParams(HttpRequest request) throws IOException {
+        return parseParams(request, false);
     }
 
     /**
@@ -54,7 +59,7 @@ public class HttpRequestParser {
      * @return parameter key-value pairs.
      * @throws IOException if it is a POST request IO exception might occur when get the data.
      */
-    public static Map<String, String> parse(HttpRequest request, boolean lowerCaseNames) throws IOException {
+    public static Map<String, String> parseParams(HttpRequest request, boolean lowerCaseNames) throws IOException {
         String content = getContent(request);
         return splitHttpParams(content, lowerCaseNames);
     }
@@ -83,94 +88,73 @@ public class HttpRequestParser {
     }
 
     /**
-     * The access request body.
-     *
-     * @param request {@link HttpRequest}.
-     * @return string raw.
-     * @throws IOException if it is a POST request IO exception might occur when get the data.
+     * Obtain the contents of the Request.
      */
     public static String getContent(HttpRequest request) throws IOException {
-        if (isGetMethod(request)) {
-            return getContentForGet(request);
-        } else if (isPostMethod(request)) {
-            return getContentForPost(request);
+        if (isAllowRequestBody(request)) {
+            return getContentFromBody(request);
+        } else {
+            return getContentFromUri(request);
         }
-        return "";
     }
 
     /**
-     * Get data from a {@code PostRequest}.
-     *
-     * @param request {@link HttpRequest}.
-     * @return all the parameters in the request body, such as: name=yanzhenjie&sex = 1.
-     * @throws IOException data read from the stream of time may be abnormal.
+     * Obtain the contents of the RequestBody.
      */
-    public static String getContentForPost(HttpRequest request) throws IOException {
+    public static String getContentFromBody(HttpRequest request) throws IOException {
         HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
         String charset = parseHeadValue(entity.getContentType().getValue(), "charset", "utf-8");
         return EntityUtils.toString(entity, charset);
     }
 
     /**
-     * Get data from a {@code GetRequest}.
-     *
-     * @param request {@link HttpRequest}.
-     * @return url behind all the parameters, such as: name=yanzhenjie&sex = 1.
+     * Obtain the parameters from the URI path.
      */
-    public static String getContentForGet(HttpRequest request) {
+    public static String getContentFromUri(HttpRequest request) {
         String uri = request.getRequestLine().getUri();
         int index = uri.indexOf('?');
         return (index == -1) || (index + 1 >= uri.length()) ? "" : uri.substring(index + 1);
     }
 
     /**
-     * If a GET request.
-     *
-     * @param request {@link HttpRequest}.
-     * @return returns true, not return false.
+     * Obtain the path of the current request.
      */
-    public static boolean isGetMethod(HttpRequest request) {
-        String method = request.getRequestLine().getMethod();
-        return "GET".equalsIgnoreCase(method);
-    }
-
-    /**
-     * If a POST request.
-     *
-     * @param request {@link HttpRequest}.
-     * @return returns true, not return false.
-     */
-    public static boolean isPostMethod(HttpRequest request) {
-        String method = request.getRequestLine().getMethod();
-        return "POST".equalsIgnoreCase(method);
-    }
-
-    /**
-     * If a POST request.
-     *
-     * @param request {@link HttpRequest}.
-     * @return returns true, not return false.
-     * @deprecated use {@link #isPostMethod(HttpRequest)} instead.
-     */
-    @Deprecated
-    public static boolean isPosterMethod(HttpRequest request) {
-        String method = request.getRequestLine().getMethod();
-        return "POST".equalsIgnoreCase(method);
-    }
-
-    /**
-     * Get file {@code ContentType}.
-     *
-     * @param fileName file name.
-     * @return get contentType based on file name, if not {@code application/octet-stream}.
-     */
-    public static String getMimeType(String fileName) {
-        String mimeType = "application/octet-stream";
-        if (!TextUtils.isEmpty(fileName)) {
-            String extension = MimeTypeMap.getFileExtensionFromUrl(fileName);
-            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+    public static String getRequestPath(HttpRequest request) {
+        String uriPath = request.getRequestLine().getUri();
+        int index = uriPath.indexOf("?");
+        if (index != -1) {
+            uriPath = uriPath.substring(0, index);
+        } else {
+            index = uriPath.indexOf("#");
+            if (index != -1) {
+                uriPath = uriPath.substring(0, index);
+            }
         }
-        return mimeType;
+        return uriPath;
+    }
+
+    /**
+     * Is this a request that allows a body?
+     */
+    public static boolean isAllowRequestBody(HttpRequest request) {
+        return getRequestMethod(request).allowRequestBody();
+    }
+
+    /**
+     * Get the RequestMethod of Request.
+     */
+    public static RequestMethod getRequestMethod(HttpRequest request) {
+        String method = request.getRequestLine().getMethod();
+        return RequestMethod.reverse(method);
+    }
+
+    /**
+     * Whether to allow the RequestBody with the request.
+     */
+    public static boolean isMultipartContentRequest(HttpRequest request) {
+        if (!(request instanceof HttpEntityEnclosingRequest)) return false;
+        HttpEntityEnclosingRequest enclosingRequest = (HttpEntityEnclosingRequest) request;
+        return isAllowRequestBody(request) && FileUploadBase.isMultipartContent(new HttpUploadContext(enclosingRequest));
     }
 
     /**

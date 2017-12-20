@@ -15,58 +15,88 @@
  */
 package com.yanzhenjie.andserver.website;
 
-import android.text.TextUtils;
+import com.yanzhenjie.andserver.View;
+import com.yanzhenjie.andserver.exception.NotFoundException;
 
-import com.yanzhenjie.andserver.RequestHandler;
-import com.yanzhenjie.andserver.handler.StorageRequestHandler;
-import com.yanzhenjie.andserver.util.StorageWrapper;
+import org.apache.httpcore.HttpEntity;
+import org.apache.httpcore.HttpException;
+import org.apache.httpcore.HttpRequest;
+import org.apache.httpcore.entity.ContentType;
+import org.apache.httpcore.entity.FileEntity;
+import org.apache.httpcore.protocol.HttpContext;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.nio.charset.Charset;
+
+import static com.yanzhenjie.andserver.util.FileUtils.getMimeType;
+import static com.yanzhenjie.andserver.util.HttpRequestParser.getRequestPath;
 
 /**
- * <p>The web site in storage.</p>
+ * <p>
+ * The web site in storage.
+ * </p>
  * Created by Yan Zhenjie on 2017/3/15.
  */
+public class StorageWebsite extends SimpleWebsite {
 
-public class StorageWebsite extends BasicWebsite {
+    private final String mRootPath;
 
-    /**
-     * StorageWrapper.
-     */
-    private StorageWrapper mStorageWrapper;
-
-    /**
-     * Site root directory.
-     */
-    private String mRootPath;
-
-    /**
-     * Storage Website.
-     *
-     * @param rootPath site root directory in assets, such as: {@code "/storage/sdcard/google/website"}.
-     */
     public StorageWebsite(String rootPath) {
-        super(rootPath);
-        if (TextUtils.isEmpty(rootPath)) throw new NullPointerException("The RootPath can not be null.");
-        this.mRootPath = trimSlash(rootPath);
-        mStorageWrapper = new StorageWrapper();
+        mRootPath = rootPath;
     }
 
     @Override
-    public void onRegister(Map<String, RequestHandler> handlerMap) {
-        RequestHandler indexHandler = new StorageRequestHandler(INDEX_HTML);
-        handlerMap.put("", indexHandler);
-        handlerMap.put(mRootPath, indexHandler);
-        handlerMap.put(mRootPath + File.separator, indexHandler);
-        handlerMap.put(mRootPath + File.separator + INDEX_HTML, indexHandler);
-
-        List<String> pathList = mStorageWrapper.scanFile(getHttpPath(mRootPath));
-        for (String path : pathList) {
-            RequestHandler requestHandler = new StorageRequestHandler(path);
-            handlerMap.put(path, requestHandler);
+    public boolean intercept(HttpRequest request, HttpContext context) {
+        String path = trimEndSlash(getRequestPath(request));
+        if ("/".equals(path)) {
+            File indexFile = new File(mRootPath, INDEX_FILE_PATH);
+            return indexFile.exists() && indexFile.isFile();
         }
+        File file = new File(mRootPath, path);
+        if (file.exists()) {
+            if (file.isFile()) {
+                return true;
+            } else {
+                File childIndex = new File(file, INDEX_FILE_PATH);
+                return childIndex.exists() && childIndex.isFile();
+            }
+        }
+        return false;
     }
 
+    @Override
+    public View handle(HttpRequest request) throws HttpException, IOException {
+        String httpPath = trimEndSlash(getRequestPath(request));
+        if ("/".equals(httpPath)) {
+            File indexFile = new File(mRootPath, INDEX_FILE_PATH);
+            if (indexFile.exists() && indexFile.isFile()) {
+                String mimeType = getMimeType(indexFile.getAbsolutePath());
+                HttpEntity httpEntity = new FileEntity(indexFile, ContentType.create(mimeType, Charset.defaultCharset()));
+                return new View(200, httpEntity);
+            } else {
+                throw new NotFoundException(httpPath);
+            }
+        }
+
+        File targetSource = new File(mRootPath, httpPath);
+        if (targetSource.exists()) {
+            if (targetSource.isFile()) {
+                String mimeType = getMimeType(targetSource.getAbsolutePath());
+                HttpEntity httpEntity = new FileEntity(targetSource, ContentType.create(mimeType, Charset.defaultCharset()));
+                return new View(200, httpEntity);
+            } else {
+                File childIndex = new File(targetSource, INDEX_FILE_PATH);
+                if (childIndex.exists() && childIndex.isFile()) {
+                    String mimeType = getMimeType(childIndex.getAbsolutePath());
+                    HttpEntity httpEntity = new FileEntity(childIndex, ContentType.create(mimeType, Charset.defaultCharset()));
+                    return new View(200, httpEntity);
+                } else {
+                    throw new NotFoundException(httpPath);
+                }
+            }
+        } else {
+            throw new NotFoundException(httpPath);
+        }
+    }
 }

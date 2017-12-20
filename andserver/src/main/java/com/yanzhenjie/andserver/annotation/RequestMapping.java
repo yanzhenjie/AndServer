@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.website;
+package com.yanzhenjie.andserver.annotation;
 
-import com.yanzhenjie.andserver.RequestHandler;
+import com.yanzhenjie.andserver.RequestMethod;
 
-import org.apache.httpcore.HttpRequest;
-import org.apache.httpcore.protocol.HttpContext;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * <p>
- * Registration website interface.
- * </p>
- * Created by Yan Zhenjie on 2017/3/15.
+ * Created by YanZhenjie on 2017/12/19.
  */
-public interface WebSite extends RequestHandler {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface RequestMapping {
 
-    boolean intercept(HttpRequest request, HttpContext context);
+    RequestMethod[] method() default {};
 }

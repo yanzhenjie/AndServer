@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.website;
-
-import com.yanzhenjie.andserver.RequestHandler;
+package com.yanzhenjie.andserver.interceptor;
 
 import org.apache.httpcore.HttpRequest;
+import org.apache.httpcore.HttpResponse;
 import org.apache.httpcore.protocol.HttpContext;
 
 /**
- * <p>
- * Registration website interface.
- * </p>
- * Created by Yan Zhenjie on 2017/3/15.
+ * Created by YanZhenjie on 2017/12/19.
  */
-public interface WebSite extends RequestHandler {
+public interface Interceptor {
 
-    boolean intercept(HttpRequest request, HttpContext context);
+    boolean onBeforeExecute(HttpRequest request, HttpResponse response, HttpContext context);
+
+    void onAfterExecute(HttpRequest request, HttpResponse response, HttpContext context);
+
 }

@@ -23,19 +23,23 @@ import org.apache.httpcore.protocol.HttpContext;
 import java.io.IOException;
 
 /**
- * <p>Dealing with the client's request.</p>
- * Created by Yan Zhenjie on 2016/6/13.
+ * Created by YanZhenjie on 2017/12/20.
  */
-public interface RequestHandler {
+public class SimpleRequestHandler implements RequestHandler {
 
-    /**
-     * When is the client request is triggered.
-     *
-     * @param request  {@link HttpRequest}.
-     * @param response {@link HttpResponse}.
-     * @param context  {@link HttpContext}.
-     * @throws HttpException may be.
-     * @throws IOException   read data.
-     */
-    void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException;
+    @Override
+    public final void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
+        View view = handle(request, response);
+        response.setStatusCode(view.getHttpCode());
+        response.setEntity(view.getHttpEntity());
+        response.setHeaders(view.getHeaders());
+    }
+
+    protected View handle(HttpRequest request, HttpResponse response) throws HttpException, IOException {
+        return handle(request);
+    }
+
+    protected View handle(HttpRequest request) throws HttpException, IOException {
+        return new View(200);
+    }
 }

@@ -19,17 +19,17 @@ import android.content.res.AssetManager;
 import android.text.TextUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
- * <p>AssetManager wrapper.</p>
+ * <p>
+ * AssetManager wrapper.
+ * </p>
  * Created by Yan Zhenjie on 2017/3/15.
  */
-
-public class AssetsWrapper {
+public class AssetsReader {
 
     /**
      * {@link AssetManager}.
@@ -37,11 +37,11 @@ public class AssetsWrapper {
     private AssetManager mAssetManager;
 
     /**
-     * Create {@link AssetsWrapper}.
+     * Create {@link AssetsReader}.
      *
      * @param assetManager {@link AssetManager}, such as: context.getAssets();
      */
-    public AssetsWrapper(AssetManager assetManager) {
+    public AssetsReader(AssetManager assetManager) {
         this.mAssetManager = assetManager;
     }
 
@@ -90,9 +90,10 @@ public class AssetsWrapper {
      * @return under inPath absolute path.
      */
     public List<String> scanFile(String inPath) {
-        List<String> pathList = new ArrayList<>(2);
-        if (isFile(inPath)) pathList.add(inPath);
-        else {
+        List<String> pathList = new LinkedList<>();
+        if (isFile(inPath)) {
+            pathList.add(inPath);
+        } else {
             String[] files = fileList(inPath);
             if (files != null && files.length > 0) {
                 for (String file : files) {

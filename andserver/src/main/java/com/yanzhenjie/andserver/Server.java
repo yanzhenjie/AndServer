@@ -15,6 +15,16 @@
  */
 package com.yanzhenjie.andserver;
 
+import com.yanzhenjie.andserver.exception.resolver.ExceptionResolver;
+import com.yanzhenjie.andserver.interceptor.Interceptor;
+import com.yanzhenjie.andserver.ssl.SSLSocketInitializer;
+import com.yanzhenjie.andserver.website.WebSite;
+
+import java.net.InetAddress;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLContext;
+
 /**
  * <p>The control of the server.</p>
  * Created by Yan Zhenjie on 2016/6/13.
@@ -25,6 +35,11 @@ public interface Server {
      * Start server.
      */
     void start();
+
+    /**
+     * Get the network address.
+     */
+    InetAddress getInetAddress();
 
     /**
      * Stop server.
@@ -38,24 +53,31 @@ public interface Server {
      */
     boolean isRunning();
 
-    interface Listener {
+    interface Builder {
 
-        /**
-         * The server is started.
-         */
-        void onStarted();
+        Builder inetAddress(InetAddress inetAddress);
 
-        /**
-         * The server is stopped.
-         */
-        void onStopped();
+        Builder port(int port);
 
-        /**
-         * An error occurred.
-         *
-         * @param e error.
-         */
-        void onError(Exception e);
+        Builder timeout(int timeout, TimeUnit timeUnit);
 
+        Builder sslContext(SSLContext sslContext);
+
+        Builder sslSocketInitializer(SSLSocketInitializer initializer);
+
+        Builder interceptor(Interceptor interceptor);
+
+        Builder exceptionResolver(ExceptionResolver resolver);
+
+        Builder registerHandler(String path, RequestHandler handler);
+
+        Builder website(WebSite webSite);
+
+        Builder listener(Listener listener);
+
+        Server build();
+    }
+
+    interface Listener extends Core.StartupListener {
     }
 }

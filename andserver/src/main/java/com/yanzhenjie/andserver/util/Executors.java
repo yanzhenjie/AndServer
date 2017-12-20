@@ -18,13 +18,17 @@ package com.yanzhenjie.andserver.util;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
- * <p>Thread executor.</p>
+ * <p>
+ * Thread executor.
+ * </p>
  * Created by Yan Zhenjie on 2016/6/13.
  */
-public class Executors {
+public final class Executors {
 
     private static Executors instance;
 
@@ -59,19 +63,36 @@ public class Executors {
 
     /**
      * Execute a runnable.
-     *
-     * @param command {@link Runnable}.
      */
-    public void executorService(Runnable command) {
-        mService.execute(command);
+    public void execute(Runnable runnable) {
+        mService.execute(runnable);
     }
 
     /**
-     * Execute a runnable.
-     *
-     * @param command {@link Runnable}.
+     * Submit a runnable.
      */
-    public void handler(Runnable command) {
+    public Future<?> submit(Runnable runnable) {
+        return mService.submit(runnable);
+    }
+
+    /**
+     * Submit a runnable.
+     */
+    public <T> Future<T> submit(Runnable runnable, T result) {
+        return mService.submit(runnable, result);
+    }
+
+    /**
+     * Submit a callable.
+     */
+    public <T> Future<T> submit(Callable<T> callable) {
+        return mService.submit(callable);
+    }
+
+    /**
+     * Post a runnable.
+     */
+    public void post(Runnable command) {
         mHandler.post(command);
     }
 }
