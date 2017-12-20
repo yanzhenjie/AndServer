@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.sample.response;
+package com.yanzhenjie.andserver.sample.handler;
 
 import android.os.Environment;
 
 import com.yanzhenjie.andserver.RequestHandler;
+import com.yanzhenjie.andserver.RequestMethod;
+import com.yanzhenjie.andserver.annotation.RequestMapping;
 import com.yanzhenjie.andserver.upload.HttpFileUpload;
 import com.yanzhenjie.andserver.upload.HttpUploadContext;
+import com.yanzhenjie.andserver.util.HttpRequestParser;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.apache.http.HttpEntityEnclosingRequest;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.protocol.HttpContext;
+import org.apache.httpcore.HttpEntityEnclosingRequest;
+import org.apache.httpcore.HttpException;
+import org.apache.httpcore.HttpRequest;
+import org.apache.httpcore.HttpResponse;
+import org.apache.httpcore.entity.StringEntity;
+import org.apache.httpcore.protocol.HttpContext;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,16 +42,14 @@ import java.util.List;
  * <p>Upload file handler.</p>
  * Created by Yan Zhenjie on 2016/6/13.
  */
-public class RequestUploadHandler implements RequestHandler {
+public class UploadHandler implements RequestHandler {
 
+    @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT})
     @Override
     public void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
-        // HttpFileUpload.isMultipartContent(request) // DELETE、PUT、POST method。
-
-        if (!HttpFileUpload.isMultipartContentWithPost(request)) { // Is POST and upload.
+        if (!HttpRequestParser.isMultipartContentRequest(request)) { // Is POST and upload.
             response(403, "You must upload file.", response);
         } else {
-            // File save directory.
             final File saveDirectory = Environment.getExternalStorageDirectory();
 
             if (saveDirectory.isDirectory()) {
@@ -56,7 +57,6 @@ public class RequestUploadHandler implements RequestHandler {
                     processFileUpload(request, saveDirectory);
                     response(200, "Ok.", response);
                 } catch (Exception e) {
-                    e.printStackTrace();
                     response(500, "Save the file when the error occurs.", response);
                 }
             } else {

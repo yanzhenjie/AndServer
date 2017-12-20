@@ -16,34 +16,29 @@
 package com.yanzhenjie.andserver.sample;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yanzhenjie.loading.dialog.LoadingDialog;
-import com.yanzhenjie.nohttp.tools.NetUtil;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Yan Zhenjie on 2016/6/13.
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Intent mService;
-    /**
-     * Accept and server status.
-     */
-    private ServerStatusReceiver mReceiver;
-
-    /**
-     * Show message
-     */
+    private ServerManager mServerManager;
     private TextView mTvMessage;
 
     private LoadingDialog mDialog;
+    private List<String> mAddressList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,19 +49,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         findViewById(R.id.btn_start).setOnClickListener(this);
         findViewById(R.id.btn_stop).setOnClickListener(this);
+        findViewById(R.id.btn_browse).setOnClickListener(this);
 
         mTvMessage = (TextView) findViewById(R.id.tv_message);
 
         // AndServer run in the service.
-        mService = new Intent(this, CoreService.class);
-        mReceiver = new ServerStatusReceiver(this);
-        mReceiver.register();
+        mServerManager = new ServerManager(this);
+        mServerManager.register();
+
+        // startServer;
+        findViewById(R.id.btn_start).performClick();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mReceiver.unRegister();
+        mServerManager.unRegister();
     }
 
     @Override
@@ -75,11 +73,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (id) {
             case R.id.btn_start: {
                 showDialog();
-                startService(mService);
+                mServerManager.startService();
                 break;
             }
             case R.id.btn_stop: {
-                stopService(mService);
+                mServerManager.stopService();
+                break;
+            }
+            case R.id.btn_browse: {
+                if (mAddressList != null) {
+                    String address = mAddressList.get(1);
+                    Intent intent = new Intent();
+                    intent.setAction("android.intent.action.VIEW");
+                    Uri content_url = Uri.parse(address);
+                    intent.setData(content_url);
+                    startActivity(intent);
+                }
+                break;
             }
         }
     }
@@ -87,29 +97,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Start notify.
      */
-    public void serverStart() {
+    public void serverStart(String ip) {
         closeDialog();
-        String message = getString(R.string.server_start_succeed);
-
-        String ip = NetUtil.getLocalIPAddress();
         if (!TextUtils.isEmpty(ip)) {
-            message += ("\nhttp://" + ip + ":8080/\n"
-                    + "http://" + ip + ":8080/login\n"
-                    + "http://" + ip + ":8080/upload\n"
-                    + "http://" + ip + ":8080/web/index.html\n"
-                    + "http://" + ip + ":8080/web/error.html\n"
-                    + "http://" + ip + ":8080/web/login.html\n"
-                    + "http://" + ip + ":8080/web/image/image.jpg");
+            mAddressList = new LinkedList<>();
+            mAddressList.add(getString(R.string.server_start_succeed));
+            mAddressList.add("http://" + ip + ":8080/");
+            mAddressList.add("http://" + ip + ":8080/login.html");
+            mAddressList.add("http://" + ip + ":8080/error.html");
+            mAddressList.add("http://" + ip + ":8080/image");
+            mAddressList.add("http://" + ip + ":8080/download");
+            mAddressList.add("http://" + ip + ":8080/upload");
         }
+        mTvMessage.setText(TextUtils.join(",\n", mAddressList));
+    }
+
+    /**
+     * Error notify.
+     */
+    public void serverError(String message) {
+        closeDialog();
         mTvMessage.setText(message);
     }
 
     /**
      * Started notify.
      */
-    public void serverHasStarted() {
-        closeDialog();
-        Toast.makeText(this, R.string.server_started, Toast.LENGTH_SHORT).show();
+    public void serverHasStarted(String ip) {
+        serverStart(ip);
     }
 
     /**
@@ -117,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     public void serverStop() {
         closeDialog();
+        mAddressList = null;
         mTvMessage.setText(R.string.server_stop_succeed);
     }
 
@@ -129,6 +145,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void closeDialog() {
         if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
     }
-
 
 }

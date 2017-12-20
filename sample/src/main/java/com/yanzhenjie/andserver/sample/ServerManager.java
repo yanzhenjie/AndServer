@@ -8,23 +8,34 @@ import android.content.IntentFilter;
 /**
  * Created by Yan Zhenjie on 2017/3/17.
  */
-public class ServerStatusReceiver extends BroadcastReceiver {
+public class ServerManager extends BroadcastReceiver {
 
     private static final String ACTION = "com.yanzhenjie.andserver.receiver";
 
     private static final String CMD_KEY = "CMD_KEY";
+    private static final String MESSAGE_KEY = "MESSAGE_KEY";
 
     private static final int CMD_VALUE_START = 1;
-    private static final int CMD_VALUE_STARTED = 2;
-    private static final int CMD_VALUE_STOP = 3;
+    private static final int CMD_VALUE_ERROR = 2;
+    private static final int CMD_VALUE_STARTED = 3;
+    private static final int CMD_VALUE_STOP = 4;
 
     /**
      * Notify serverStart.
      *
      * @param context context.
      */
-    public static void serverStart(Context context) {
-        sendBroadcast(context, CMD_VALUE_START);
+    public static void serverStart(Context context, String hostAddress) {
+        sendBroadcast(context, CMD_VALUE_START, hostAddress);
+    }
+
+    /**
+     * Notify serverStop.
+     *
+     * @param context context.
+     */
+    public static void serverError(Context context, String error) {
+        sendBroadcast(context, CMD_VALUE_ERROR, error);
     }
 
     /**
@@ -32,8 +43,8 @@ public class ServerStatusReceiver extends BroadcastReceiver {
      *
      * @param context context.
      */
-    public static void serverHasStarted(Context context) {
-        sendBroadcast(context, CMD_VALUE_STARTED);
+    public static void serverHasStarted(Context context, String hostAddress) {
+        sendBroadcast(context, CMD_VALUE_STARTED, hostAddress);
     }
 
     /**
@@ -46,15 +57,22 @@ public class ServerStatusReceiver extends BroadcastReceiver {
     }
 
     private static void sendBroadcast(Context context, int cmd) {
+        sendBroadcast(context, cmd, null);
+    }
+
+    private static void sendBroadcast(Context context, int cmd, String message) {
         Intent broadcast = new Intent(ACTION);
         broadcast.putExtra(CMD_KEY, cmd);
+        broadcast.putExtra(MESSAGE_KEY, message);
         context.sendBroadcast(broadcast);
     }
 
     private MainActivity mActivity;
+    private Intent mService;
 
-    public ServerStatusReceiver(MainActivity mMainActivity) {
-        this.mActivity = mMainActivity;
+    public ServerManager(MainActivity activity) {
+        this.mActivity = activity;
+        mService = new Intent(activity, CoreService.class);
     }
 
     /**
@@ -63,6 +81,14 @@ public class ServerStatusReceiver extends BroadcastReceiver {
     public void register() {
         IntentFilter filter = new IntentFilter(ACTION);
         mActivity.registerReceiver(this, filter);
+    }
+
+    public void startService() {
+        mActivity.startService(mService);
+    }
+
+    public void stopService() {
+        mActivity.stopService(mService);
     }
 
     /**
@@ -79,11 +105,18 @@ public class ServerStatusReceiver extends BroadcastReceiver {
             int cmd = intent.getIntExtra(CMD_KEY, 0);
             switch (cmd) {
                 case CMD_VALUE_START: {
-                    mActivity.serverStart();
+                    String ip = intent.getStringExtra(MESSAGE_KEY);
+                    mActivity.serverStart(ip);
+                    break;
+                }
+                case CMD_VALUE_ERROR: {
+                    String error = intent.getStringExtra(MESSAGE_KEY);
+                    mActivity.serverError(error);
                     break;
                 }
                 case CMD_VALUE_STARTED: {
-                    mActivity.serverHasStarted();
+                    String ip = intent.getStringExtra(MESSAGE_KEY);
+                    mActivity.serverHasStarted(ip);
                     break;
                 }
                 case CMD_VALUE_STOP: {
