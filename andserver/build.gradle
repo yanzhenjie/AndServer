@@ -12,6 +12,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', includes: ['*.jar'])
+    compile rootProject.ext.dependencies.httpcore
+    compile rootProject.ext.dependencies.fileupload
 }
-
-apply from: "../maven.gradle"
