@@ -15,10 +15,10 @@
  */
 package com.yanzhenjie.andserver.website;
 
-import com.yanzhenjie.andserver.view.View;
 import com.yanzhenjie.andserver.exception.NotFoundException;
 import com.yanzhenjie.andserver.protocol.ETag;
 import com.yanzhenjie.andserver.protocol.LastModified;
+import com.yanzhenjie.andserver.view.View;
 
 import org.apache.httpcore.HttpEntity;
 import org.apache.httpcore.HttpException;
@@ -50,7 +50,8 @@ public class StorageWebsite extends SimpleWebsite implements LastModified, ETag 
 
     @Override
     public boolean intercept(HttpRequest request, HttpContext context) throws HttpException, IOException {
-        String httpPath = trimEndSlash(getRequestPath(request));
+        String httpPath = getRequestPath(request);
+        httpPath = "/".equals(httpPath) ? "/" : trimEndSlash(getRequestPath(request));
         File source = findPathSource(httpPath);
         return source != null;
     }

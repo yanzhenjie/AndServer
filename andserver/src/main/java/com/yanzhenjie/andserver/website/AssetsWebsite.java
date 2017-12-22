@@ -16,6 +16,7 @@
 package com.yanzhenjie.andserver.website;
 
 import android.content.res.AssetManager;
+import android.os.SystemClock;
 
 import com.yanzhenjie.andserver.exception.NotFoundException;
 import com.yanzhenjie.andserver.protocol.ETag;
@@ -135,7 +136,7 @@ public class AssetsWebsite extends SimpleWebsite implements LastModified, ETag {
         String filePath = mPatternMap.get(httpPath);
         InputStream source = mAssetsReader.getInputStream(filePath);
         if (source != null)
-            return 0;
+            return System.currentTimeMillis() - SystemClock.currentThreadTimeMillis();
         return -1;
     }
 
