@@ -22,6 +22,7 @@ import android.support.annotation.Nullable;
 
 import com.yanzhenjie.andserver.AndServer;
 import com.yanzhenjie.andserver.Server;
+import com.yanzhenjie.andserver.filter.HttpCacheFilter;
 import com.yanzhenjie.andserver.sample.handler.FileHandler;
 import com.yanzhenjie.andserver.sample.handler.ImageHandler;
 import com.yanzhenjie.andserver.sample.handler.LoginHandler;
@@ -48,11 +49,12 @@ public class CoreService extends Service {
                 .inetAddress(NetUtils.getLocalIPAddress()) // Bind IP address.
                 .port(8080)
                 .timeout(10, TimeUnit.SECONDS)
+                .website(new AssetsWebsite(getAssets(), "web"))
                 .registerHandler("/download", new FileHandler())
                 .registerHandler("/login", new LoginHandler())
                 .registerHandler("/upload", new UploadHandler())
                 .registerHandler("/image", new ImageHandler())
-                .website(new AssetsWebsite(getAssets(), "web"))
+                .filter(new HttpCacheFilter())
                 .listener(mListener)
                 .build();
     }
@@ -60,7 +62,7 @@ public class CoreService extends Service {
     /**
      * Server listener.
      */
-    private Server.Listener mListener = new Server.Listener() {
+    private Server.ServerListener mListener = new Server.ServerListener() {
         @Override
         public void onStarted() {
             String hostAddress = mServer.getInetAddress().getHostAddress();
@@ -99,7 +101,7 @@ public class CoreService extends Service {
                 String hostAddress = mServer.getInetAddress().getHostAddress();
                 ServerManager.serverHasStarted(CoreService.this, hostAddress);
             } else {
-                mServer.start();
+                mServer.startup();
             }
         }
     }
@@ -109,7 +111,7 @@ public class CoreService extends Service {
      */
     private void stopServer() {
         if (mServer != null && mServer.isRunning()) {
-            mServer.stop();
+            mServer.shutdown();
         }
     }
 

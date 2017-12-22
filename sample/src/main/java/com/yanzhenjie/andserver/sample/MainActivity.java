@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mAddressList.add(getString(R.string.server_start_succeed));
             mAddressList.add("http://" + ip + ":8080/");
             mAddressList.add("http://" + ip + ":8080/login.html");
-            mAddressList.add("http://" + ip + ":8080/error.html");
             mAddressList.add("http://" + ip + ":8080/image");
             mAddressList.add("http://" + ip + ":8080/download");
             mAddressList.add("http://" + ip + ":8080/upload");
