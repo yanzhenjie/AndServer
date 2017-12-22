@@ -27,6 +27,6 @@ public class AndServer {
     }
 
     public static Server.Builder serverBuilder() {
-        return DefaultServer.newBuilder();
+        return Core.newBuilder();
     }
 }

@@ -17,9 +17,11 @@ package com.yanzhenjie.andserver.website;
 
 import android.content.res.AssetManager;
 
-import com.yanzhenjie.andserver.view.View;
 import com.yanzhenjie.andserver.exception.NotFoundException;
+import com.yanzhenjie.andserver.protocol.ETag;
+import com.yanzhenjie.andserver.protocol.LastModified;
 import com.yanzhenjie.andserver.util.AssetsReader;
+import com.yanzhenjie.andserver.view.View;
 
 import org.apache.httpcore.HttpEntity;
 import org.apache.httpcore.HttpException;
@@ -44,7 +46,7 @@ import static com.yanzhenjie.andserver.util.HttpRequestParser.getRequestPath;
  * </p>
  * Created by Yan Zhenjie on 2017/3/15.
  */
-public class AssetsWebsite extends SimpleWebsite {
+public class AssetsWebsite extends SimpleWebsite implements LastModified, ETag {
 
     private final AssetsReader mAssetsReader;
     private final String mRootPath;
@@ -116,14 +118,36 @@ public class AssetsWebsite extends SimpleWebsite {
     public View handle(HttpRequest request) throws HttpException, IOException {
         String httpPath = getRequestPath(request);
         String filePath = mPatternMap.get(httpPath);
-        InputStream inputStream = mAssetsReader.getInputStream(filePath);
-        if (inputStream == null)
+        InputStream source = mAssetsReader.getInputStream(filePath);
+        if (source == null)
             throw new NotFoundException(httpPath);
 
-        int length = inputStream.available();
+        int length = source.available();
         String mimeType = getMimeType(filePath);
 
-        HttpEntity httpEntity = new InputStreamEntity(inputStream, length, ContentType.create(mimeType, Charset.defaultCharset()));
+        HttpEntity httpEntity = new InputStreamEntity(source, length, ContentType.create(mimeType, Charset.defaultCharset()));
         return new View(200, httpEntity);
+    }
+
+    @Override
+    public long getLastModified(HttpRequest request) throws IOException {
+        String httpPath = trimEndSlash(getRequestPath(request));
+        String filePath = mPatternMap.get(httpPath);
+        InputStream source = mAssetsReader.getInputStream(filePath);
+        if (source != null)
+            return 0;
+        return -1;
+    }
+
+    @Override
+    public String getETag(HttpRequest request) throws IOException {
+        String httpPath = trimEndSlash(getRequestPath(request));
+        String filePath = mPatternMap.get(httpPath);
+        InputStream source = mAssetsReader.getInputStream(filePath);
+        if (source != null) {
+            long sourceSize = source.available();
+            return sourceSize + filePath;
+        }
+        return null;
     }
 }

@@ -32,7 +32,7 @@ public interface LastModified {
      *
      * @param request current HTTP request.
      * @return the time the underlying resource was last modified,
-     * {@code <=0} meaning that the content must always be regenerated.
+     * {@code <0} meaning that the content must always be regenerated.
      */
     long getLastModified(HttpRequest request) throws HttpException, IOException;
 

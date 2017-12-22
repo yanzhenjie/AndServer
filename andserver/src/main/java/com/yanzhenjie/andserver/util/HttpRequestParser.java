@@ -179,7 +179,7 @@ public class HttpRequestParser {
                 }
             }
         }
-        return 0;
+        return -1;
     }
 
     /**

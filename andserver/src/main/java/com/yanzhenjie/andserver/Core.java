@@ -185,7 +185,7 @@ final class Core extends Thread implements Server {
         }
     }
 
-    static final class Builder implements Server.Builder {
+    private static final class Builder implements Server.Builder {
 
         private InetAddress mInetAddress;
         private int mPort;

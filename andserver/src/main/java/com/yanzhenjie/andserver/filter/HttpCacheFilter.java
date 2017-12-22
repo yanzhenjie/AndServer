@@ -90,7 +90,7 @@ public class HttpCacheFilter implements Filter {
 
         handler.handle(request, response, context);
 
-        if (isLastModified && sourceLastModified > 0) {
+        if (isLastModified && sourceLastModified >= 0) {
             response.addHeader(LAST_MODIFIED, generateLastModified(sourceLastModified));
         }
         if (isETag && sourceETag != null) {
@@ -148,11 +148,11 @@ public class HttpCacheFilter implements Filter {
      * @return true, otherwise is false.
      */
     protected boolean validateIfModifiedSince(HttpRequest request, long sourceLastModify) {
-        if (sourceLastModify <= 0) {
+        if (sourceLastModify < 0) {
             return false;
         }
         long ifModifiedSince = parseDateHeader(request, IF_MODIFIED_SINCE);
-        if (ifModifiedSince <= 0) {
+        if (ifModifiedSince < 0) {
             return false;
         }
         return ifModifiedSince >= (sourceLastModify / 1000 * 1000);
@@ -166,11 +166,11 @@ public class HttpCacheFilter implements Filter {
      * @return true, otherwise is false.
      */
     protected boolean validateIfUnmodifiedSince(HttpRequest request, long sourceLastModify) {
-        if (sourceLastModify <= 0) {
+        if (sourceLastModify < 0) {
             return false;
         }
         long ifUnmodifiedSince = parseDateHeader(request, IF_UNMODIFIED_SINCE);
-        if (ifUnmodifiedSince <= 0) {
+        if (ifUnmodifiedSince < 0) {
             return false;
         }
         return ifUnmodifiedSince < (sourceLastModify / 1000 * 1000);
