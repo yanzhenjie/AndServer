@@ -15,6 +15,8 @@
  */
 package com.yanzhenjie.andserver;
 
+import com.yanzhenjie.andserver.view.View;
+
 import org.apache.httpcore.HttpException;
 import org.apache.httpcore.HttpRequest;
 import org.apache.httpcore.HttpResponse;

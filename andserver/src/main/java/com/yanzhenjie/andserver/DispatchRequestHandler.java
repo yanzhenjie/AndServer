@@ -117,7 +117,7 @@ class DispatchRequestHandler implements HttpRequestHandler {
     /**
      * The processor that gets the current request.
      */
-    private RequestHandler getRequestHandler(HttpRequest request, HttpContext context) {
+    private RequestHandler getRequestHandler(HttpRequest request, HttpContext context) throws HttpException, IOException {
         String path = getRequestPath(request);
         if (mWebSite != null && mWebSite.intercept(request, context)) {
             return mWebSite;

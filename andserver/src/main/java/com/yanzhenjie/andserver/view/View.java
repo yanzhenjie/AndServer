@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver;
+package com.yanzhenjie.andserver.view;
 
 import org.apache.httpcore.Header;
 import org.apache.httpcore.HttpEntity;

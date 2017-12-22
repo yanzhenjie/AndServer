@@ -17,7 +17,7 @@ package com.yanzhenjie.andserver.website;
 
 import android.content.res.AssetManager;
 
-import com.yanzhenjie.andserver.View;
+import com.yanzhenjie.andserver.view.View;
 import com.yanzhenjie.andserver.exception.NotFoundException;
 import com.yanzhenjie.andserver.util.AssetsReader;
 

@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver.website;
 
-import com.yanzhenjie.andserver.View;
+import com.yanzhenjie.andserver.view.View;
 import com.yanzhenjie.andserver.exception.NotFoundException;
 import com.yanzhenjie.andserver.protocol.ETag;
 import com.yanzhenjie.andserver.protocol.LastModified;

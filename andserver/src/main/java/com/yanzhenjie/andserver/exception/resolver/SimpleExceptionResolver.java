@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver.exception.resolver;
 
-import com.yanzhenjie.andserver.View;
+import com.yanzhenjie.andserver.view.View;
 import com.yanzhenjie.andserver.exception.BaseException;
 
 import org.apache.httpcore.HttpEntity;
