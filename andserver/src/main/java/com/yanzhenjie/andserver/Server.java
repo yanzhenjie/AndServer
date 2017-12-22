@@ -16,6 +16,7 @@
 package com.yanzhenjie.andserver;
 
 import com.yanzhenjie.andserver.exception.resolver.ExceptionResolver;
+import com.yanzhenjie.andserver.filter.Filter;
 import com.yanzhenjie.andserver.interceptor.Interceptor;
 import com.yanzhenjie.andserver.ssl.SSLSocketInitializer;
 import com.yanzhenjie.andserver.website.WebSite;
@@ -32,9 +33,16 @@ import javax.net.ssl.SSLContext;
 public interface Server {
 
     /**
-     * Start server.
+     * Server running status.
+     *
+     * @return return true, not return false.
      */
-    void start();
+    boolean isRunning();
+
+    /**
+     * Start the server.
+     */
+    void startup();
 
     /**
      * Get the network address.
@@ -42,42 +50,87 @@ public interface Server {
     InetAddress getInetAddress();
 
     /**
-     * Stop server.
+     * Quit the server.
      */
-    void stop();
-
-    /**
-     * Is the server running?
-     *
-     * @return return true, not return false.
-     */
-    boolean isRunning();
+    void shutdown();
 
     interface Builder {
 
+        /**
+         * Specified server need to monitor the ip address.
+         */
         Builder inetAddress(InetAddress inetAddress);
 
+        /**
+         * Specify the port on which the server listens.
+         */
         Builder port(int port);
 
+        /**
+         * Connection and response timeout.
+         */
         Builder timeout(int timeout, TimeUnit timeUnit);
 
+        /**
+         * Setting up the server is based on the SSL protocol.
+         */
         Builder sslContext(SSLContext sslContext);
 
+        /**
+         * Set SSLServerSocket's initializer.
+         */
         Builder sslSocketInitializer(SSLSocketInitializer initializer);
 
+        /**
+         * Set request/response pair interceptor.
+         */
         Builder interceptor(Interceptor interceptor);
 
-        Builder exceptionResolver(ExceptionResolver resolver);
-
-        Builder registerHandler(String path, RequestHandler handler);
-
+        /**
+         * Set up a website.
+         */
         Builder website(WebSite webSite);
 
-        Builder listener(Listener listener);
+        /**
+         * Register a {@link RequestHandler} for a path.
+         */
+        Builder registerHandler(String path, RequestHandler handler);
 
+        /**
+         * Set Handler's filter.
+         */
+        Builder filter(Filter filter);
+
+        /**
+         * Set the exception resolver in the request/response process.
+         */
+        Builder exceptionResolver(ExceptionResolver resolver);
+
+        /**
+         * Set the server listener.
+         */
+        Builder listener(ServerListener listener);
+
+        /**
+         * Create a server.
+         */
         Server build();
     }
 
-    interface Listener extends Core.StartupListener {
+    interface ServerListener {
+        /**
+         * When the server is started.
+         */
+        void onStarted();
+
+        /**
+         * When the server stops running.
+         */
+        void onStopped();
+
+        /**
+         * An error occurred while starting the server.
+         */
+        void onError(Exception e);
     }
 }

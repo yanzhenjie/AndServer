@@ -47,10 +47,9 @@ class DispatchRequestHandler implements HttpRequestHandler {
 
     private static ExceptionResolver sDefaultExceptionResolver = new SimpleExceptionResolver();
 
-    private Map<String, RequestHandler> mRequestHandlerMapper = new LinkedHashMap<>();
-
-    private WebSite mWebSite;
     private Interceptor mInterceptor;
+    private WebSite mWebSite;
+    private Map<String, RequestHandler> mRequestHandlerMapper = new LinkedHashMap<>();
     private Filter mFilter;
     private ExceptionResolver mExceptionResolver = sDefaultExceptionResolver;
 
@@ -61,20 +60,20 @@ class DispatchRequestHandler implements HttpRequestHandler {
         mInterceptor = interceptor;
     }
 
-    void setFilter(Filter filter) {
-        this.mFilter = filter;
-    }
-
-    void setExceptionResolver(ExceptionResolver exceptionResolver) {
-        mExceptionResolver = exceptionResolver;
-    }
-
     void setWebSite(WebSite webSite) {
         this.mWebSite = webSite;
     }
 
     void registerRequestHandler(String path, RequestHandler handler) {
         mRequestHandlerMapper.put(path, handler);
+    }
+
+    void setFilter(Filter filter) {
+        this.mFilter = filter;
+    }
+
+    void setExceptionResolver(ExceptionResolver exceptionResolver) {
+        mExceptionResolver = exceptionResolver;
     }
 
     @Override

@@ -16,6 +16,7 @@
 package com.yanzhenjie.andserver;
 
 import com.yanzhenjie.andserver.exception.resolver.ExceptionResolver;
+import com.yanzhenjie.andserver.filter.Filter;
 import com.yanzhenjie.andserver.interceptor.Interceptor;
 import com.yanzhenjie.andserver.ssl.SSLSocketInitializer;
 import com.yanzhenjie.andserver.util.Executors;
@@ -29,6 +30,7 @@ import org.apache.httpcore.impl.bootstrap.ServerBootstrap;
 
 import java.net.InetAddress;
 import java.nio.charset.Charset;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -37,7 +39,7 @@ import javax.net.ssl.SSLContext;
 /**
  * Created by Yan Zhenjie on 2017/3/13.
  */
-final class Core extends Thread {
+final class Core extends Thread implements Server {
 
     static Builder newBuilder() {
         return new Builder();
@@ -49,10 +51,11 @@ final class Core extends Thread {
     private final SSLContext mSSLContext;
     private final SSLSocketInitializer mSSLSocketInitializer;
     private final Interceptor mInterceptor;
-    private final ExceptionResolver mExceptionResolver;
-    private final Map<String, RequestHandler> mRequestHandlerMap;
     private final WebSite mWebSite;
-    private final StartupListener mListener;
+    private final Map<String, RequestHandler> mRequestHandlerMap;
+    private final Filter mFilter;
+    private final ExceptionResolver mExceptionResolver;
+    private final ServerListener mListener;
 
     private HttpServer mHttpServer;
     private boolean isRunning;
@@ -64,19 +67,62 @@ final class Core extends Thread {
         this.mSSLContext = builder.mSSLContext;
         this.mSSLSocketInitializer = builder.mSSLSocketInitializer;
         this.mInterceptor = builder.mInterceptor;
-        this.mExceptionResolver = builder.mExceptionResolver;
-        this.mRequestHandlerMap = builder.mRequestHandlerMap;
         this.mWebSite = builder.mWebSite;
+        this.mRequestHandlerMap = builder.mRequestHandlerMap;
+        this.mFilter = builder.mFilter;
+        this.mExceptionResolver = builder.mExceptionResolver;
         this.mListener = builder.mListener;
+    }
+
+    @Override
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    @Override
+    public void startup() {
+        if (!isRunning)
+            super.start();
+    }
+
+    /**
+     * The current server InetAddress.
+     */
+    @Override
+    public InetAddress getInetAddress() {
+        if (isRunning())
+            return mHttpServer.getInetAddress();
+        return null;
+    }
+
+    /**
+     * Stop core server.
+     */
+    @Override
+    public void shutdown() {
+        if (mHttpServer != null)
+            mHttpServer.shutdown(3, TimeUnit.MINUTES);
+        if (isInterrupted())
+            interrupt();
+
+        boolean running = isRunning;
+        this.isRunning = false;
+
+        if (running && mListener != null) {
+            Executors.getInstance().post(new Runnable() {
+                @Override
+                public void run() {
+                    mListener.onStopped();
+                }
+            });
+        }
     }
 
     @Override
     public void run() {
         DispatchRequestHandler handler = new DispatchRequestHandler();
         handler.setInterceptor(mInterceptor);
-        handler.setExceptionResolver(mExceptionResolver);
         handler.setWebSite(mWebSite);
-
         if (mRequestHandlerMap != null && mRequestHandlerMap.size() > 0) {
             for (Map.Entry<String, RequestHandler> handlerEntry : mRequestHandlerMap.entrySet()) {
                 String path = handlerEntry.getKey();
@@ -84,6 +130,8 @@ final class Core extends Thread {
                 handler.registerRequestHandler(path, requestHandler);
             }
         }
+        handler.setFilter(mFilter);
+        handler.setExceptionResolver(mExceptionResolver);
 
         mHttpServer = ServerBootstrap.bootstrap()
                 .setSocketConfig(
@@ -137,43 +185,7 @@ final class Core extends Thread {
         }
     }
 
-    /**
-     * The current server is running.
-     */
-    final boolean isRunning() {
-        return isRunning;
-    }
-
-    /**
-     * The current server InetAddress.
-     */
-    final InetAddress getInetAddress() {
-        if (isRunning())
-            return mHttpServer.getInetAddress();
-        return null;
-    }
-
-    /**
-     * Stop core server.
-     */
-    void shutdown() {
-        if (mHttpServer != null)
-            mHttpServer.shutdown(3, TimeUnit.MINUTES);
-        if (isInterrupted())
-            interrupt();
-        this.isRunning = false;
-
-        if (mListener != null) {
-            Executors.getInstance().post(new Runnable() {
-                @Override
-                public void run() {
-                    mListener.onStopped();
-                }
-            });
-        }
-    }
-
-    static final class Builder {
+    static final class Builder implements Server.Builder {
 
         private InetAddress mInetAddress;
         private int mPort;
@@ -181,75 +193,86 @@ final class Core extends Thread {
         private SSLContext mSSLContext;
         private SSLSocketInitializer mSSLSocketInitializer;
         private Interceptor mInterceptor;
-        private ExceptionResolver mExceptionResolver;
-        private Map<String, RequestHandler> mRequestHandlerMap;
         private WebSite mWebSite;
-        private StartupListener mListener;
+        private Map<String, RequestHandler> mRequestHandlerMap;
+        private Filter mFilter;
+        private ExceptionResolver mExceptionResolver;
+        private ServerListener mListener;
 
         private Builder() {
+            this.mRequestHandlerMap = new LinkedHashMap<>();
         }
 
-        Builder setInetAddress(InetAddress inetAddress) {
+        @Override
+        public Server.Builder inetAddress(InetAddress inetAddress) {
             this.mInetAddress = inetAddress;
             return this;
         }
 
-        Builder setPort(int port) {
+        @Override
+        public Server.Builder port(int port) {
             this.mPort = port;
             return this;
         }
 
-        Builder setTimeout(int timeout) {
-            this.mTimeout = timeout;
+        @Override
+        public Server.Builder timeout(int timeout, TimeUnit timeUnit) {
+            long timeoutMs = timeUnit.toMillis(timeout);
+            this.mTimeout = (int) Math.min(timeoutMs, Integer.MAX_VALUE);
             return this;
         }
 
-        Builder setSSLContext(SSLContext sslContext) {
+        @Override
+        public Server.Builder sslContext(SSLContext sslContext) {
             this.mSSLContext = sslContext;
             return this;
         }
 
-        Builder setSSLSocketInitializer(SSLSocketInitializer initializer) {
+        @Override
+        public Server.Builder sslSocketInitializer(SSLSocketInitializer initializer) {
             this.mSSLSocketInitializer = initializer;
             return this;
         }
 
-        Builder setInterceptor(Interceptor interceptor) {
+        @Override
+        public Server.Builder interceptor(Interceptor interceptor) {
             this.mInterceptor = interceptor;
             return this;
         }
 
-        Builder setExceptionResolver(ExceptionResolver resolver) {
+        @Override
+        public Server.Builder exceptionResolver(ExceptionResolver resolver) {
             this.mExceptionResolver = resolver;
             return this;
         }
 
-        Builder setRequestHandlerMap(Map<String, RequestHandler> requestHandlerMap) {
-            this.mRequestHandlerMap = requestHandlerMap;
+        @Override
+        public Server.Builder registerHandler(String path, RequestHandler handler) {
+            this.mRequestHandlerMap.put(path, handler);
             return this;
         }
 
-        Builder setWebsite(WebSite webSite) {
+        @Override
+        public Server.Builder filter(Filter filter) {
+            this.mFilter = filter;
+            return this;
+        }
+
+        @Override
+        public Server.Builder website(WebSite webSite) {
             this.mWebSite = webSite;
             return this;
         }
 
-        Builder setStartupListener(StartupListener listener) {
+        @Override
+        public Server.Builder listener(ServerListener listener) {
             this.mListener = listener;
             return this;
         }
 
-        Core build() {
+        @Override
+        public Server build() {
             return new Core(this);
         }
-    }
-
-    interface StartupListener {
-
-        void onStarted();
-
-        void onStopped();
-
-        void onError(Exception e);
     }
 }
