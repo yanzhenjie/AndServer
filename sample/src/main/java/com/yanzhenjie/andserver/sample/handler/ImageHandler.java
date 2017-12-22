@@ -20,7 +20,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 
 import com.yanzhenjie.andserver.SimpleRequestHandler;
-import com.yanzhenjie.andserver.View;
+import com.yanzhenjie.andserver.view.View;
 import com.yanzhenjie.andserver.sample.App;
 import com.yanzhenjie.andserver.sample.R;
 
