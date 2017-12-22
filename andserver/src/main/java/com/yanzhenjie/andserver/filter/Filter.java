@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.exception.resolver;
+package com.yanzhenjie.andserver.filter;
 
+import com.yanzhenjie.andserver.RequestHandler;
+
+import org.apache.httpcore.HttpException;
 import org.apache.httpcore.HttpRequest;
 import org.apache.httpcore.HttpResponse;
 import org.apache.httpcore.protocol.HttpContext;
 
+import java.io.IOException;
+
 /**
- * Created by YanZhenjie on 2017/12/18.
+ * Created by YanZhenjie on 2017/12/22.
  */
-public interface ExceptionResolver {
+public interface Filter {
 
     /**
-     * The exception here is thrown by {@code AndServer} or {@code RequestHandler}.
-     * Equivalent to the interception of anomalies, unified treatment of anomalies here.
+     * Each request/response pair will be called.
      */
-    void resolveException(Exception e, HttpRequest request, HttpResponse response, HttpContext context);
+    void doFilter(RequestHandler handler, HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException;
+
 }

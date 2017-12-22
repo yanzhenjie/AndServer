@@ -13,20 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.exception.resolver;
+package com.yanzhenjie.andserver.protocol;
 
+import org.apache.httpcore.HttpException;
 import org.apache.httpcore.HttpRequest;
-import org.apache.httpcore.HttpResponse;
-import org.apache.httpcore.protocol.HttpContext;
+
+import java.io.IOException;
 
 /**
- * Created by YanZhenjie on 2017/12/18.
+ * Created by YanZhenjie on 2017/12/22.
  */
-public interface ExceptionResolver {
+public interface ETag {
 
     /**
-     * The exception here is thrown by {@code AndServer} or {@code RequestHandler}.
-     * Equivalent to the interception of anomalies, unified treatment of anomalies here.
+     * Generate an {@code ETag} for the current Request.
+     *
+     * @param request current HTTP request.
+     * @return eTag value.
      */
-    void resolveException(Exception e, HttpRequest request, HttpResponse response, HttpContext context);
+    String getETag(HttpRequest request) throws HttpException, IOException;
+
 }

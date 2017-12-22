@@ -13,29 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.interceptor;
+package com.yanzhenjie.andserver.protocol;
 
 import org.apache.httpcore.HttpException;
 import org.apache.httpcore.HttpRequest;
-import org.apache.httpcore.HttpResponse;
-import org.apache.httpcore.protocol.HttpContext;
 
 import java.io.IOException;
 
 /**
- * Created by YanZhenjie on 2017/12/19.
+ * Created by YanZhenjie on 2017/12/22.
  */
-public interface Interceptor {
+public interface LastModified {
 
     /**
-     * When receiving a request, first ask if you intercept,
-     * if intercepted it will not be distributed to any {@code RequestHandler}.
+     * The return value will be sent to the HTTP client as {@code Last-Modified }header,
+     * and compared with {@code If-Modified-Since} headers that the client sends back.
+     * The content will only get regenerated if there has been a modification.
+     *
+     * @param request current HTTP request.
+     * @return the time the underlying resource was last modified,
+     * {@code <=0} meaning that the content must always be regenerated.
      */
-    boolean onBeforeExecute(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException;
-
-    /**
-     * Called after any {@code RequestHandler} response.
-     */
-    void onAfterExecute(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException;
+    long getLastModified(HttpRequest request) throws HttpException, IOException;
 
 }

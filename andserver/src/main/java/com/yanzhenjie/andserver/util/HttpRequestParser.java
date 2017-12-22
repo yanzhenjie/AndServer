@@ -21,12 +21,14 @@ import com.yanzhenjie.andserver.RequestMethod;
 import com.yanzhenjie.andserver.upload.HttpUploadContext;
 
 import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.httpcore.Header;
 import org.apache.httpcore.HttpEntity;
 import org.apache.httpcore.HttpEntityEnclosingRequest;
 import org.apache.httpcore.HttpRequest;
 import org.apache.httpcore.util.EntityUtils;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -155,6 +157,29 @@ public class HttpRequestParser {
         if (!(request instanceof HttpEntityEnclosingRequest)) return false;
         HttpEntityEnclosingRequest enclosingRequest = (HttpEntityEnclosingRequest) request;
         return isAllowRequestBody(request) && FileUploadBase.isMultipartContent(new HttpUploadContext(enclosingRequest));
+    }
+
+    /**
+     * Parse the request for the specified time header.
+     */
+    public static long parseDateHeader(HttpRequest request, String headerName) {
+        Header header = request.getFirstHeader(headerName);
+        if (header != null) {
+            String dateValue = header.getValue();
+            try {
+                return DateUtils.parseGMTToMillis(dateValue);
+            } catch (ParseException ex) {
+                int separatorIndex = dateValue.indexOf(';');
+                if (separatorIndex != -1) {
+                    String datePart = dateValue.substring(0, separatorIndex);
+                    try {
+                        return DateUtils.parseGMTToMillis(datePart);
+                    } catch (ParseException ignored) {
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
     /**

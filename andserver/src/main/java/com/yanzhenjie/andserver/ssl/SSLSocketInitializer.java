@@ -29,15 +29,15 @@ public interface SSLSocketInitializer {
 
     final class SSLSocketInitializerWrapper implements SSLServerSetupHandler {
 
-        private SSLSocketInitializer mSSLInterceptor;
+        private SSLSocketInitializer mSSLSocketInitializer;
 
-        public SSLSocketInitializerWrapper(SSLSocketInitializer SSLInterceptor) {
-            this.mSSLInterceptor = SSLInterceptor;
+        public SSLSocketInitializerWrapper(SSLSocketInitializer initializer) {
+            this.mSSLSocketInitializer = initializer;
         }
 
         public void initialize(SSLServerSocket socket) throws SSLException {
-            if (mSSLInterceptor != null) {
-                mSSLInterceptor.onCreated(socket);
+            if (mSSLSocketInitializer != null) {
+                mSSLSocketInitializer.onCreated(socket);
             }
         }
     }

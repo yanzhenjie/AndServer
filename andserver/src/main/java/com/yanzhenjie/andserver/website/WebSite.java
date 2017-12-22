@@ -17,8 +17,11 @@ package com.yanzhenjie.andserver.website;
 
 import com.yanzhenjie.andserver.RequestHandler;
 
+import org.apache.httpcore.HttpException;
 import org.apache.httpcore.HttpRequest;
 import org.apache.httpcore.protocol.HttpContext;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -28,5 +31,5 @@ import org.apache.httpcore.protocol.HttpContext;
  */
 public interface WebSite extends RequestHandler {
 
-    boolean intercept(HttpRequest request, HttpContext context);
+    boolean intercept(HttpRequest request, HttpContext context) throws HttpException, IOException;
 }

@@ -21,6 +21,7 @@ import com.yanzhenjie.andserver.exception.MethodNotSupported;
 import com.yanzhenjie.andserver.exception.NotFoundException;
 import com.yanzhenjie.andserver.exception.resolver.ExceptionResolver;
 import com.yanzhenjie.andserver.exception.resolver.SimpleExceptionResolver;
+import com.yanzhenjie.andserver.filter.Filter;
 import com.yanzhenjie.andserver.interceptor.Interceptor;
 import com.yanzhenjie.andserver.website.WebSite;
 
@@ -42,7 +43,7 @@ import static com.yanzhenjie.andserver.util.HttpRequestParser.getRequestPath;
 /**
  * Created by Yan Zhenjie on 2017/3/15.
  */
-public class DispatchRequestHandler implements HttpRequestHandler {
+class DispatchRequestHandler implements HttpRequestHandler {
 
     private static ExceptionResolver sDefaultExceptionResolver = new SimpleExceptionResolver();
 
@@ -50,24 +51,29 @@ public class DispatchRequestHandler implements HttpRequestHandler {
 
     private WebSite mWebSite;
     private Interceptor mInterceptor;
+    private Filter mFilter;
     private ExceptionResolver mExceptionResolver = sDefaultExceptionResolver;
 
-    public DispatchRequestHandler() {
+    DispatchRequestHandler() {
     }
 
-    public void setInterceptor(Interceptor interceptor) {
+    void setInterceptor(Interceptor interceptor) {
         mInterceptor = interceptor;
     }
 
-    public void setExceptionResolver(ExceptionResolver exceptionResolver) {
+    void setFilter(Filter filter) {
+        this.mFilter = filter;
+    }
+
+    void setExceptionResolver(ExceptionResolver exceptionResolver) {
         mExceptionResolver = exceptionResolver;
     }
 
-    public void setWebSite(WebSite webSite) {
+    void setWebSite(WebSite webSite) {
         this.mWebSite = webSite;
     }
 
-    public void registerRequestHandler(String path, RequestHandler handler) {
+    void registerRequestHandler(String path, RequestHandler handler) {
         mRequestHandlerMapper.put(path, handler);
     }
 
@@ -82,11 +88,11 @@ public class DispatchRequestHandler implements HttpRequestHandler {
                 String path = getRequestPath(request);
                 throw new NotFoundException(path);
             } else {
-                verifyHandlerAdapter(request, handler);
-                handler.handle(request, response, context);
-                if (mInterceptor != null)
-                    mInterceptor.onAfterExecute(request, response, context);
+                handleRequest(handler, request, response, context);
             }
+
+            if (mInterceptor != null)
+                mInterceptor.onAfterExecute(request, response, context);
         } catch (Exception e) {
             try {
                 mExceptionResolver.resolveException(e, request, response, context);
@@ -97,9 +103,21 @@ public class DispatchRequestHandler implements HttpRequestHandler {
     }
 
     /**
+     * Handle Request with handler.
+     */
+    private void handleRequest(RequestHandler handler, HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
+        verifyHandler(request, handler);
+        if (mFilter != null) {
+            mFilter.doFilter(handler, request, response, context);
+        } else {
+            handler.handle(request, response, context);
+        }
+    }
+
+    /**
      * The processor that gets the current request.
      */
-    protected final RequestHandler getRequestHandler(HttpRequest request, HttpContext context) {
+    private RequestHandler getRequestHandler(HttpRequest request, HttpContext context) {
         String path = getRequestPath(request);
         if (mWebSite != null && mWebSite.intercept(request, context)) {
             return mWebSite;
@@ -107,7 +125,7 @@ public class DispatchRequestHandler implements HttpRequestHandler {
         return mRequestHandlerMapper.get(path);
     }
 
-    private void verifyHandlerAdapter(HttpRequest request, RequestHandler handler) throws BaseException {
+    private void verifyHandler(HttpRequest request, RequestHandler handler) throws BaseException {
         RequestMethod requestMethod = RequestMethod.reverse(request.getRequestLine().getMethod());
         Class<?> clazz = handler.getClass();
         try {

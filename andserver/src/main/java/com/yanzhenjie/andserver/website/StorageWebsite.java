@@ -17,6 +17,8 @@ package com.yanzhenjie.andserver.website;
 
 import com.yanzhenjie.andserver.View;
 import com.yanzhenjie.andserver.exception.NotFoundException;
+import com.yanzhenjie.andserver.protocol.ETag;
+import com.yanzhenjie.andserver.protocol.LastModified;
 
 import org.apache.httpcore.HttpEntity;
 import org.apache.httpcore.HttpException;
@@ -38,65 +40,89 @@ import static com.yanzhenjie.andserver.util.HttpRequestParser.getRequestPath;
  * </p>
  * Created by Yan Zhenjie on 2017/3/15.
  */
-public class StorageWebsite extends SimpleWebsite {
+public class StorageWebsite extends SimpleWebsite implements LastModified, ETag {
 
     private final String mRootPath;
 
     public StorageWebsite(String rootPath) {
-        mRootPath = rootPath;
+        this.mRootPath = rootPath;
     }
 
     @Override
-    public boolean intercept(HttpRequest request, HttpContext context) {
-        String path = trimEndSlash(getRequestPath(request));
-        if ("/".equals(path)) {
+    public boolean intercept(HttpRequest request, HttpContext context) throws HttpException, IOException {
+        String httpPath = trimEndSlash(getRequestPath(request));
+        File source = findPathSource(httpPath);
+        return source != null;
+    }
+
+    /**
+     * Find the path specified resource.
+     *
+     * @param httpPath path.
+     * @return return if the file is found.
+     */
+    private File findPathSource(String httpPath) {
+        if ("/".equals(httpPath)) {
             File indexFile = new File(mRootPath, INDEX_FILE_PATH);
-            return indexFile.exists() && indexFile.isFile();
-        }
-        File file = new File(mRootPath, path);
-        if (file.exists()) {
-            if (file.isFile()) {
-                return true;
-            } else {
-                File childIndex = new File(file, INDEX_FILE_PATH);
-                return childIndex.exists() && childIndex.isFile();
+            if (indexFile.exists() && indexFile.isFile()) {
+                return indexFile;
+            }
+        } else {
+            File sourceFile = new File(mRootPath, httpPath);
+            if (sourceFile.exists()) {
+                if (sourceFile.isFile()) {
+                    return sourceFile;
+                } else {
+                    File childIndexFile = new File(sourceFile, INDEX_FILE_PATH);
+                    if (childIndexFile.exists() && childIndexFile.isFile()) {
+                        return childIndexFile;
+                    }
+                }
             }
         }
-        return false;
+        return null;
     }
 
     @Override
     public View handle(HttpRequest request) throws HttpException, IOException {
         String httpPath = trimEndSlash(getRequestPath(request));
-        if ("/".equals(httpPath)) {
-            File indexFile = new File(mRootPath, INDEX_FILE_PATH);
-            if (indexFile.exists() && indexFile.isFile()) {
-                String mimeType = getMimeType(indexFile.getAbsolutePath());
-                HttpEntity httpEntity = new FileEntity(indexFile, ContentType.create(mimeType, Charset.defaultCharset()));
-                return new View(200, httpEntity);
-            } else {
-                throw new NotFoundException(httpPath);
-            }
-        }
-
-        File targetSource = new File(mRootPath, httpPath);
-        if (targetSource.exists()) {
-            if (targetSource.isFile()) {
-                String mimeType = getMimeType(targetSource.getAbsolutePath());
-                HttpEntity httpEntity = new FileEntity(targetSource, ContentType.create(mimeType, Charset.defaultCharset()));
-                return new View(200, httpEntity);
-            } else {
-                File childIndex = new File(targetSource, INDEX_FILE_PATH);
-                if (childIndex.exists() && childIndex.isFile()) {
-                    String mimeType = getMimeType(childIndex.getAbsolutePath());
-                    HttpEntity httpEntity = new FileEntity(childIndex, ContentType.create(mimeType, Charset.defaultCharset()));
-                    return new View(200, httpEntity);
-                } else {
-                    throw new NotFoundException(httpPath);
-                }
-            }
-        } else {
+        File source = findPathSource(httpPath);
+        if (source == null)
             throw new NotFoundException(httpPath);
+        return generateSourceView(source);
+    }
+
+    /**
+     * Generate {@code View} for source.
+     *
+     * @param source file.
+     * @return view of source.
+     */
+    private View generateSourceView(File source) throws IOException {
+        String mimeType = getMimeType(source.getAbsolutePath());
+        HttpEntity httpEntity = new FileEntity(source, ContentType.create(mimeType, Charset.defaultCharset()));
+        return new View(200, httpEntity);
+    }
+
+    @Override
+    public long getLastModified(HttpRequest request) throws IOException {
+        String httpPath = trimEndSlash(getRequestPath(request));
+        File source = findPathSource(httpPath);
+        if (source != null)
+            return source.lastModified();
+        return -1;
+    }
+
+    @Override
+    public String getETag(HttpRequest request) throws IOException {
+        String httpPath = trimEndSlash(getRequestPath(request));
+        File source = findPathSource(httpPath);
+        if (source != null) {
+            long sourceSize = source.length();
+            String sourcePath = source.getAbsolutePath();
+            long lastModified = source.lastModified();
+            return sourceSize + sourcePath + lastModified;
         }
+        return null;
     }
 }
