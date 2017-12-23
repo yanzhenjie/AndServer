@@ -183,19 +183,16 @@ public class FileBrowser extends SimpleWebsite implements LastModified, ETag {
             + "li {"
             + "display: list-item;"
             + "text-align: -webkit-match-parent;"
-            + "}"
-            + ".FileItem{"
-            + "padding: 2px 0;"
+            + "margin-bottom: 5px;"
             + "}"
             + "</style>"
             + "</head>"
             + "<body>"
             + "<h1 class=\"center_horizontal\">%2$s</h1>"
             + "<ul>";
-    private static final String FOLDER_ITEM = "<li class=\".FileItem\"><a href=\"%1$s\">%2$s</a></li>";
+    private static final String FOLDER_ITEM = "<li><a href=\"%1$s\">%2$s</a></li>";
     private static final String FOLDER_HTML_SUFFIX
             = "</ul>"
-            + "</div>"
             + "</body>"
             + "</html>";
 }
