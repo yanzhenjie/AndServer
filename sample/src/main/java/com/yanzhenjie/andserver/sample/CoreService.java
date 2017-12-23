@@ -45,6 +45,7 @@ public class CoreService extends Service {
 
     @Override
     public void onCreate() {
+        // More usage documentation: http://yanzhenjie.github.io/AndServer
         mServer = AndServer.serverBuilder()
                 .inetAddress(NetUtils.getLocalIPAddress()) // Bind IP address.
                 .port(8080)
