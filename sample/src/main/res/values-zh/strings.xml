@@ -15,13 +15,11 @@
     limitations under the License.
 -->
 <resources>
-    <string name="app_name">AndServer</string>
-
     <string name="start_server">启动服务器</string>
     <string name="stop_server">停止服务器</string>
+    <string name="start_browse">在浏览器中打开</string>
 
-    <string name="server_start_succeed">服务器启动成功，你可以访问以下地址：</string>
-    <string name="server_started">服务器已经在运行</string>
+    <string name="server_start_succeed">服务器启动成功，你可以访问以下地址</string>
 
-    <string name="server_stop_succeed">服务器停止</string>
+    <string name="server_stop_succeed">服务器停止了</string>
 </resources>

@@ -16,9 +16,9 @@
 package com.yanzhenjie.andserver.upload;
 
 import org.apache.commons.fileupload.UploadContext;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpEntityEnclosingRequest;
+import org.apache.httpcore.Header;
+import org.apache.httpcore.HttpEntity;
+import org.apache.httpcore.HttpEntityEnclosingRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -60,10 +60,5 @@ public class HttpUploadContext implements UploadContext {
     @Override
     public InputStream getInputStream() throws IOException {
         return this.mEntity.getContent();
-    }
-
-    @Override
-    public String toString() {
-        return String.format("ContentLength=%s, ContentType=%s", contentLength(), getContentType());
     }
 }

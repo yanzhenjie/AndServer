@@ -22,6 +22,5 @@ dependencies {
     compile rootProject.ext.dependencies.andserver
     compile rootProject.ext.dependencies.design
     compile rootProject.ext.dependencies.appCompat
-    compile rootProject.ext.dependencies.nohttp
     compile rootProject.ext.dependencies.loading
 }

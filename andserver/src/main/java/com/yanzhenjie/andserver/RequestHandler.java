@@ -15,10 +15,10 @@
  */
 package com.yanzhenjie.andserver;
 
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.protocol.HttpContext;
+import org.apache.httpcore.HttpException;
+import org.apache.httpcore.HttpRequest;
+import org.apache.httpcore.HttpResponse;
+import org.apache.httpcore.protocol.HttpContext;
 
 import java.io.IOException;
 

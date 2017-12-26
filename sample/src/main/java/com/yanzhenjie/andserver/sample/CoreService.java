@@ -17,15 +17,20 @@ package com.yanzhenjie.andserver.sample;
 
 import android.app.Service;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
 import com.yanzhenjie.andserver.AndServer;
 import com.yanzhenjie.andserver.Server;
-import com.yanzhenjie.andserver.sample.response.RequestLoginHandler;
-import com.yanzhenjie.andserver.sample.response.RequestUploadHandler;
+import com.yanzhenjie.andserver.filter.HttpCacheFilter;
+import com.yanzhenjie.andserver.sample.handler.FileHandler;
+import com.yanzhenjie.andserver.sample.handler.ImageHandler;
+import com.yanzhenjie.andserver.sample.handler.LoginHandler;
+import com.yanzhenjie.andserver.sample.handler.UploadHandler;
+import com.yanzhenjie.andserver.sample.util.NetUtils;
 import com.yanzhenjie.andserver.website.AssetsWebsite;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>Server service.</p>
@@ -38,43 +43,41 @@ public class CoreService extends Service {
      */
     private Server mServer;
 
-    private AssetManager mAssetManager;
-
     @Override
     public void onCreate() {
-        mAssetManager = getAssets();
-
-        AndServer andServer = new AndServer.Build()
+        // More usage documentation: http://yanzhenjie.github.io/AndServer
+        mServer = AndServer.serverBuilder()
+                .inetAddress(NetUtils.getLocalIPAddress()) // Bind IP address.
                 .port(8080)
-                .timeout(10 * 1000)
-                .registerHandler("login", new RequestLoginHandler())
-                // .registerHandler("download", new RequestFileHandler("Your file path"))
-                .registerHandler("upload", new RequestUploadHandler())
-                .website(new AssetsWebsite(mAssetManager, "web"))
+                .timeout(10, TimeUnit.SECONDS)
+                .website(new AssetsWebsite(getAssets(), "web"))
+                .registerHandler("/download", new FileHandler())
+                .registerHandler("/login", new LoginHandler())
+                .registerHandler("/upload", new UploadHandler())
+                .registerHandler("/image", new ImageHandler())
+                .filter(new HttpCacheFilter())
                 .listener(mListener)
                 .build();
-
-        // Create server.
-        mServer = andServer.createServer();
     }
 
     /**
      * Server listener.
      */
-    private Server.Listener mListener = new Server.Listener() {
+    private Server.ServerListener mListener = new Server.ServerListener() {
         @Override
         public void onStarted() {
-            ServerStatusReceiver.serverStart(CoreService.this);
+            String hostAddress = mServer.getInetAddress().getHostAddress();
+            ServerManager.serverStart(CoreService.this, hostAddress);
         }
 
         @Override
         public void onStopped() {
-            ServerStatusReceiver.serverStop(CoreService.this);
+            ServerManager.serverStop(CoreService.this);
         }
 
         @Override
         public void onError(Exception e) {
-            // Ports may be occupied.
+            ServerManager.serverError(CoreService.this, e.getMessage());
         }
     };
 
@@ -87,12 +90,7 @@ public class CoreService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         stopServer(); // Stop server.
-
-        // If close assetManager here, the app will crash when create this service immediately
-//        if (mAssetManager != null)
-//            mAssetManager.close();
     }
 
     /**
@@ -101,9 +99,10 @@ public class CoreService extends Service {
     private void startServer() {
         if (mServer != null) {
             if (mServer.isRunning()) {
-                ServerStatusReceiver.serverHasStarted(CoreService.this);
+                String hostAddress = mServer.getInetAddress().getHostAddress();
+                ServerManager.serverHasStarted(CoreService.this, hostAddress);
             } else {
-                mServer.start();
+                mServer.startup();
             }
         }
     }
@@ -112,8 +111,8 @@ public class CoreService extends Service {
      * Stop server.
      */
     private void stopServer() {
-        if (mServer != null) {
-            mServer.stop();
+        if (mServer != null && mServer.isRunning()) {
+            mServer.shutdown();
         }
     }
 

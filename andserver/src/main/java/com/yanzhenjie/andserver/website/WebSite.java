@@ -17,19 +17,19 @@ package com.yanzhenjie.andserver.website;
 
 import com.yanzhenjie.andserver.RequestHandler;
 
-import java.util.Map;
+import org.apache.httpcore.HttpException;
+import org.apache.httpcore.HttpRequest;
+import org.apache.httpcore.protocol.HttpContext;
+
+import java.io.IOException;
 
 /**
- * <p>Registration website interface.</p>
+ * <p>
+ * Registration website interface.
+ * </p>
  * Created by Yan Zhenjie on 2017/3/15.
  */
-public interface WebSite {
+public interface WebSite extends RequestHandler {
 
-    /**
-     * Register site resources.
-     *
-     * @param handlerMap store handler map.
-     */
-    void onRegister(Map<String, RequestHandler> handlerMap);
-
+    boolean intercept(HttpRequest request, HttpContext context) throws HttpException, IOException;
 }

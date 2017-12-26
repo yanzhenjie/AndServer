@@ -15,58 +15,115 @@
  */
 package com.yanzhenjie.andserver.website;
 
-import android.text.TextUtils;
+import com.yanzhenjie.andserver.exception.NotFoundException;
+import com.yanzhenjie.andserver.protocol.ETag;
+import com.yanzhenjie.andserver.protocol.LastModified;
+import com.yanzhenjie.andserver.view.View;
 
-import com.yanzhenjie.andserver.RequestHandler;
-import com.yanzhenjie.andserver.handler.StorageRequestHandler;
-import com.yanzhenjie.andserver.util.StorageWrapper;
+import org.apache.httpcore.HttpEntity;
+import org.apache.httpcore.HttpException;
+import org.apache.httpcore.HttpRequest;
+import org.apache.httpcore.entity.ContentType;
+import org.apache.httpcore.entity.FileEntity;
+import org.apache.httpcore.protocol.HttpContext;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.nio.charset.Charset;
+
+import static com.yanzhenjie.andserver.util.FileUtils.getMimeType;
+import static com.yanzhenjie.andserver.util.HttpRequestParser.getRequestPath;
 
 /**
- * <p>The web site in storage.</p>
+ * <p>
+ * The web site in storage.
+ * </p>
  * Created by Yan Zhenjie on 2017/3/15.
  */
+public class StorageWebsite extends SimpleWebsite implements LastModified, ETag {
 
-public class StorageWebsite extends BasicWebsite {
+    private final String mRootPath;
 
-    /**
-     * StorageWrapper.
-     */
-    private StorageWrapper mStorageWrapper;
-
-    /**
-     * Site root directory.
-     */
-    private String mRootPath;
-
-    /**
-     * Storage Website.
-     *
-     * @param rootPath site root directory in assets, such as: {@code "/storage/sdcard/google/website"}.
-     */
     public StorageWebsite(String rootPath) {
-        super(rootPath);
-        if (TextUtils.isEmpty(rootPath)) throw new NullPointerException("The RootPath can not be null.");
-        this.mRootPath = trimSlash(rootPath);
-        mStorageWrapper = new StorageWrapper();
+        this.mRootPath = rootPath;
     }
 
     @Override
-    public void onRegister(Map<String, RequestHandler> handlerMap) {
-        RequestHandler indexHandler = new StorageRequestHandler(INDEX_HTML);
-        handlerMap.put("", indexHandler);
-        handlerMap.put(mRootPath, indexHandler);
-        handlerMap.put(mRootPath + File.separator, indexHandler);
-        handlerMap.put(mRootPath + File.separator + INDEX_HTML, indexHandler);
-
-        List<String> pathList = mStorageWrapper.scanFile(getHttpPath(mRootPath));
-        for (String path : pathList) {
-            RequestHandler requestHandler = new StorageRequestHandler(path);
-            handlerMap.put(path, requestHandler);
-        }
+    public boolean intercept(HttpRequest request, HttpContext context) throws HttpException, IOException {
+        String httpPath = getRequestPath(request);
+        httpPath = "/".equals(httpPath) ? "/" : trimEndSlash(getRequestPath(request));
+        File source = findPathSource(httpPath);
+        return source != null;
     }
 
+    /**
+     * Find the path specified resource.
+     *
+     * @param httpPath path.
+     * @return return if the file is found.
+     */
+    private File findPathSource(String httpPath) {
+        if ("/".equals(httpPath)) {
+            File indexFile = new File(mRootPath, INDEX_FILE_PATH);
+            if (indexFile.exists() && indexFile.isFile()) {
+                return indexFile;
+            }
+        } else {
+            File sourceFile = new File(mRootPath, httpPath);
+            if (sourceFile.exists()) {
+                if (sourceFile.isFile()) {
+                    return sourceFile;
+                } else {
+                    File childIndexFile = new File(sourceFile, INDEX_FILE_PATH);
+                    if (childIndexFile.exists() && childIndexFile.isFile()) {
+                        return childIndexFile;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public View handle(HttpRequest request) throws HttpException, IOException {
+        String httpPath = trimEndSlash(getRequestPath(request));
+        File source = findPathSource(httpPath);
+        if (source == null)
+            throw new NotFoundException(httpPath);
+        return generateSourceView(source);
+    }
+
+    /**
+     * Generate {@code View} for source.
+     *
+     * @param source file.
+     * @return view of source.
+     */
+    private View generateSourceView(File source) throws IOException {
+        String mimeType = getMimeType(source.getAbsolutePath());
+        HttpEntity httpEntity = new FileEntity(source, ContentType.create(mimeType, Charset.defaultCharset()));
+        return new View(200, httpEntity);
+    }
+
+    @Override
+    public long getLastModified(HttpRequest request) throws IOException {
+        String httpPath = trimEndSlash(getRequestPath(request));
+        File source = findPathSource(httpPath);
+        if (source != null)
+            return source.lastModified();
+        return -1;
+    }
+
+    @Override
+    public String getETag(HttpRequest request) throws IOException {
+        String httpPath = trimEndSlash(getRequestPath(request));
+        File source = findPathSource(httpPath);
+        if (source != null) {
+            long sourceSize = source.length();
+            String sourcePath = source.getAbsolutePath();
+            long lastModified = source.lastModified();
+            return sourceSize + sourcePath + lastModified;
+        }
+        return null;
+    }
 }

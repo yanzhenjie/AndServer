@@ -47,15 +47,19 @@
             android:id="@+id/btn_start"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/start_server"
-            android:textAllCaps="false"/>
+            android:text="@string/start_server"/>
 
         <Button
             android:id="@+id/btn_stop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/stop_server"
-            android:textAllCaps="false"/>
+            android:text="@string/stop_server"/>
+
+        <Button
+            android:id="@+id/btn_browse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start_browse"/>
 
         <TextView
             android:id="@+id/tv_message"
