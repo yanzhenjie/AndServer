@@ -6,13 +6,15 @@
 public class MyInterceptor implements Interceptor {
 
     @Override
-    public boolean onBeforeExecute(HttpRequest request, HttpResponse response) ... {
+    public boolean onBeforeExecute(HttpRequest request, HttpResponse response, HttpContext context)
+            throws HttpException, IOException {
         ...           // 进行逻辑判断是否要拦截。
         return true;  // 返回true将拦截，返回false不拦截；
     }
 
     @Override
-    public void onAfterExecute(HttpRequest request, HttpResponse response) ... {
+    public void onAfterExecute(HttpRequest request, HttpResponse response, HttpContext context)
+            throws HttpException, IOException {
         ... // 如果不拦截将在请求处理完毕后会调用onAfterExecute。
     }
 }
@@ -40,11 +42,12 @@ public @interface NeedLogin {
 
 需要拦截登录的`handle`：
 ```java
-public class DeleteHandler implement RequestHandler {
+public class AdminHandler implement RequestHandler {
 	
 	@NeedLogin()
 	@ovrride
-	public void handle(HttpRequest request, HttpResponse response, HttpContext context) ... {
+	public void handle(HttpRequest request, HttpResponse response, HttpContext context)
+            throws HttpException, IOException {
 	}
 
 }
@@ -53,10 +56,12 @@ public class DeleteHandler implement RequestHandler {
 拦截登录：
 ```java
 @Override
-public boolean onBeforeExecute(HttpRequest request, HttpResponse response) ... {
+public boolean onBeforeExecute(HttpRequest request, HttpResponse response, HttpContext context)
+        throws HttpException, IOException {
     Class<?> clazz = handler.getClass();
 
-    Method method = clazz.getMethod("handle", HttpRequest.class, HttpResponse.class, ...);
+    Method method = clazz.getMethod("handle", HttpRequest.class,
+        HttpResponse.class, HttpContext.class);
     NeedLogin needLogin = method.getAnnotation(NeedLogin.class);
     if (needLogin != null) {
         if(needLogin.need()) {
@@ -89,10 +94,12 @@ public class NotLoginException extends BaseException {
 
 ```java
 @Override
-public boolean onBeforeExecute(HttpRequest request, HttpResponse response) ... {
+public boolean onBeforeExecute(HttpRequest request, HttpResponse response, HttpContext context)
+        throws HttpException, IOException {
     Class<?> clazz = handler.getClass();
 
-    Method method = clazz.getMethod("handle", HttpRequest.class, HttpResponse.class, ...);
+    Method method = clazz.getMethod("handle", HttpRequest.class, HttpResponse.class,
+        HttpResponse.class, HttpContext.class);
     NeedLogin needLogin = method.getAnnotation(NeedLogin.class);
     if (needLogin != null) {
         if(needLogin.need()) {

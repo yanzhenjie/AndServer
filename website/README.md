@@ -9,13 +9,15 @@ AndServer为了实现静态网站内容部署，提供了`Website`这个接口�
 public class MyWeibsite implement Website {
 	
 	@Override
-	public boolean intercept(HttpRequest request, HttpContext context) ... {
+	public boolean intercept(HttpRequest request, HttpContext context)
+			throws HttpException, IOException {
 		// 1. 是否拦截这个请求，如果拦截返回true，不拦截返回false。
 		// 2. 拦截请求后AndServer将会调用下面的handle()方法。
 	}
 
 	@Override
-	public void handle(HttpRequest request, HttpResponse response, HttpContext context) ... {
+	public void handle(HttpRequest request, HttpResponse response, HttpContext context)
+			throws HttpException, IOException {
 		// 处理请求并返回内容。
 	}
 

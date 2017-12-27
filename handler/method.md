@@ -8,7 +8,8 @@ public class LoginHandler implements RequestHandler {
 
     @RequestMapping(method = RequestMethod.POST)
     @Override
-    public void handle(HttpRequest request, HttpResponse response, HttpContext context) ... {
+    public void handle(HttpRequest request, HttpResponse response, HttpContext context)
+            throws HttpException, IOException {
     	...;
     }
 }
@@ -20,7 +21,8 @@ public class LoginHandler implements RequestHandler {
 
     @RequestMapping(method = {RequestMethod.POST, RequestMethod.PUT, RequestMethod.GET})
     @Override
-    public void handle(HttpRequest request, HttpResponse response, HttpContext context) ... {
+    public void handle(HttpRequest request, HttpResponse response, HttpContext context)
+            throws HttpException, IOException {
     	...;
     }
 }
@@ -32,14 +34,16 @@ public class GetHandler implement RequestHandler {
 
     @RequestMapping(method = RequestMethod.GET)
     @Override
-    public void handle(HttpRequest request, HttpResponse response, HttpContext context) ... {
+    public void handle(HttpRequest request, HttpResponse response, HttpContext context)
+            throws HttpException, IOException {
     	View view = handle(request, response);
         response.setStatusCode(view.getHttpCode());
         response.setEntity(view.getHttpEntity());
         response.setHeaders(view.getHeaders());
     }
 
-    protected View handle(HttpRequest request, HttpResponse response) ... {
+    protected View handle(HttpRequest request, HttpResponse response)
+            throws HttpException, IOException {
         return handle(request);
     }
 

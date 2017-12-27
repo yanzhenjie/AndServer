@@ -5,7 +5,8 @@
 public class MyFilter implement Filter {
 
 	@Ovrride
-    public void doFilter(RequestHandler handler, HttpRequest request, ...) ... {
+    public void doFilter(RequestHandler handler, HttpRequest request, HttpContext context)
+    	throws HttpException, IOException {
 		boolean isFilted = ... // 一些处理逻辑，过滤器是否处理。
 
 		if(!isFitler) { // 如果过滤器没处理则交给handler处理。

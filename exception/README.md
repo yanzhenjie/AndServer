@@ -7,7 +7,8 @@
 我们来看看它的代码：
 ```java
 public interface ExceptionResolver {
-    void resolveException(Exception e, HttpRequest request, HttpResponse response, HttpContext context);
+    void resolveException(Exception e, HttpRequest request, HttpResponse response,
+            HttpContext context);
 }
 ```
 

@@ -12,7 +12,8 @@ public class UploadHandler implements RequestHandler {
 	private File mDirectory = Environment.getExternalStorageDirectory();
 
     @Override
-    public void handle(HttpRequest request, HttpResponse response, HttpContext context) ... {
+    public void handle(HttpRequest request, HttpResponse response, HttpContext context)
+            throws HttpException, IOException {
         if (!HttpRequestParser.isMultipartContentRequest(request)) { // 是否Form传文件的请求。
             response(403, "说好的文件呢", response);
         } else {
@@ -25,7 +26,8 @@ public class UploadHandler implements RequestHandler {
         }
     }
 
-    private void response(int responseCode, String message, HttpResponse response) ... {
+    private void response(int responseCode, String message, HttpResponse response)
+            throws HttpException, IOException {
         response.setStatusCode(responseCode);
         response.setEntity(new StringEntity(message, "utf-8"));
     }

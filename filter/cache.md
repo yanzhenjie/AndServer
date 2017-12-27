@@ -48,7 +48,8 @@ Server server = AndServer.serverBuilder()
 ```java
 public class MyHandler implement RequestHandler, LastModified {
 
-	public void handle(HttpRequest request, HttpResponse response, HttpContext context) ... {
+	public void handle(HttpRequest request, HttpResponse response, HttpContext context)
+			throws HttpException, IOException {
 		// 比如当前资源是个File。
 		String path = HttpRequestParser.getRequestPath(request);
 		... // 一些判断此资源是个文件。
@@ -66,6 +67,38 @@ public class MyHandler implement RequestHandler, LastModified {
 
 		File file = new File(path);
 		return file.lastModified();
+	}
+}
+```
+
+比如对某个文件做了缓存支持，以当前文件的`Last-Modified`为唯一性的判断依据还不够，那么我们应该实现`ETag`接口，返回这个文件的更详细的唯一属性。  
+
+> **关于ETag的建议**：建议返回当前文件的MD5值，并做一些格式上的处理，这样基本可以做到99.99%的唯一性。当文件的内容被修改（包括在1秒内修改）时，文件的MD5会立刻发生变化。当然对于普通接口也是一样，可以返回要返回内容的MD5值（或者其它粒度唯一属性也可以）。
+
+```java
+public class MyHandler implement RequestHandler, LastModified {
+
+	public void handle(HttpRequest request, HttpResponse response, HttpContext context)
+			throws HttpException, IOException {
+		// 同上...
+	}
+
+	@Ovrride
+	public long getLastModified(HttpRequest request) throws HttpException, IOException {
+		// 同上...
+	}
+
+	@Ovrride
+	public String getETag(HttpRequest request) throws HttpException, IOException {
+		// 比如当前资源是个File。
+		String path = HttpRequestParser.getRequestPath(request);
+		... // 一些判断此资源是个文件。
+
+		File file = new File(path);
+
+		// 返回当前文件的MD5值。
+		InputStream inStream = new FileInpuStream(file);
+		return DigestUtils.md5DigestAsHex(inStream);
 	}
 }
 ```

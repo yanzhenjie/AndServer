@@ -17,7 +17,8 @@
 public class LoginHandler implements RequestHandler {
 
     @Override
-    public void handle(HttpRequest request, HttpResponse response, HttpContext context) ... {
+    public void handle(HttpRequest request, HttpResponse response, HttpContext context)
+            throws HttpException, IOException {
         Map<String, String> params = HttpRequestParser.parseParams(request);
 
         if (!params.containsKey("username") || !params.containsKey("password")) {

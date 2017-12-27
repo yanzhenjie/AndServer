@@ -1,7 +1,7 @@
 # Summary
 
 * [概述](README.md)
-* [基本Api](base/api.md)
+* [基本Api](base/README.md)
 * [Https](ssl/README.md)
 * [Http接口](handler/README.md)
     * [返回图片](handler/image.md)
@@ -9,11 +9,13 @@
     * [上传文件](handler/upload.md)
     * [返回JSON](handler/json.md)
     * [请求方法](handler/method.md)
+    * [Http缓存](handler/cache.md)
 * [网站](website/README.md)
     * [基于Assets](website/assets.md)
     * [基于SD卡](website/storage.md)
     * [文件浏览器](website/file.md)
     * [自定义](website/define.md)
+    * [Http缓存](website/cache.md)
 * [拦截器](interceptor/README.md)
 * [过滤器](filter/README.md)
     * [简单示例](filter/simple.md)

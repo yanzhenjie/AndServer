@@ -14,7 +14,8 @@ public class MyWeibsite implement Website {
 	...
 
 	@Override
-	public boolean intercept(HttpRequest request, HttpContext context) ... {
+	public boolean intercept(HttpRequest request, HttpContext context)
+			throws HttpException, IOException {
 		// 拿到http的路径。
 		String httpPath = HttpRequestParser.getRequestPath(request);
 
@@ -32,7 +33,8 @@ public class MyWeibsite implement Website {
 	}
 
 	@Override
-	public void handle(HttpRequest request, HttpResponse response, HttpContext context) ... {
+	public void handle(HttpRequest request, HttpResponse response, HttpContext context)
+			throws HttpException, IOException {
 		// 这里和RequestHandler的处理方式完全相同，请参考RequestHandler一章。
 	}
 
