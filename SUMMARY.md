@@ -23,6 +23,5 @@
     * [自定义](exception/define.md)
 * [扩展](expand/README.md)
     * [View](expand/view.md)
-    * [Http缓存](expand/cache.md)
-    * [Request解析](expand/request/parser.md)
+    * [Request解析](expand/parser.md)
 

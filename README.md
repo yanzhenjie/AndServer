@@ -1,63 +1,17 @@
-# AndServer
-![Logo](/image/logo.png)
+# 概述
 
-Android platform web server and development framework.  
+![Logo](./images/logo.png)
 
-* Dynamic website deployment.
-* Static website deployment.
-* Http api deployment.
+AndServer是一个Android平台的WebServer服务器和WebServer开发框架，作为Web服务器它支持了IP、端口的绑定，以及SSL自定义证书。作为Web开发框架它支持静态网站部署、动态Http接口、文件的上传下载。
 
-Internal realization of the website based on Asset and external memory card. The contents of the external memory card support hot swap. Web site can support Http cache protocol, used to improve server performance.  
+作为一个平台框架，它的最核心的功能应该是对Web开发的支持，它的这些特性可能是你喜欢的：
+* Request拦截器
+* RequestHandler过滤器
+* 全局异常处理者
 
-Some of its features are learned from SpringMVC, It is perfect for developers who are specializing in android from java, which will be easier to understand how AndServer works.  
+比如Http缓存协议的实现就是基于RequestHandler过滤器的，里面还有一些好玩的小玩意。
 
-It's these characteristics may be you like: Https, interceptors, filters, websites, file browser, http cache protocol, exception resolver, file upload and download.  
+如果你有什么疑问，或者你想为AndServer贡献一些代码:  
+[https://github.com/yanzhenjie/AndServer](https://github.com/yanzhenjie/AndServer)
 
-For usage and other information see [Document](http://yanzhenjie.github.io/AndServer).  
-
-## Download
-* Gradle
-```groovy
-implementation 'com.yanzhenjie:andserver:1.1.0'
-```
-
-* Maven
-```xml
-<dependency>
-  <groupId>com.yanzhenjie</groupId>
-  <artifactId>andserver</artifactId>
-  <version>1.1.0</version>
-</dependency>
-```
-
-* Jar
-It's in Jar folder of [release package](https://github.com/yanzhenjie/AndServer/releases/tag/1.1.0).  
-
-AndServer requires at minimum Java 7 or Android 2.3.
-
-## ProGuard
-```
--keepclassmembers class ** {
-    @com.yanzhenjie.andserver.annotation.RequestMapping <methods>;
-}
--keepclassmembers public class com.yanzhenjie.andserver.RequestMethod {
-    <fields>;
-}
-```
-
-## License
-```text
-Copyright 2017 Yan Zhenjie
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+对于一些没有做过WebServer开发的开发者来说，一下子可能难易理解WebServer端某些的概念，推荐这些开发者朋友下载Demo源码查看或者通读整个文档，这可能对理解WebServer开发有所帮助。

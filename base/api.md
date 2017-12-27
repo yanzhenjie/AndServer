@@ -1,5 +1,10 @@
 # 基本Api
 
+对于一些基本概念的说明和演示一些基本的Api使用。
+
+## 站点概念
+从AndServer1.1.0版本开始，有了站点这个概念。每一个Android机器看作一台服务器，一台服务器可以搭建多个站点，也就是下文中要提到的`Server`。
+
 ```java
 Server mServer;
 
@@ -52,3 +57,5 @@ server.start();
 
 * `http://192.168.1.11:8080/register`，请求会分发到`RegisterRequestHandler`类。
 * `http://192.168.1.11:8080/login`，请求会分发到`LoginRequestHandler`类。
+
+> **注意**：AndServer从1.1.0版本开始，注册`path`和对应的`RequestHandler`时，`path`必须严格遵守`path`的书写规范，例如：`user`、`user/admin`都是违法的，`/user`、`/user/admin`都是合法的。

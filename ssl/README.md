@@ -12,4 +12,15 @@ Server server = AndServer.serverBuilder()
 
 如果要使用Https，一般开发者只需要设置`SSLContext`即可，少数开发者在了解`SSLServerSocket`的情况下可以进行一个个性化要求的设置。
 
+```java
+public class SSLInitializer implements SSLSocketInitializer {
+    @Override
+    public void onCreated(SSLServerSocket socket) throws SSLException {
+		socket.setEnabledCipherSuites();
+        socket.setNeedClientAuth();
+        ...
+    }
+}
+```
+
 > 关于SSLSocket的文档在网络上有很多博文在讲解，本文不再赘述。

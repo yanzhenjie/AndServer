@@ -1,6 +1,6 @@
 # 返回图片
 
-返回图片的方式有很多种，最终我们都要返回`HttpEntity`这个对象，所以图片可以来自Assets，drawable、SD卡，下面是一个来自SD卡的图片示例：
+返回图片的方式有很多种，最终我们都要返回`HttpEntity`这个对象，所以图片可以来自`assets`，`drawable`、`SD卡`，下面是一个来自SD卡的图片示例：
 ```
 public class ImageHandler extends SimpleRequestHandler {
 
