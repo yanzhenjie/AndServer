@@ -18,11 +18,11 @@ package com.yanzhenjie.andserver.view;
 /**
  * Created by YanZhenjie on 2017/12/22.
  */
-public class RedirectView extends View {
+public class RedirectResponseStub extends ResponseStub {
 
     private static final String LOCATION = "Location";
 
-    public RedirectView(String path) {
+    public RedirectResponseStub(String path) {
         super(302);
         setHeader(LOCATION, path);
     }

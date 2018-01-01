@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver.exception.resolver;
 
-import com.yanzhenjie.andserver.view.View;
+import com.yanzhenjie.andserver.view.ResponseStub;
 import com.yanzhenjie.andserver.exception.BaseException;
 
 import org.apache.httpcore.HttpEntity;
@@ -32,23 +32,23 @@ public class SimpleExceptionResolver implements ExceptionResolver {
 
     @Override
     public final void resolveException(Exception e, HttpRequest request, HttpResponse response, HttpContext context) {
-        View view = resolveException(e, request, response);
-        response.setStatusCode(view.getHttpCode());
-        response.setEntity(view.getHttpEntity());
-        response.setHeaders(view.getHeaders());
+        ResponseStub responseStub = resolveException(e, request, response);
+        response.setStatusCode(responseStub.getHttpCode());
+        response.setEntity(responseStub.getHttpEntity());
+        response.setHeaders(responseStub.getHeaders());
     }
 
-    public View resolveException(Exception e, HttpRequest request, HttpResponse response) {
+    public ResponseStub resolveException(Exception e, HttpRequest request, HttpResponse response) {
         return resolveException(e);
     }
 
-    protected View resolveException(Exception e) {
+    protected ResponseStub resolveException(Exception e) {
         if (e instanceof BaseException) {
             BaseException exception = (BaseException) e;
-            return new View(exception.getHttpCode(), exception.getHttpBody());
+            return new ResponseStub(exception.getHttpCode(), exception.getHttpBody());
         }
         String message = String.format("Server error occurred:\n%1$s", e.getMessage());
         HttpEntity httpEntity = new StringEntity(message, ContentType.TEXT_PLAIN);
-        return new View(500, httpEntity);
+        return new ResponseStub(500, httpEntity);
     }
 }
