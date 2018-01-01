@@ -20,17 +20,17 @@ import org.apache.httpcore.HttpEntity;
 /**
  * Created by YanZhenjie on 2017/12/22.
  */
-public class OkView extends View {
+public class OkResponseStub extends ResponseStub {
 
-    public OkView() {
+    public OkResponseStub() {
         super(200);
     }
 
-    public OkView(String httpBody) {
+    public OkResponseStub(String httpBody) {
         super(200, httpBody);
     }
 
-    public OkView(HttpEntity httpEntity) {
+    public OkResponseStub(HttpEntity httpEntity) {
         super(200, httpEntity);
     }
 }

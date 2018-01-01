@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver;
 
-import com.yanzhenjie.andserver.view.View;
+import com.yanzhenjie.andserver.view.ResponseStub;
 
 import org.apache.httpcore.HttpException;
 import org.apache.httpcore.HttpRequest;
@@ -31,17 +31,17 @@ public class SimpleRequestHandler implements RequestHandler {
 
     @Override
     public final void handle(HttpRequest request, HttpResponse response, HttpContext context) throws HttpException, IOException {
-        View view = handle(request, response);
-        response.setStatusCode(view.getHttpCode());
-        response.setEntity(view.getHttpEntity());
-        response.setHeaders(view.getHeaders());
+        ResponseStub responseStub = handle(request, response);
+        response.setStatusCode(responseStub.getHttpCode());
+        response.setEntity(responseStub.getHttpEntity());
+        response.setHeaders(responseStub.getHeaders());
     }
 
-    protected View handle(HttpRequest request, HttpResponse response) throws HttpException, IOException {
+    protected ResponseStub handle(HttpRequest request, HttpResponse response) throws HttpException, IOException {
         return handle(request);
     }
 
-    protected View handle(HttpRequest request) throws HttpException, IOException {
-        return new View(200);
+    protected ResponseStub handle(HttpRequest request) throws HttpException, IOException {
+        return new ResponseStub(200);
     }
 }

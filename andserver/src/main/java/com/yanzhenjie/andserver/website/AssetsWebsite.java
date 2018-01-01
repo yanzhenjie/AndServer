@@ -22,7 +22,7 @@ import com.yanzhenjie.andserver.exception.NotFoundException;
 import com.yanzhenjie.andserver.protocol.ETag;
 import com.yanzhenjie.andserver.protocol.LastModified;
 import com.yanzhenjie.andserver.util.AssetsReader;
-import com.yanzhenjie.andserver.view.View;
+import com.yanzhenjie.andserver.view.ResponseStub;
 
 import org.apache.httpcore.HttpEntity;
 import org.apache.httpcore.HttpException;
@@ -116,7 +116,7 @@ public class AssetsWebsite extends SimpleWebsite implements LastModified, ETag {
     }
 
     @Override
-    public View handle(HttpRequest request) throws HttpException, IOException {
+    public ResponseStub handle(HttpRequest request) throws HttpException, IOException {
         String httpPath = getRequestPath(request);
         String filePath = mPatternMap.get(httpPath);
         InputStream source = mAssetsReader.getInputStream(filePath);
@@ -127,7 +127,7 @@ public class AssetsWebsite extends SimpleWebsite implements LastModified, ETag {
         String mimeType = getMimeType(filePath);
 
         HttpEntity httpEntity = new InputStreamEntity(source, length, ContentType.create(mimeType, Charset.defaultCharset()));
-        return new View(200, httpEntity);
+        return new ResponseStub(200, httpEntity);
     }
 
     @Override

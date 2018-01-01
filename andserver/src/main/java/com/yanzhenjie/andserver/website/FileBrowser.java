@@ -18,7 +18,7 @@ package com.yanzhenjie.andserver.website;
 import com.yanzhenjie.andserver.exception.NotFoundException;
 import com.yanzhenjie.andserver.protocol.ETag;
 import com.yanzhenjie.andserver.protocol.LastModified;
-import com.yanzhenjie.andserver.view.View;
+import com.yanzhenjie.andserver.view.ResponseStub;
 
 import org.apache.httpcore.HttpEntity;
 import org.apache.httpcore.HttpException;
@@ -74,7 +74,7 @@ public class FileBrowser extends SimpleWebsite implements LastModified, ETag {
     }
 
     @Override
-    public View handle(HttpRequest request) throws HttpException, IOException {
+    public ResponseStub handle(HttpRequest request) throws HttpException, IOException {
         String httpPath = trimEndSlash(getRequestPath(request));
         File source = findPathSource(httpPath);
         if (source == null)
@@ -83,12 +83,12 @@ public class FileBrowser extends SimpleWebsite implements LastModified, ETag {
     }
 
     /**
-     * Generate {@code View} for page of folder.
+     * Generate {@code ResponseStub} for page of folder.
      *
      * @param source folder.
      * @return view of folder.
      */
-    private View generatePageView(File source) throws IOException {
+    private ResponseStub generatePageView(File source) throws IOException {
         if (source.isDirectory()) {
             File[] files = source.listFiles();
             File tempFile = File.createTempFile("file_browser", ".html");
@@ -117,15 +117,15 @@ public class FileBrowser extends SimpleWebsite implements LastModified, ETag {
     }
 
     /**
-     * Generate {@code View} for source.
+     * Generate {@code ResponseStub} for source.
      *
      * @param source file.
      * @return view of source.
      */
-    private View generateSourceView(File source) throws IOException {
+    private ResponseStub generateSourceView(File source) throws IOException {
         String mimeType = getMimeType(source.getAbsolutePath());
         HttpEntity httpEntity = new FileEntity(source, ContentType.create(mimeType, Charset.defaultCharset()));
-        return new View(200, httpEntity);
+        return new ResponseStub(200, httpEntity);
     }
 
     @Override
