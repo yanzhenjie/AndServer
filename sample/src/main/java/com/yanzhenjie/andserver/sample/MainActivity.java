@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.yanzhenjie.loading.dialog.LoadingDialog;
@@ -35,10 +36,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ServerManager mServerManager;
+
+    private Button mBtnStart;
+    private Button mBtnStop;
+    private Button mBtnBrowser;
     private TextView mTvMessage;
 
     private LoadingDialog mDialog;
-    private List<String> mAddressList;
+    private String mRootUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,18 +52,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        findViewById(R.id.btn_start).setOnClickListener(this);
-        findViewById(R.id.btn_stop).setOnClickListener(this);
-        findViewById(R.id.btn_browse).setOnClickListener(this);
-
+        mBtnStart = (Button) findViewById(R.id.btn_start);
+        mBtnStop = (Button) findViewById(R.id.btn_stop);
+        mBtnBrowser = (Button) findViewById(R.id.btn_browse);
         mTvMessage = (TextView) findViewById(R.id.tv_message);
+
+        mBtnStart.setOnClickListener(this);
+        mBtnStop.setOnClickListener(this);
+        mBtnBrowser.setOnClickListener(this);
 
         // AndServer run in the service.
         mServerManager = new ServerManager(this);
         mServerManager.register();
 
         // startServer;
-        findViewById(R.id.btn_start).performClick();
+        mBtnStart.performClick();
     }
 
     @Override
@@ -77,16 +85,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             }
             case R.id.btn_stop: {
+                showDialog();
                 mServerManager.stopService();
                 break;
             }
             case R.id.btn_browse: {
-                if (mAddressList != null) {
-                    String address = mAddressList.get(1);
+                if (!TextUtils.isEmpty(mRootUrl)) {
                     Intent intent = new Intent();
                     intent.setAction("android.intent.action.VIEW");
-                    Uri content_url = Uri.parse(address);
-                    intent.setData(content_url);
+                    intent.setData(Uri.parse(mRootUrl));
                     startActivity(intent);
                 }
                 break;
@@ -99,16 +106,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     public void serverStart(String ip) {
         closeDialog();
+        mBtnStart.setVisibility(View.GONE);
+        mBtnStop.setVisibility(View.VISIBLE);
+        mBtnBrowser.setVisibility(View.VISIBLE);
+
         if (!TextUtils.isEmpty(ip)) {
-            mAddressList = new LinkedList<>();
-            mAddressList.add(getString(R.string.server_start_succeed));
-            mAddressList.add("http://" + ip + ":8080/");
-            mAddressList.add("http://" + ip + ":8080/login.html");
-            mAddressList.add("http://" + ip + ":8080/image");
-            mAddressList.add("http://" + ip + ":8080/download");
-            mAddressList.add("http://" + ip + ":8080/upload");
+            List<String> addressList = new LinkedList<>();
+            mRootUrl = "http://" + ip + ":8080/";
+            addressList.add(mRootUrl);
+            addressList.add("http://" + ip + ":8080/login.html");
+            addressList.add("http://" + ip + ":8080/image");
+            addressList.add("http://" + ip + ":8080/download");
+            addressList.add("http://" + ip + ":8080/upload");
+            mTvMessage.setText(TextUtils.join("\n", addressList));
+        } else {
+            mRootUrl = null;
+            mTvMessage.setText(R.string.server_ip_error);
         }
-        mTvMessage.setText(TextUtils.join(",\n", mAddressList));
     }
 
     /**
@@ -116,14 +130,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     public void serverError(String message) {
         closeDialog();
+        mRootUrl = null;
+        mBtnStart.setVisibility(View.VISIBLE);
+        mBtnStop.setVisibility(View.GONE);
+        mBtnBrowser.setVisibility(View.GONE);
         mTvMessage.setText(message);
-    }
-
-    /**
-     * Started notify.
-     */
-    public void serverHasStarted(String ip) {
-        serverStart(ip);
     }
 
     /**
@@ -131,18 +142,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     public void serverStop() {
         closeDialog();
-        mAddressList = null;
+        mRootUrl = null;
+        mBtnStart.setVisibility(View.VISIBLE);
+        mBtnStop.setVisibility(View.GONE);
+        mBtnBrowser.setVisibility(View.GONE);
         mTvMessage.setText(R.string.server_stop_succeed);
     }
 
     private void showDialog() {
         if (mDialog == null)
             mDialog = new LoadingDialog(this);
-        if (!mDialog.isShowing()) mDialog.show();
+        if (!mDialog.isShowing())
+            mDialog.show();
     }
 
     private void closeDialog() {
-        if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
+        if (mDialog != null && mDialog.isShowing())
+            mDialog.dismiss();
     }
 
 }

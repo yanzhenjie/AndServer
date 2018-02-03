@@ -18,7 +18,7 @@ For usage and other information see [Document](http://yanzhenjie.github.io/AndSe
 ## Download
 * Gradle
 ```groovy
-implementation 'com.yanzhenjie:andserver:1.1.0'
+implementation 'com.yanzhenjie:andserver:1.1.1'
 ```
 
 * Maven
@@ -26,14 +26,14 @@ implementation 'com.yanzhenjie:andserver:1.1.0'
 <dependency>
   <groupId>com.yanzhenjie</groupId>
   <artifactId>andserver</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1</version>
 </dependency>
 ```
 
 * Jar
 It's in Jar folder of [release package](https://github.com/yanzhenjie/AndServer/releases/tag/1.1.0).  
 
-AndServer requires at minimum Java 7 or Android 2.3.
+AndServer requires at minimum Java 7 or Android 2.3(Api level 9).
 
 ## ProGuard
 ```
