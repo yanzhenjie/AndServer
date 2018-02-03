@@ -100,7 +100,7 @@ public class CoreService extends Service {
         if (mServer != null) {
             if (mServer.isRunning()) {
                 String hostAddress = mServer.getInetAddress().getHostAddress();
-                ServerManager.serverHasStarted(CoreService.this, hostAddress);
+                ServerManager.serverStart(CoreService.this, hostAddress);
             } else {
                 mServer.startup();
             }

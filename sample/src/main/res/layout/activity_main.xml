@@ -53,13 +53,15 @@
             android:id="@+id/btn_stop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/stop_server"/>
+            android:text="@string/stop_server"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_browse"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/start_browse"/>
+            android:text="@string/start_browse"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/tv_message"

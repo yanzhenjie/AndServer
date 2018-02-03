@@ -17,7 +17,6 @@ public class ServerManager extends BroadcastReceiver {
 
     private static final int CMD_VALUE_START = 1;
     private static final int CMD_VALUE_ERROR = 2;
-    private static final int CMD_VALUE_STARTED = 3;
     private static final int CMD_VALUE_STOP = 4;
 
     /**
@@ -36,15 +35,6 @@ public class ServerManager extends BroadcastReceiver {
      */
     public static void serverError(Context context, String error) {
         sendBroadcast(context, CMD_VALUE_ERROR, error);
-    }
-
-    /**
-     * Notify serverHasStarted.
-     *
-     * @param context context.
-     */
-    public static void serverHasStarted(Context context, String hostAddress) {
-        sendBroadcast(context, CMD_VALUE_STARTED, hostAddress);
     }
 
     /**
@@ -112,11 +102,6 @@ public class ServerManager extends BroadcastReceiver {
                 case CMD_VALUE_ERROR: {
                     String error = intent.getStringExtra(MESSAGE_KEY);
                     mActivity.serverError(error);
-                    break;
-                }
-                case CMD_VALUE_STARTED: {
-                    String ip = intent.getStringExtra(MESSAGE_KEY);
-                    mActivity.serverHasStarted(ip);
                     break;
                 }
                 case CMD_VALUE_STOP: {
