@@ -1,10 +1,548 @@
-<!DOCTYPE HTML> <html lang=""> <head> <meta charset="UTF-8"> <meta content="text/html; charset=utf-8" http-equiv="Content-Type"> <title>Http缓存 · GitBook</title> <meta http-equiv="X-UA-Compatible" content="IE=edge"/> <meta name="description" content=""> <meta name="generator" content="GitBook 3.2.3"> <link rel="stylesheet" href="../gitbook/style.css"> <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css"> <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css"> <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css"> <meta name="HandheldFriendly" content="true"/> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"> <meta name="apple-mobile-web-app-capable" content="yes"> <meta name="apple-mobile-web-app-status-bar-style" content="black"> <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png"> <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon"> <link rel="next" href="../exception/"/> <link rel="prev" href="simple.html"/> </head> <body> <div class="book"> <div class="book-summary"> <div id="book-search-input" role="search"> <input type="text" placeholder="Type to search"/> </div> <nav role="navigation"> <ul class="summary"> <li class="chapter " data-level="1.1" data-path="../"> <a href="../"> 概述 </a> </li> <li class="chapter " data-level="1.2" data-path="../base/"> <a href="../base/"> 基本Api </a> </li> <li class="chapter " data-level="1.3" data-path="../ssl/"> <a href="../ssl/"> Https </a> </li> <li class="chapter " data-level="1.4" data-path="../handler/"> <a href="../handler/"> Http接口 </a> <ul class="articles"> <li class="chapter " data-level="1.4.1" data-path="../handler/image.html"> <a href="../handler/image.html"> 返回图片 </a> </li> <li class="chapter " data-level="1.4.2" data-path="../handler/download.html"> <a href="../handler/download.html"> 下载文件 </a> </li> <li class="chapter " data-level="1.4.3" data-path="../handler/upload.html"> <a href="../handler/upload.html"> 上传文件 </a> </li> <li class="chapter " data-level="1.4.4" data-path="../handler/json.html"> <a href="../handler/json.html"> 返回JSON </a> </li> <li class="chapter " data-level="1.4.5" data-path="../handler/method.html"> <a href="../handler/method.html"> 请求方法 </a> </li> <li class="chapter " data-level="1.4.6" data-path="../handler/cache.html"> <a href="../handler/cache.html"> Http缓存 </a> </li> </ul> </li> <li class="chapter " data-level="1.5" data-path="../website/"> <a href="../website/"> 网站 </a> <ul class="articles"> <li class="chapter " data-level="1.5.1" data-path="../website/assets.html"> <a href="../website/assets.html"> 基于Assets </a> </li> <li class="chapter " data-level="1.5.2" data-path="../website/storage.html"> <a href="../website/storage.html"> 基于SD卡 </a> </li> <li class="chapter " data-level="1.5.3" data-path="../website/file.html"> <a href="../website/file.html"> 文件浏览器 </a> </li> <li class="chapter " data-level="1.5.4" data-path="../website/define.html"> <a href="../website/define.html"> 自定义 </a> </li> <li class="chapter " data-level="1.5.5" data-path="../website/cache.html"> <a href="../website/cache.html"> Http缓存 </a> </li> </ul> </li> <li class="chapter " data-level="1.6" data-path="../interceptor/"> <a href="../interceptor/"> 拦截器 </a> </li> <li class="chapter " data-level="1.7" data-path="./"> <a href="./"> 过滤器 </a> <ul class="articles"> <li class="chapter " data-level="1.7.1" data-path="simple.html"> <a href="simple.html"> 简单示例 </a> </li> <li class="chapter active" data-level="1.7.2" data-path="cache.html"> <a href="cache.html"> Http缓存 </a> </li> </ul> </li> <li class="chapter " data-level="1.8" data-path="../exception/"> <a href="../exception/"> 异常解决者 </a> <ul class="articles"> <li class="chapter " data-level="1.8.1" data-path="../exception/default.html"> <a href="../exception/default.html"> 默认 </a> </li> <li class="chapter " data-level="1.8.2" data-path="../exception/define.html"> <a href="../exception/define.html"> 自定义 </a> </li> </ul> </li> <li class="chapter " data-level="1.9" data-path="../expand/"> <a href="../expand/"> 扩展 </a> <ul class="articles"> <li class="chapter " data-level="1.9.1" data-path="../expand/view.html"> <a href="../expand/view.html"> View </a> </li> <li class="chapter " data-level="1.9.2" data-path="../expand/parser.html"> <a href="../expand/parser.html"> Request解析 </a> </li> </ul> </li> <li class="divider"></li> <li> <a href="https://www.gitbook.com" target="blank" class="gitbook-link"> Published with GitBook </a> </li> </ul> </nav> </div> <div class="book-body"> <div class="body-inner"> <div class="book-header" role="navigation"> <h1> <i class="fa fa-circle-o-notch fa-spin"></i> <a href="..">Http缓存</a> </h1> </div> <div class="page-wrapper" tabindex="-1" role="main"> <div class="page-inner"> <div id="book-search-results"> <div class="search-noresults"> <section class="normal markdown-section"> <h1 id="http&#x7F13;&#x5B58;">Http&#x7F13;&#x5B58;</h1> <p>&#x8FC7;&#x6EE4;&#x5668;&#x662F;&#x975E;&#x5E38;&#x6709;&#x7528;&#x7684;&#xFF0C;&#x6BD4;&#x5982;Http&#x7F13;&#x5B58;&#x534F;&#x8BAE;&#x7684;&#x5B9E;&#x73B0;&#x5C31;&#x53EF;&#x4EE5;&#x57FA;&#x4E8E;&#x8FC7;&#x6EE4;&#x5668;&#x6765;&#x505A;&#x3002; </p> <p>&#x5728;AndServer&#x4E2D;&#xFF0C;&#x6709;&#x4E00;&#x4E2A;<code>HttpCacheFilter</code>&#x7C7B;&#xFF0C;&#x5B83;&#x5B9E;&#x73B0;&#x4E86;Http&#x7F13;&#x5B58;&#x534F;&#x8BAE;&#x90E8;&#x5206;&#xFF0C;&#x4E0B;&#x9762;&#x662F;&#x5B83;&#x5B9E;&#x73B0;&#x7684;&#x51E0;&#x4E2A;&#x5173;&#x952E;&#x5934;&#xFF1A;</p> <ul> <li>Cache-Control</li> <li>Last-Modified</li> <li>If-Modified-Since</li> <li>If-Unmodified-Since</li> <li>ETag</li> <li>If-None-Match</li> </ul> <h2 id="&#x7528;&#x6CD5;">&#x7528;&#x6CD5;</h2> <p>&#x6BD4;&#x5982;&#x6211;&#x4EEC;100%&#x5EFA;&#x8BAE;&#x5F00;&#x542F;<code>Website</code>&#x7684;&#x7F13;&#x5B58;&#xFF0C;&#x5B83;&#x80FD;&#x63D0;&#x9AD8;&#x7528;&#x6765;&#x63D0;&#x9AD8;&#x670D;&#x52A1;&#x5668;&#x6027;&#x80FD;&#xFF0C;&#x5C24;&#x5176;&#x50CF;<code>AndServer</code>&#x8FD9;&#x79CD;&#x8FD0;&#x884C;&#x5728;&#x624B;&#x673A;&#x7AEF;&#x7684;&#x670D;&#x52A1;&#x5668;&#x3002; </p> <pre><code>Server server = AndServer.serverBuilder()
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>Http缓存 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="../exception/" />
+    
+    
+    <link rel="prev" href="simple.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    概述
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../base/">
+            
+                <a href="../base/">
+            
+                    
+                    基本Api
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../ssl/">
+            
+                <a href="../ssl/">
+            
+                    
+                    Https
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../handler/">
+            
+                <a href="../handler/">
+            
+                    
+                    Http接口
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../handler/image.html">
+            
+                <a href="../handler/image.html">
+            
+                    
+                    返回图片
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../handler/download.html">
+            
+                <a href="../handler/download.html">
+            
+                    
+                    下载文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../handler/upload.html">
+            
+                <a href="../handler/upload.html">
+            
+                    
+                    上传文件
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../handler/json.html">
+            
+                <a href="../handler/json.html">
+            
+                    
+                    返回JSON
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../handler/method.html">
+            
+                <a href="../handler/method.html">
+            
+                    
+                    请求方法
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../handler/cache.html">
+            
+                <a href="../handler/cache.html">
+            
+                    
+                    Http缓存
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../website/">
+            
+                <a href="../website/">
+            
+                    
+                    网站
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../website/assets.html">
+            
+                <a href="../website/assets.html">
+            
+                    
+                    基于Assets
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../website/storage.html">
+            
+                <a href="../website/storage.html">
+            
+                    
+                    基于SD卡
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../website/file.html">
+            
+                <a href="../website/file.html">
+            
+                    
+                    文件浏览器
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../website/define.html">
+            
+                <a href="../website/define.html">
+            
+                    
+                    自定义
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../website/cache.html">
+            
+                <a href="../website/cache.html">
+            
+                    
+                    Http缓存
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../interceptor/">
+            
+                <a href="../interceptor/">
+            
+                    
+                    拦截器
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    过滤器
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="simple.html">
+            
+                <a href="simple.html">
+            
+                    
+                    简单示例
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.7.2" data-path="cache.html">
+            
+                <a href="cache.html">
+            
+                    
+                    Http缓存
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../exception/">
+            
+                <a href="../exception/">
+            
+                    
+                    异常解决者
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.8.1" data-path="../exception/default.html">
+            
+                <a href="../exception/default.html">
+            
+                    
+                    默认
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8.2" data-path="../exception/define.html">
+            
+                <a href="../exception/define.html">
+            
+                    
+                    自定义
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../expand/">
+            
+                <a href="../expand/">
+            
+                    
+                    扩展
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.9.1" data-path="../expand/view.html">
+            
+                <a href="../expand/view.html">
+            
+                    
+                    View
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9.2" data-path="../expand/parser.html">
+            
+                <a href="../expand/parser.html">
+            
+                    
+                    Request解析
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >Http缓存</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="http&#x7F13;&#x5B58;">Http&#x7F13;&#x5B58;</h1>
+<p>&#x8FC7;&#x6EE4;&#x5668;&#x662F;&#x975E;&#x5E38;&#x6709;&#x7528;&#x7684;&#xFF0C;&#x6BD4;&#x5982;Http&#x7F13;&#x5B58;&#x534F;&#x8BAE;&#x7684;&#x5B9E;&#x73B0;&#x5C31;&#x53EF;&#x4EE5;&#x57FA;&#x4E8E;&#x8FC7;&#x6EE4;&#x5668;&#x6765;&#x505A;&#x3002;  </p>
+<p>&#x5728;AndServer&#x4E2D;&#xFF0C;&#x6709;&#x4E00;&#x4E2A;<code>HttpCacheFilter</code>&#x7C7B;&#xFF0C;&#x5B83;&#x5B9E;&#x73B0;&#x4E86;Http&#x7F13;&#x5B58;&#x534F;&#x8BAE;&#x90E8;&#x5206;&#xFF0C;&#x4E0B;&#x9762;&#x662F;&#x5B83;&#x5B9E;&#x73B0;&#x7684;&#x51E0;&#x4E2A;&#x5173;&#x952E;&#x5934;&#xFF1A;</p>
+<ul>
+<li>Cache-Control</li>
+<li>Last-Modified</li>
+<li>If-Modified-Since</li>
+<li>If-Unmodified-Since</li>
+<li>ETag</li>
+<li>If-None-Match</li>
+</ul>
+<h2 id="&#x7528;&#x6CD5;">&#x7528;&#x6CD5;</h2>
+<p>&#x6BD4;&#x5982;&#x6211;&#x4EEC;100%&#x5EFA;&#x8BAE;&#x5F00;&#x542F;<code>Website</code>&#x7684;&#x7F13;&#x5B58;&#xFF0C;&#x5B83;&#x80FD;&#x63D0;&#x9AD8;&#x7528;&#x6765;&#x63D0;&#x9AD8;&#x670D;&#x52A1;&#x5668;&#x6027;&#x80FD;&#xFF0C;&#x5C24;&#x5176;&#x50CF;<code>AndServer</code>&#x8FD9;&#x79CD;&#x8FD0;&#x884C;&#x5728;&#x624B;&#x673A;&#x7AEF;&#x7684;&#x670D;&#x52A1;&#x5668;&#x3002;  </p>
+<pre><code>Server server = AndServer.serverBuilder()
     ...
     .filter(new HttpCacheFilter())
     .build();
 
 ...
-</code></pre><p>&#x5982;&#x4E0A;&#x8FF0;&#x4EE3;&#x7801;&#x5373;&#x53EF;&#x6253;&#x5F00;AndServer&#x81EA;&#x5E26;&#x7684;&#x51E0;&#x4E2A;<code>Website</code>&#x7684;&#x7F13;&#x5B58;&#xFF1A;</p> <ul> <li>AssetsWebsite</li> <li>StorageWebsite</li> </ul> <h2 id="http&#x7F13;&#x5B58;&#x534F;&#x8BAE;">Http&#x7F13;&#x5B58;&#x534F;&#x8BAE;</h2> <p>&#x6211;&#x4EEC;&#x5148;&#x6765;&#x8BA4;&#x8BC6;AndServer&#x4E2D;&#x7684;&#x4E24;&#x4E2A;Interface&#xFF1A;</p> <ol> <li>LastModified&#xFF0C;&#x7528;&#x6765;&#x652F;&#x6301;&#x54CD;&#x5E94;&#x5934;&#x7684;<code>Last-Modified</code>&#x548C;&#x8BF7;&#x6C42;&#x5934;&#x7684;<code>If-Modified-Since</code></li> <li>ETag&#xFF0C;&#x7528;&#x6765;&#x652F;&#x6301;&#x54CD;&#x5E94;&#x5934;&#x7684;<code>ETag</code>&#x548C;&#x8BF7;&#x6C42;&#x5934;&#x7684;<code>If-None-Match</code></li> </ol> <blockquote> <p>&#x5173;&#x4E8E;&#x4E0A;&#x8FF0;&#x4E24;&#x4E2A;Http&#x5934;&#x7684;&#x6982;&#x5FF5;&#xFF0C;&#x5982;&#x679C;&#x5927;&#x5BB6;&#x8FD8;&#x6709;&#x7591;&#x95EE;&#x8BF7;Google&#x641C;&#x7D22;&#x76F8;&#x5173;&#x8D44;&#x6599;&#x4E86;&#x89E3;&#x3002;</p> </blockquote> <p>&#x6BCF;&#x4E2A;&#x63A5;&#x53E3;&#x7684;&#x6570;&#x636E;&#x80AF;&#x5B9A;&#x662F;&#x53C8;<strong>&#x552F;&#x4E00;</strong>&#x5C5E;&#x6027;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x8981;&#x4FDD;&#x8BC1;&#x6BCF;&#x4E00;&#x4E2A;&#x63A5;&#x53E3;&#x7684;&#x6570;&#x636E;&#x90FD;&#x6709;&#x4E00;&#x4E2A;&#x552F;&#x4E00;ID&#x3002;<code>LastModified</code>&#x63A5;&#x53E3;&#x662F;&#x8FD4;&#x56DE;&#x5F53;&#x524D;&#x63A5;&#x53E3;&#x6307;&#x5411;&#x8D44;&#x6E90;&#x7684;&#x4FEE;&#x6539;&#x65F6;&#x95F4;&#x7684;&#xFF0C;<code>ETag</code>&#x63A5;&#x53E3;&#x662F;&#x8FD4;&#x56DE;&#x5F53;&#x524D;&#x63A5;&#x53E3;&#x6307;&#x5411;&#x8D44;&#x6E90;&#x7684;&#x552F;&#x4E00;&#x503C;&#x7684;&#x3002;<strong>&#x552F;&#x4E00;&#x503C;</strong>&#x8FD9;&#x4E2A;&#x6982;&#x5FF5;&#x53EF;&#x80FD;&#x6BD4;&#x8F83;&#x96BE;&#x7406;&#x89E3;&#xFF0C;&#x56E0;&#x4E3A;Http&#x6CA1;&#x6709;&#x89C4;&#x5B9A;<code>ETag</code>&#x7684;&#x503C;&#x662F;&#x8D44;&#x6E90;&#x7684;&#x4EC0;&#x4E48;&#x5C5E;&#x6027;&#xFF0C;&#x6BD4;&#x5982;<code>HashCode</code>&#x3001;<code>MD5</code>&#x7B49;&#x7B49;&#x90FD;&#x53EF;&#x4EE5;&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x552F;&#x4E00;&#x5C5E;&#x6027;&#x3002; </p> <h3 id="lastmodified">LastModified</h3> <p>&#x6B64;&#x63A5;&#x53E3;&#x8FD4;&#x56DE;&#x5F53;&#x524D;&#x8D44;&#x6E90;&#x7684;&#x4FEE;&#x6539;&#x65F6;&#x95F4;&#xFF08;<code>Last-Modified</code>&#x54CD;&#x5E94;&#x5934;&#xFF09;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x68C0;&#x6D4B;&#x5230;&#x8FD9;&#x4E2A;&#x54CD;&#x5E94;&#x5934;&#x65F6;&#x4F1A;&#x7F13;&#x5B58;&#x5F53;&#x524D;&#x63A5;&#x53E3;&#x7684;&#x54CD;&#x5E94;&#x6570;&#x636E;&#x3002;&#x5BA2;&#x6237;&#x7AEF;&#x518D;&#x6B21;&#x8BF7;&#x6C42;&#x5F53;&#x524D;&#x8D44;&#x6E90;&#x65F6;&#xFF0C;&#x4F1A;&#x5E26;&#x4E0A;&#x4E0A;&#x6B21;&#x8BF7;&#x6C42;&#x6B64;&#x63A5;&#x53E3;&#x8FD4;&#x56DE;&#x7684;&#x4FEE;&#x6539;&#x65F6;&#x95F4;&#xFF08;<code>If-Modified-Since</code>&#x76F8;&#x5E94;&#x5934;&#xFF09;&#xFF0C;&#x670D;&#x52A1;&#x5668;&#x4F1A;&#x7528;<code>If-Modified-Since</code>&#x548C;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x8D44;&#x6E90;&#x7684;&#x4FEE;&#x6539;&#x65F6;&#x95F4;&#x505A;&#x5BF9;&#x6BD4;&#x3002;&#x5982;&#x679C;<code>If-Modified-Since</code>&#x5927;&#x4E8E;&#x7B49;&#x4E8E;&#x670D;&#x52A1;&#x5668;&#x8D44;&#x6E90;&#x7684;&#x4FEE;&#x6539;&#x65F6;&#x95F4;&#xFF0C;&#x90A3;&#x4E48;&#x8FD4;&#x56DE;304&#x54CD;&#x5E94;&#x7801;&#xFF0C;&#x6CA1;&#x6709;&#x4EFB;&#x4F55;&#x54CD;&#x5E94;&#x5305;&#x4F53;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x5C06;&#x4F1A;&#x4F7F;&#x7528;&#x4E0A;&#x6B21;&#x7F13;&#x5B58;&#x7684;&#x6570;&#x636E;&#xFF1B;&#x5982;&#x679C;<code>If-Modified-Since</code>&#x5C0F;&#x4E8E;&#x670D;&#x52A1;&#x5668;&#x8D44;&#x6E90;&#x7684;&#x4FEE;&#x6539;&#x65F6;&#x95F4;&#xFF0C;&#x8BF4;&#x660E;&#x81EA;&#x4E0A;&#x6B21;&#x8BF7;&#x6C42;&#x4E4B;&#x540E;&#xFF0C;&#x6B64;&#x8D44;&#x6E90;&#x5DF2;&#x7ECF;&#x88AB;&#x4FEE;&#x6539;&#x8FC7;&#x4E86;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x670D;&#x52A1;&#x5668;&#x7684;&#x8D44;&#x6E90;&#x6BD4;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8D44;&#x6E90;&#x65B0;&#xFF0C;&#x670D;&#x52A1;&#x5668;&#x6B64;&#x65F6;&#x8FD4;&#x56DE;&#x54CD;&#x5E94;&#x7801;200&#xFF0C;&#x8FD4;&#x56DE;&#x65B0;&#x7684;&#x8D44;&#x6E90;&#x4F5C;&#x4E3A;&#x54CD;&#x5E94;&#x5305;&#x4F53;&#x3002;</p> <h3 id="etag">ETag</h3> <p>&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#x6211;&#x4EEC;&#x53EA;&#x8981;&#x5F00;&#x542F;<code>LastModified</code>&#x5373;&#x53EF;&#xFF0C;&#x90A3;&#x4E48;ETag&#x53C8;&#x662F;&#x505A;&#x4EC0;&#x4E48;&#x7684;&#x5462;&#xFF1F;&#x56E0;&#x4E3A;Unix&#x65F6;&#x95F4;&#x6233;&#x662F;&#x6309;&#x7167;&#x79D2;&#x8BA1;&#x7B97;&#x7684;&#xFF0C;&#x6240;&#x4EE5;Http&#x4E2D;&#x7684;&#x65F6;&#x95F4;&#x90FD;&#x662F;&#x79D2;&#xFF0C;&#x6216;&#x8005;&#x8BF4;&#x8868;&#x793A;&#x6BEB;&#x79D2;&#x7684;&#x4E09;&#x4F4D;&#x90FD;&#x662F;0&#x3002;&#x7531;&#x6B64;&#x53EF;&#x89C1;&#xFF0C;&#x5982;&#x679C;&#x5F53;&#x524D;&#x63A5;&#x53E3;&#x6307;&#x5411;&#x7684;&#x8D44;&#x6E90;&#x5728;1&#x79D2;&#x5185;&#x88AB;&#x4FEE;&#x6539;&#xFF0C;&#x90A3;&#x4E48;&#x5BA2;&#x6237;&#x7AEF;&#x5C06;&#x62FF;&#x4E0D;&#x5230;&#x6700;&#x65B0;&#x7684;&#x8D44;&#x6E90;&#x3002;&#x6240;&#x4EE5;&#x4ECB;&#x4E8E;&#x6B64;&#xFF0C;Http&#x6DFB;&#x52A0;&#x4E86;ETag&#x6765;&#x517C;&#x5BB9;<code>Last-Modified</code>&#xFF0C;Http&#x534F;&#x8BAE;&#x56FA;&#x5B9A;<code>ETag</code>&#x7684;&#x503C;&#x5E94;&#x8BE5;&#x662F;&#x7C92;&#x5EA6;&#x7684;&#x503C;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#x5B83;&#x6BD4;<code>Last-Modified</code>&#x66F4;&#x52A0;&#x7EC6;&#x5316;&#x3002;</p> <h2 id="requesthandler&#x5982;&#x4F55;&#x4F7F;&#x7528;&#x7F13;&#x5B58;">RequestHandler&#x5982;&#x4F55;&#x4F7F;&#x7528;&#x7F13;&#x5B58;</h2> <p>&#x5982;&#x679C;&#x5F00;&#x53D1;&#x8005;&#x8BBE;&#x7F6E;&#x4E86;<code>HttpCacheFilter</code>&#x4E3A;AndServer&#x7684;&#x8FC7;&#x6EE4;&#x5668;&#xFF0C;&#x90A3;&#x4E48;&#x4E3A;<code>RequestHandler</code>&#x5F00;&#x542F;&#x7F13;&#x5B58;&#x529F;&#x80FD;&#x5C06;&#x4F1A;&#x5F88;&#x7B80;&#x5355;&#xFF0C;&#x4E0D;&#x7528;&#x81EA;&#x5DF1;&#x5728;<code>Response</code>&#x4E2D;&#x8BBE;&#x7F6E;&#x4EFB;&#x4F55;&#x5934;&#x3002;</p> <pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyHandler</span> <span class="hljs-title">implement</span> <span class="hljs-title">RequestHandler</span>, <span class="hljs-title">LastModified</span> </span>{
+</code></pre><p>&#x5982;&#x4E0A;&#x8FF0;&#x4EE3;&#x7801;&#x5373;&#x53EF;&#x6253;&#x5F00;AndServer&#x81EA;&#x5E26;&#x7684;&#x51E0;&#x4E2A;<code>Website</code>&#x7684;&#x7F13;&#x5B58;&#xFF1A;</p>
+<ul>
+<li>AssetsWebsite</li>
+<li>StorageWebsite</li>
+</ul>
+<h2 id="http&#x7F13;&#x5B58;&#x534F;&#x8BAE;">Http&#x7F13;&#x5B58;&#x534F;&#x8BAE;</h2>
+<p>&#x6211;&#x4EEC;&#x5148;&#x6765;&#x8BA4;&#x8BC6;AndServer&#x4E2D;&#x7684;&#x4E24;&#x4E2A;Interface&#xFF1A;</p>
+<ol>
+<li>LastModified&#xFF0C;&#x7528;&#x6765;&#x652F;&#x6301;&#x54CD;&#x5E94;&#x5934;&#x7684;<code>Last-Modified</code>&#x548C;&#x8BF7;&#x6C42;&#x5934;&#x7684;<code>If-Modified-Since</code></li>
+<li>ETag&#xFF0C;&#x7528;&#x6765;&#x652F;&#x6301;&#x54CD;&#x5E94;&#x5934;&#x7684;<code>ETag</code>&#x548C;&#x8BF7;&#x6C42;&#x5934;&#x7684;<code>If-None-Match</code></li>
+</ol>
+<blockquote>
+<p>&#x5173;&#x4E8E;&#x4E0A;&#x8FF0;&#x4E24;&#x4E2A;Http&#x5934;&#x7684;&#x6982;&#x5FF5;&#xFF0C;&#x5982;&#x679C;&#x5927;&#x5BB6;&#x8FD8;&#x6709;&#x7591;&#x95EE;&#x8BF7;Google&#x641C;&#x7D22;&#x76F8;&#x5173;&#x8D44;&#x6599;&#x4E86;&#x89E3;&#x3002;</p>
+</blockquote>
+<p>&#x6BCF;&#x4E2A;&#x63A5;&#x53E3;&#x7684;&#x6570;&#x636E;&#x80AF;&#x5B9A;&#x662F;&#x53C8;<strong>&#x552F;&#x4E00;</strong>&#x5C5E;&#x6027;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x8981;&#x4FDD;&#x8BC1;&#x6BCF;&#x4E00;&#x4E2A;&#x63A5;&#x53E3;&#x7684;&#x6570;&#x636E;&#x90FD;&#x6709;&#x4E00;&#x4E2A;&#x552F;&#x4E00;ID&#x3002;<code>LastModified</code>&#x63A5;&#x53E3;&#x662F;&#x8FD4;&#x56DE;&#x5F53;&#x524D;&#x63A5;&#x53E3;&#x6307;&#x5411;&#x8D44;&#x6E90;&#x7684;&#x4FEE;&#x6539;&#x65F6;&#x95F4;&#x7684;&#xFF0C;<code>ETag</code>&#x63A5;&#x53E3;&#x662F;&#x8FD4;&#x56DE;&#x5F53;&#x524D;&#x63A5;&#x53E3;&#x6307;&#x5411;&#x8D44;&#x6E90;&#x7684;&#x552F;&#x4E00;&#x503C;&#x7684;&#x3002;<strong>&#x552F;&#x4E00;&#x503C;</strong>&#x8FD9;&#x4E2A;&#x6982;&#x5FF5;&#x53EF;&#x80FD;&#x6BD4;&#x8F83;&#x96BE;&#x7406;&#x89E3;&#xFF0C;&#x56E0;&#x4E3A;Http&#x6CA1;&#x6709;&#x89C4;&#x5B9A;<code>ETag</code>&#x7684;&#x503C;&#x662F;&#x8D44;&#x6E90;&#x7684;&#x4EC0;&#x4E48;&#x5C5E;&#x6027;&#xFF0C;&#x6BD4;&#x5982;<code>HashCode</code>&#x3001;<code>MD5</code>&#x7B49;&#x7B49;&#x90FD;&#x53EF;&#x4EE5;&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x552F;&#x4E00;&#x5C5E;&#x6027;&#x3002;  </p>
+<h3 id="lastmodified">LastModified</h3>
+<p>&#x6B64;&#x63A5;&#x53E3;&#x8FD4;&#x56DE;&#x5F53;&#x524D;&#x8D44;&#x6E90;&#x7684;&#x4FEE;&#x6539;&#x65F6;&#x95F4;&#xFF08;<code>Last-Modified</code>&#x54CD;&#x5E94;&#x5934;&#xFF09;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x68C0;&#x6D4B;&#x5230;&#x8FD9;&#x4E2A;&#x54CD;&#x5E94;&#x5934;&#x65F6;&#x4F1A;&#x7F13;&#x5B58;&#x5F53;&#x524D;&#x63A5;&#x53E3;&#x7684;&#x54CD;&#x5E94;&#x6570;&#x636E;&#x3002;&#x5BA2;&#x6237;&#x7AEF;&#x518D;&#x6B21;&#x8BF7;&#x6C42;&#x5F53;&#x524D;&#x8D44;&#x6E90;&#x65F6;&#xFF0C;&#x4F1A;&#x5E26;&#x4E0A;&#x4E0A;&#x6B21;&#x8BF7;&#x6C42;&#x6B64;&#x63A5;&#x53E3;&#x8FD4;&#x56DE;&#x7684;&#x4FEE;&#x6539;&#x65F6;&#x95F4;&#xFF08;<code>If-Modified-Since</code>&#x76F8;&#x5E94;&#x5934;&#xFF09;&#xFF0C;&#x670D;&#x52A1;&#x5668;&#x4F1A;&#x7528;<code>If-Modified-Since</code>&#x548C;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x8D44;&#x6E90;&#x7684;&#x4FEE;&#x6539;&#x65F6;&#x95F4;&#x505A;&#x5BF9;&#x6BD4;&#x3002;&#x5982;&#x679C;<code>If-Modified-Since</code>&#x5927;&#x4E8E;&#x7B49;&#x4E8E;&#x670D;&#x52A1;&#x5668;&#x8D44;&#x6E90;&#x7684;&#x4FEE;&#x6539;&#x65F6;&#x95F4;&#xFF0C;&#x90A3;&#x4E48;&#x8FD4;&#x56DE;304&#x54CD;&#x5E94;&#x7801;&#xFF0C;&#x6CA1;&#x6709;&#x4EFB;&#x4F55;&#x54CD;&#x5E94;&#x5305;&#x4F53;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x5C06;&#x4F1A;&#x4F7F;&#x7528;&#x4E0A;&#x6B21;&#x7F13;&#x5B58;&#x7684;&#x6570;&#x636E;&#xFF1B;&#x5982;&#x679C;<code>If-Modified-Since</code>&#x5C0F;&#x4E8E;&#x670D;&#x52A1;&#x5668;&#x8D44;&#x6E90;&#x7684;&#x4FEE;&#x6539;&#x65F6;&#x95F4;&#xFF0C;&#x8BF4;&#x660E;&#x81EA;&#x4E0A;&#x6B21;&#x8BF7;&#x6C42;&#x4E4B;&#x540E;&#xFF0C;&#x6B64;&#x8D44;&#x6E90;&#x5DF2;&#x7ECF;&#x88AB;&#x4FEE;&#x6539;&#x8FC7;&#x4E86;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x670D;&#x52A1;&#x5668;&#x7684;&#x8D44;&#x6E90;&#x6BD4;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8D44;&#x6E90;&#x65B0;&#xFF0C;&#x670D;&#x52A1;&#x5668;&#x6B64;&#x65F6;&#x8FD4;&#x56DE;&#x54CD;&#x5E94;&#x7801;200&#xFF0C;&#x8FD4;&#x56DE;&#x65B0;&#x7684;&#x8D44;&#x6E90;&#x4F5C;&#x4E3A;&#x54CD;&#x5E94;&#x5305;&#x4F53;&#x3002;</p>
+<h3 id="etag">ETag</h3>
+<p>&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#x6211;&#x4EEC;&#x53EA;&#x8981;&#x5F00;&#x542F;<code>LastModified</code>&#x5373;&#x53EF;&#xFF0C;&#x90A3;&#x4E48;ETag&#x53C8;&#x662F;&#x505A;&#x4EC0;&#x4E48;&#x7684;&#x5462;&#xFF1F;&#x56E0;&#x4E3A;Unix&#x65F6;&#x95F4;&#x6233;&#x662F;&#x6309;&#x7167;&#x79D2;&#x8BA1;&#x7B97;&#x7684;&#xFF0C;&#x6240;&#x4EE5;Http&#x4E2D;&#x7684;&#x65F6;&#x95F4;&#x90FD;&#x662F;&#x79D2;&#xFF0C;&#x6216;&#x8005;&#x8BF4;&#x8868;&#x793A;&#x6BEB;&#x79D2;&#x7684;&#x4E09;&#x4F4D;&#x90FD;&#x662F;0&#x3002;&#x7531;&#x6B64;&#x53EF;&#x89C1;&#xFF0C;&#x5982;&#x679C;&#x5F53;&#x524D;&#x63A5;&#x53E3;&#x6307;&#x5411;&#x7684;&#x8D44;&#x6E90;&#x5728;1&#x79D2;&#x5185;&#x88AB;&#x4FEE;&#x6539;&#xFF0C;&#x90A3;&#x4E48;&#x5BA2;&#x6237;&#x7AEF;&#x5C06;&#x62FF;&#x4E0D;&#x5230;&#x6700;&#x65B0;&#x7684;&#x8D44;&#x6E90;&#x3002;&#x6240;&#x4EE5;&#x4ECB;&#x4E8E;&#x6B64;&#xFF0C;Http&#x6DFB;&#x52A0;&#x4E86;ETag&#x6765;&#x517C;&#x5BB9;<code>Last-Modified</code>&#xFF0C;Http&#x534F;&#x8BAE;&#x56FA;&#x5B9A;<code>ETag</code>&#x7684;&#x503C;&#x5E94;&#x8BE5;&#x662F;&#x7C92;&#x5EA6;&#x7684;&#x503C;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#x5B83;&#x6BD4;<code>Last-Modified</code>&#x66F4;&#x52A0;&#x7EC6;&#x5316;&#x3002;</p>
+<h2 id="requesthandler&#x5982;&#x4F55;&#x4F7F;&#x7528;&#x7F13;&#x5B58;">RequestHandler&#x5982;&#x4F55;&#x4F7F;&#x7528;&#x7F13;&#x5B58;</h2>
+<p>&#x5982;&#x679C;&#x5F00;&#x53D1;&#x8005;&#x8BBE;&#x7F6E;&#x4E86;<code>HttpCacheFilter</code>&#x4E3A;AndServer&#x7684;&#x8FC7;&#x6EE4;&#x5668;&#xFF0C;&#x90A3;&#x4E48;&#x4E3A;<code>RequestHandler</code>&#x5F00;&#x542F;&#x7F13;&#x5B58;&#x529F;&#x80FD;&#x5C06;&#x4F1A;&#x5F88;&#x7B80;&#x5355;&#xFF0C;&#x4E0D;&#x7528;&#x81EA;&#x5DF1;&#x5728;<code>Response</code>&#x4E2D;&#x8BBE;&#x7F6E;&#x4EFB;&#x4F55;&#x5934;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyHandler</span> <span class="hljs-title">implement</span> <span class="hljs-title">RequestHandler</span>, <span class="hljs-title">LastModified</span> </span>{
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">handle</span><span class="hljs-params">(HttpRequest request, HttpResponse response, HttpContext context)</span>
             <span class="hljs-keyword">throws</span> HttpException, IOException </span>{
@@ -27,7 +565,12 @@
         <span class="hljs-keyword">return</span> file.lastModified();
     }
 }
-</code></pre> <p>&#x6BD4;&#x5982;&#x5BF9;&#x67D0;&#x4E2A;&#x6587;&#x4EF6;&#x505A;&#x4E86;&#x7F13;&#x5B58;&#x652F;&#x6301;&#xFF0C;&#x4EE5;&#x5F53;&#x524D;&#x6587;&#x4EF6;&#x7684;<code>Last-Modified</code>&#x4E3A;&#x552F;&#x4E00;&#x6027;&#x7684;&#x5224;&#x65AD;&#x4F9D;&#x636E;&#x8FD8;&#x4E0D;&#x591F;&#xFF0C;&#x90A3;&#x4E48;&#x6211;&#x4EEC;&#x5E94;&#x8BE5;&#x5B9E;&#x73B0;<code>ETag</code>&#x63A5;&#x53E3;&#xFF0C;&#x8FD4;&#x56DE;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x66F4;&#x8BE6;&#x7EC6;&#x7684;&#x552F;&#x4E00;&#x5C5E;&#x6027;&#x3002; </p> <blockquote> <p><strong>&#x5173;&#x4E8E;ETag&#x7684;&#x5EFA;&#x8BAE;</strong>&#xFF1A;&#x5EFA;&#x8BAE;&#x8FD4;&#x56DE;&#x5F53;&#x524D;&#x6587;&#x4EF6;&#x7684;MD5&#x503C;&#xFF0C;&#x5E76;&#x505A;&#x4E00;&#x4E9B;&#x683C;&#x5F0F;&#x4E0A;&#x7684;&#x5904;&#x7406;&#xFF0C;&#x8FD9;&#x6837;&#x57FA;&#x672C;&#x53EF;&#x4EE5;&#x505A;&#x5230;99.99%&#x7684;&#x552F;&#x4E00;&#x6027;&#x3002;&#x5F53;&#x6587;&#x4EF6;&#x7684;&#x5185;&#x5BB9;&#x88AB;&#x4FEE;&#x6539;&#xFF08;&#x5305;&#x62EC;&#x5728;1&#x79D2;&#x5185;&#x4FEE;&#x6539;&#xFF09;&#x65F6;&#xFF0C;&#x6587;&#x4EF6;&#x7684;MD5&#x4F1A;&#x7ACB;&#x523B;&#x53D1;&#x751F;&#x53D8;&#x5316;&#x3002;&#x5F53;&#x7136;&#x5BF9;&#x4E8E;&#x666E;&#x901A;&#x63A5;&#x53E3;&#x4E5F;&#x662F;&#x4E00;&#x6837;&#xFF0C;&#x53EF;&#x4EE5;&#x8FD4;&#x56DE;&#x8981;&#x8FD4;&#x56DE;&#x5185;&#x5BB9;&#x7684;MD5&#x503C;&#xFF08;&#x6216;&#x8005;&#x5176;&#x5B83;&#x7C92;&#x5EA6;&#x552F;&#x4E00;&#x5C5E;&#x6027;&#x4E5F;&#x53EF;&#x4EE5;&#xFF09;&#x3002;</p> </blockquote> <pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyHandler</span> <span class="hljs-title">implement</span> <span class="hljs-title">RequestHandler</span>, <span class="hljs-title">LastModified</span> </span>{
+</code></pre>
+<p>&#x6BD4;&#x5982;&#x5BF9;&#x67D0;&#x4E2A;&#x6587;&#x4EF6;&#x505A;&#x4E86;&#x7F13;&#x5B58;&#x652F;&#x6301;&#xFF0C;&#x4EE5;&#x5F53;&#x524D;&#x6587;&#x4EF6;&#x7684;<code>Last-Modified</code>&#x4E3A;&#x552F;&#x4E00;&#x6027;&#x7684;&#x5224;&#x65AD;&#x4F9D;&#x636E;&#x8FD8;&#x4E0D;&#x591F;&#xFF0C;&#x90A3;&#x4E48;&#x6211;&#x4EEC;&#x5E94;&#x8BE5;&#x5B9E;&#x73B0;<code>ETag</code>&#x63A5;&#x53E3;&#xFF0C;&#x8FD4;&#x56DE;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x66F4;&#x8BE6;&#x7EC6;&#x7684;&#x552F;&#x4E00;&#x5C5E;&#x6027;&#x3002;  </p>
+<blockquote>
+<p><strong>&#x5173;&#x4E8E;ETag&#x7684;&#x5EFA;&#x8BAE;</strong>&#xFF1A;&#x5EFA;&#x8BAE;&#x8FD4;&#x56DE;&#x5F53;&#x524D;&#x6587;&#x4EF6;&#x7684;MD5&#x503C;&#xFF0C;&#x5E76;&#x505A;&#x4E00;&#x4E9B;&#x683C;&#x5F0F;&#x4E0A;&#x7684;&#x5904;&#x7406;&#xFF0C;&#x8FD9;&#x6837;&#x57FA;&#x672C;&#x53EF;&#x4EE5;&#x505A;&#x5230;99.99%&#x7684;&#x552F;&#x4E00;&#x6027;&#x3002;&#x5F53;&#x6587;&#x4EF6;&#x7684;&#x5185;&#x5BB9;&#x88AB;&#x4FEE;&#x6539;&#xFF08;&#x5305;&#x62EC;&#x5728;1&#x79D2;&#x5185;&#x4FEE;&#x6539;&#xFF09;&#x65F6;&#xFF0C;&#x6587;&#x4EF6;&#x7684;MD5&#x4F1A;&#x7ACB;&#x523B;&#x53D1;&#x751F;&#x53D8;&#x5316;&#x3002;&#x5F53;&#x7136;&#x5BF9;&#x4E8E;&#x666E;&#x901A;&#x63A5;&#x53E3;&#x4E5F;&#x662F;&#x4E00;&#x6837;&#xFF0C;&#x53EF;&#x4EE5;&#x8FD4;&#x56DE;&#x8981;&#x8FD4;&#x56DE;&#x5185;&#x5BB9;&#x7684;MD5&#x503C;&#xFF08;&#x6216;&#x8005;&#x5176;&#x5B83;&#x7C92;&#x5EA6;&#x552F;&#x4E00;&#x5C5E;&#x6027;&#x4E5F;&#x53EF;&#x4EE5;&#xFF09;&#x3002;</p>
+</blockquote>
+<pre><code class="lang-java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyHandler</span> <span class="hljs-title">implement</span> <span class="hljs-title">RequestHandler</span>, <span class="hljs-title">LastModified</span> </span>{
 
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">handle</span><span class="hljs-params">(HttpRequest request, HttpResponse response, HttpContext context)</span>
             <span class="hljs-keyword">throws</span> HttpException, IOException </span>{
@@ -52,4 +595,84 @@
         <span class="hljs-keyword">return</span> DigestUtils.md5DigestAsHex(inStream);
     }
 }
-</code></pre> </section> </div> <div class="search-results"> <div class="has-results"> <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1> <ul class="search-results-list"></ul> </div> <div class="no-results"> <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1> </div> </div> </div> </div> </div> </div> <a href="simple.html" class="navigation navigation-prev " aria-label="Previous page: 简单示例"> <i class="fa fa-angle-left"></i> </a> <a href="../exception/" class="navigation navigation-next " aria-label="Next page: 异常解决者"> <i class="fa fa-angle-right"></i> </a> </div> <script>var gitbook=gitbook||[];gitbook.push(function(){gitbook.page.hasChanged({page:{title:"Http缓存",level:"1.7.2",depth:2,next:{title:"异常解决者",level:"1.8",depth:1,path:"exception/README.md",ref:"exception/README.md",articles:[{title:"默认",level:"1.8.1",depth:2,path:"exception/default.md",ref:"exception/default.md",articles:[]},{title:"自定义",level:"1.8.2",depth:2,path:"exception/define.md",ref:"exception/define.md",articles:[]}]},previous:{title:"简单示例",level:"1.7.1",depth:2,path:"filter/simple.md",ref:"filter/simple.md",articles:[]},dir:"ltr"},config:{gitbook:"*",theme:"default",variables:{},plugins:[],pluginsConfig:{highlight:{},search:{},lunr:{maxIndexSize:1000000,ignoreSpecialCharacters:false},sharing:{facebook:true,twitter:true,google:false,weibo:false,instapaper:false,vk:false,all:["facebook","google","twitter","weibo","instapaper"]},fontsettings:{theme:"white",family:"sans",size:2},"theme-default":{styles:{website:"styles/website.css",pdf:"styles/pdf.css",epub:"styles/epub.css",mobi:"styles/mobi.css",ebook:"styles/ebook.css",print:"styles/print.css"},showLevel:false}},structure:{langs:"LANGS.md",readme:"README.md",glossary:"GLOSSARY.md",summary:"SUMMARY.md"},pdf:{pageNumbers:true,fontSize:12,fontFamily:"Arial",paperSize:"a4",chapterMark:"pagebreak",pageBreaksBefore:"/",margin:{right:62,left:62,top:56,bottom:56}},styles:{website:"styles/website.css",pdf:"styles/pdf.css",epub:"styles/epub.css",mobi:"styles/mobi.css",ebook:"styles/ebook.css",print:"styles/print.css"}},file:{path:"filter/cache.md",mtime:"2017-12-27T05:24:31.296Z",type:"markdown"},gitbook:{version:"3.2.3",time:"2017-12-27T05:41:49.269Z"},basePath:"..",book:{language:""}})});</script> </div> <script src="../gitbook/gitbook.js"></script> <script src="../gitbook/theme.js"></script> <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script> <script src="../gitbook/gitbook-plugin-search/search.js"></script> <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script> <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script> <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script> <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script> </body> </html>
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="simple.html" class="navigation navigation-prev " aria-label="Previous page: 简单示例">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="../exception/" class="navigation navigation-next " aria-label="Next page: 异常解决者">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Http缓存","level":"1.7.2","depth":2,"next":{"title":"异常解决者","level":"1.8","depth":1,"path":"exception/README.md","ref":"exception/README.md","articles":[{"title":"默认","level":"1.8.1","depth":2,"path":"exception/default.md","ref":"exception/default.md","articles":[]},{"title":"自定义","level":"1.8.2","depth":2,"path":"exception/define.md","ref":"exception/define.md","articles":[]}]},"previous":{"title":"简单示例","level":"1.7.1","depth":2,"path":"filter/simple.md","ref":"filter/simple.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"filter/cache.md","mtime":"2018-03-11T04:43:31.968Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-03-11T05:06:52.113Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
