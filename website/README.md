@@ -1,6 +1,6 @@
 # 网站
 
-在[基本Api](../base/api.md)章节中我们演示了如何注册网站，在AndServer中如何注册一个网站。
+在[基本Api](../base/README.md)章节中我们演示了如何注册网站，在AndServer中如何注册一个网站。
 
 ## Website
 AndServer为了实现静态网站内容部署，提供了`Website`这个接口，开发者实现这个接口后注册到AndServer中即可启动网站。

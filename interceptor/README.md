@@ -80,7 +80,7 @@ public boolean onBeforeExecute(HttpRequest request, HttpResponse response, HttpC
 
 > 为了方便阅读代码，这里省去一些非关键代码。
 
-这里就为需要登录的接口拦截了没有登录的请求。还有一些更详细的处理，比如抛出异常等登录，请参考[../exception/README.md](异常解决者)。
+这里就为需要登录的接口拦截了没有登录的请求。还有一些更详细的处理，比如抛出异常等登录，请参考[异常解决者](../exception/README.md)。
 
 ### 结合异常解决者
 如果你读完了异常解决者一章的文档，那么我们可以简化一下我们的拦截器。

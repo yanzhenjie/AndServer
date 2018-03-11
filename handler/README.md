@@ -4,7 +4,7 @@
 
 在AndServer中，每一个Http的path就对应一个`RequestHandler`。它好比SpringMVC中`Controller`的某一个方法上加了`RequestMapping`注解一样，但是很遗憾AndServer目前没有提供像SpringMVC那样的注解来实现path注册（它是我的计划，AndServer2.0将会用编译时注解来实现）。
 
-在[基本Api](../base/api.md)章节我们演示了如何注册一个path到服务器，下面来演示如果实现一个`RequestHandler`。
+在[基本Api](../base/README.md)章节我们演示了如何注册一个path到服务器，下面来演示如果实现一个`RequestHandler`。
 
 步骤：
 1. 实现`RequestHandler`接口
