@@ -1,5 +1,5 @@
 /*
- * Copyright © Yan Zhenjie. All Rights Reserved
+ * Copyright © 2016 Yan Zhenjie.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,9 @@ import org.apache.httpcore.util.EntityUtils;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -131,6 +133,15 @@ public class HttpRequestParser {
             if (index != -1) {
                 uriPath = uriPath.substring(0, index);
             }
+        }
+        String[] pathArray = uriPath.split("/");
+        if (pathArray.length > 1) {
+            List<String> pathList = new ArrayList<>();
+            for (String path : pathArray) {
+                path = UrlCoder.urlDecode(path, "utf-8");
+                pathList.add(path);
+            }
+            uriPath = "/" + TextUtils.join("/", pathList);
         }
         return uriPath;
     }
