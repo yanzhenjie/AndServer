@@ -1,5 +1,5 @@
 /*
- * Copyright © Yan Zhenjie. All Rights Reserved
+ * Copyright © 2017 Yan Zhenjie.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ public class CoreService extends Service {
         if (mServer != null) {
             if (mServer.isRunning()) {
                 String hostAddress = mServer.getInetAddress().getHostAddress();
-                ServerManager.serverHasStarted(CoreService.this, hostAddress);
+                ServerManager.serverStart(CoreService.this, hostAddress);
             } else {
                 mServer.startup();
             }

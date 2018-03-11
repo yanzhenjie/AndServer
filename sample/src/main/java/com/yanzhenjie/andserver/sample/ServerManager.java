@@ -1,3 +1,18 @@
+/*
+ * Copyright © 2017 Yan Zhenjie.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.yanzhenjie.andserver.sample;
 
 import android.content.BroadcastReceiver;
@@ -17,7 +32,6 @@ public class ServerManager extends BroadcastReceiver {
 
     private static final int CMD_VALUE_START = 1;
     private static final int CMD_VALUE_ERROR = 2;
-    private static final int CMD_VALUE_STARTED = 3;
     private static final int CMD_VALUE_STOP = 4;
 
     /**
@@ -36,15 +50,6 @@ public class ServerManager extends BroadcastReceiver {
      */
     public static void serverError(Context context, String error) {
         sendBroadcast(context, CMD_VALUE_ERROR, error);
-    }
-
-    /**
-     * Notify serverHasStarted.
-     *
-     * @param context context.
-     */
-    public static void serverHasStarted(Context context, String hostAddress) {
-        sendBroadcast(context, CMD_VALUE_STARTED, hostAddress);
     }
 
     /**
@@ -112,11 +117,6 @@ public class ServerManager extends BroadcastReceiver {
                 case CMD_VALUE_ERROR: {
                     String error = intent.getStringExtra(MESSAGE_KEY);
                     mActivity.serverError(error);
-                    break;
-                }
-                case CMD_VALUE_STARTED: {
-                    String ip = intent.getStringExtra(MESSAGE_KEY);
-                    mActivity.serverHasStarted(ip);
                     break;
                 }
                 case CMD_VALUE_STOP: {

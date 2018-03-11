@@ -1,5 +1,5 @@
 /*
- * Copyright © Yan Zhenjie. All Rights Reserved
+ * Copyright © 2017 Yan Zhenjie.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import javax.net.ssl.SSLContext;
 /**
  * Created by Yan Zhenjie on 2017/3/13.
  */
-final class Core extends Thread implements Server {
+final class Core implements Server {
 
     static Builder newBuilder() {
         return new Builder();
@@ -81,8 +81,75 @@ final class Core extends Thread implements Server {
 
     @Override
     public void startup() {
-        if (!isRunning)
-            super.start();
+        if (isRunning) return;
+
+        Executors.getInstance().submit(new Runnable() {
+            @Override
+            public void run() {
+                DispatchRequestHandler handler = new DispatchRequestHandler();
+                handler.setInterceptor(mInterceptor);
+                handler.setWebSite(mWebSite);
+                if (mRequestHandlerMap != null && mRequestHandlerMap.size() > 0) {
+                    for (Map.Entry<String, RequestHandler> handlerEntry : mRequestHandlerMap.entrySet()) {
+                        String path = handlerEntry.getKey();
+                        RequestHandler requestHandler = handlerEntry.getValue();
+                        handler.registerRequestHandler(path, requestHandler);
+                    }
+                }
+                handler.setFilter(mFilter);
+                handler.setExceptionResolver(mExceptionResolver);
+
+                mHttpServer = ServerBootstrap.bootstrap()
+                        .setSocketConfig(
+                                SocketConfig.custom()
+                                        .setSoKeepAlive(true)
+                                        .setSoReuseAddress(false)
+                                        .setSoTimeout(mTimeout)
+                                        .setTcpNoDelay(false)
+                                        .build()
+                        )
+                        .setConnectionConfig(
+                                ConnectionConfig.custom()
+                                        .setBufferSize(4 * 1024)
+                                        .setCharset(Charset.defaultCharset())
+                                        .build()
+                        )
+                        .setLocalAddress(mInetAddress)
+                        .setListenerPort(mPort)
+                        .setSslContext(mSSLContext)
+                        .setSslSetupHandler(new SSLSocketInitializer.SSLSocketInitializerWrapper(mSSLSocketInitializer))
+                        .setServerInfo("AndServer")
+                        .registerHandler("*", handler)
+                        .setExceptionLogger(ExceptionLogger.STD_ERR)
+                        .create();
+                try {
+                    isRunning = true;
+                    mHttpServer.start();
+
+                    Executors.getInstance().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mListener != null)
+                                mListener.onStarted();
+                        }
+                    });
+                    Runtime.getRuntime().addShutdownHook(new Thread() {
+                        @Override
+                        public void run() {
+                            mHttpServer.shutdown(3, TimeUnit.SECONDS);
+                        }
+                    });
+                } catch (final Exception e) {
+                    Executors.getInstance().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mListener != null)
+                                mListener.onError(e);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     /**
@@ -90,7 +157,7 @@ final class Core extends Thread implements Server {
      */
     @Override
     public InetAddress getInetAddress() {
-        if (isRunning())
+        if (isRunning)
             return mHttpServer.getInetAddress();
         return null;
     }
@@ -100,89 +167,23 @@ final class Core extends Thread implements Server {
      */
     @Override
     public void shutdown() {
-        if (mHttpServer != null)
-            mHttpServer.shutdown(3, TimeUnit.MINUTES);
-        if (isInterrupted())
-            interrupt();
+        if (!isRunning) return;
 
-        boolean running = isRunning;
-        this.isRunning = false;
+        Executors.getInstance().execute(new Runnable() {
+            @Override
+            public void run() {
+                if (mHttpServer != null)
+                    mHttpServer.shutdown(3, TimeUnit.MINUTES);
 
-        if (running && mListener != null) {
-            Executors.getInstance().post(new Runnable() {
-                @Override
-                public void run() {
-                    mListener.onStopped();
-                }
-            });
-        }
-    }
-
-    @Override
-    public void run() {
-        DispatchRequestHandler handler = new DispatchRequestHandler();
-        handler.setInterceptor(mInterceptor);
-        handler.setWebSite(mWebSite);
-        if (mRequestHandlerMap != null && mRequestHandlerMap.size() > 0) {
-            for (Map.Entry<String, RequestHandler> handlerEntry : mRequestHandlerMap.entrySet()) {
-                String path = handlerEntry.getKey();
-                RequestHandler requestHandler = handlerEntry.getValue();
-                handler.registerRequestHandler(path, requestHandler);
-            }
-        }
-        handler.setFilter(mFilter);
-        handler.setExceptionResolver(mExceptionResolver);
-
-        mHttpServer = ServerBootstrap.bootstrap()
-                .setSocketConfig(
-                        SocketConfig.custom()
-                                .setSoKeepAlive(true)
-                                .setSoReuseAddress(false)
-                                .setSoTimeout(mTimeout)
-                                .setTcpNoDelay(false)
-                                .build()
-                )
-                .setConnectionConfig(
-                        ConnectionConfig.custom()
-                                .setBufferSize(4 * 1024)
-                                .setCharset(Charset.defaultCharset())
-                                .build()
-                )
-                .setLocalAddress(mInetAddress)
-                .setListenerPort(mPort)
-                .setSslContext(mSSLContext)
-                .setSslSetupHandler(new SSLSocketInitializer.SSLSocketInitializerWrapper(mSSLSocketInitializer))
-                .setServerInfo("AndServer")
-                .registerHandler("*", handler)
-                .setExceptionLogger(ExceptionLogger.STD_ERR)
-                .create();
-        try {
-            isRunning = true;
-            mHttpServer.start();
-            if (mListener != null) {
                 Executors.getInstance().post(new Runnable() {
                     @Override
                     public void run() {
-                        mListener.onStarted();
+                        if (mListener != null)
+                            mListener.onStopped();
                     }
                 });
             }
-            Runtime.getRuntime().addShutdownHook(new Thread() {
-                @Override
-                public void run() {
-                    mHttpServer.shutdown(3, TimeUnit.SECONDS);
-                }
-            });
-        } catch (final Exception e) {
-            if (mListener != null) {
-                Executors.getInstance().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mListener.onError(e);
-                    }
-                });
-            }
-        }
+        });
     }
 
     private static final class Builder implements Server.Builder {
