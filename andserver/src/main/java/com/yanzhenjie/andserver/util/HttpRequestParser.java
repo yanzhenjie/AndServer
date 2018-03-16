@@ -44,6 +44,8 @@ import java.util.StringTokenizer;
  */
 public class HttpRequestParser {
 
+    public static final String CHARSET_UTF8 = "utf-8";
+
     /**
      * Parse params from {@link HttpRequest}.
      *
@@ -85,7 +87,7 @@ public class HttpRequestParser {
                 String key = keyValue.substring(0, index);
                 if (lowerCaseNames)
                     key = key.toLowerCase(Locale.ENGLISH);
-                paramMap.put(key, keyValue.substring(index + 1));
+                paramMap.put(key, UrlCoder.urlDecode(keyValue.substring(index + 1), CHARSET_UTF8));
             }
         }
         return paramMap;
@@ -107,7 +109,7 @@ public class HttpRequestParser {
      */
     public static String getContentFromBody(HttpRequest request) throws IOException {
         HttpEntity entity = ((HttpEntityEnclosingRequest) request).getEntity();
-        String charset = parseHeadValue(entity.getContentType().getValue(), "charset", "utf-8");
+        String charset = parseHeadValue(entity.getContentType().getValue(), "charset", CHARSET_UTF8);
         return EntityUtils.toString(entity, charset);
     }
 
@@ -141,7 +143,7 @@ public class HttpRequestParser {
                 path = UrlCoder.urlDecode(path, "utf-8");
                 pathList.add(path);
             }
-            uriPath = "/" + TextUtils.join("/", pathList);
+            uriPath = TextUtils.join("/", pathList);
         }
         return uriPath;
     }
