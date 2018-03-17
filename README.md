@@ -18,7 +18,7 @@ For usage and other information see [Document](http://yanzhenjie.github.io/AndSe
 ## Download
 * Gradle
 ```groovy
-implementation 'com.yanzhenjie:andserver:1.1.2'
+implementation 'com.yanzhenjie:andserver:1.1.3'
 ```
 
 * Maven
@@ -26,12 +26,12 @@ implementation 'com.yanzhenjie:andserver:1.1.2'
 <dependency>
   <groupId>com.yanzhenjie</groupId>
   <artifactId>andserver</artifactId>
-  <version>1.1.2</version>
+  <version>1.1.3</version>
 </dependency>
 ```
 
 * Jar
-It's in Jar folder of [release package](https://github.com/yanzhenjie/AndServer/releases/tag/1.1.2).  
+It's in Jar folder of [release package](https://github.com/yanzhenjie/AndServer/releases/tag/1.1.3).  
 
 AndServer requires at minimum Java 7 or Android 2.3(Api level 9).
 

@@ -17,13 +17,13 @@ ext {
             sampleMinSdkVersion    : 11,
             sampleTargetSdkVersion : 22,
 
-            versionCode            : 14,
-            versionName            : "1.1.2",
+            versionCode            : 15,
+            versionName            : "1.1.3",
     ]
 
     bintray = [
             // library
-            version       : "1.1.2",
+            version       : "1.1.3",
 
             siteUrl       : 'https://github.com/yanzhenjie/AndServer',
             gitUrl        : 'git@github.com:yanzhenjie/AndServer.git',
@@ -55,7 +55,7 @@ ext {
             httpcore  : "com.yanzhenjie.apache:httpcore:4.4.9",
             fileupload: "com.yanzhenjie.apache:fileupload:1.3.3",
 
-            andserver : 'com.yanzhenjie:andserver:1.1.2',
+            andserver : 'com.yanzhenjie:andserver:1.1.3',
             appCompat : 'com.android.support:appcompat-v7:25.3.1',
             design    : 'com.android.support:design:25.3.1',
 
