@@ -103,7 +103,7 @@ final class Core implements Server {
                         .setSocketConfig(
                                 SocketConfig.custom()
                                         .setSoKeepAlive(true)
-                                        .setSoReuseAddress(false)
+                                        .setSoReuseAddress(true)
                                         .setSoTimeout(mTimeout)
                                         .setTcpNoDelay(false)
                                         .build()
