@@ -9,11 +9,11 @@ ext {
 
     android = [
             applicationId          : "com.yanzhenjie.andserver.sample",
-            compileSdkVersion      : 25,
-            buildToolsVersion      : "25.0.3",
+            compileSdkVersion      : 27,
+            buildToolsVersion      : "27.0.3",
 
             libraryMinSdkVersion   : 9,
-            libraryTargetSdkVersion: 25,
+            libraryTargetSdkVersion: 27,
             sampleMinSdkVersion    : 11,
             sampleTargetSdkVersion : 22,
 
@@ -56,8 +56,8 @@ ext {
             fileupload: "com.yanzhenjie.apache:fileupload:1.3.3",
 
             andserver : 'com.yanzhenjie:andserver:1.1.3',
-            appCompat : 'com.android.support:appcompat-v7:25.3.1',
-            design    : 'com.android.support:design:25.3.1',
+            appCompat : 'com.android.support:appcompat-v7:27.1.1',
+            design    : 'com.android.support:design:27.1.1',
 
             loading   : 'com.yanzhenjie:loading:1.0.0'
     ]
