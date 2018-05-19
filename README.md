@@ -1,5 +1,5 @@
 # AndServer
-![Logo](/image/logo.png)
+![Logo](./image/logo.png)
 
 Android platform web server and development framework.  
 
@@ -13,25 +13,13 @@ Some of its features are learned from SpringMVC, It is perfect for developers wh
 
 It's these characteristics may be you like: Https, interceptors, filters, websites, file browser, http cache protocol, exception resolver, file upload and download.  
 
-For usage and other information see [Document](http://yanzhenjie.github.io/AndServer).  
+For usage and other information see [this website](http://yanzhenjie.github.io/AndServer).  
 
 ## Download
-* Gradle
+Add the following dependencies in project's gradle.
 ```groovy
-implementation 'com.yanzhenjie:andserver:1.1.3'
+implementation 'com.yanzhenjie:andserver:1.1.4'
 ```
-
-* Maven
-```xml
-<dependency>
-  <groupId>com.yanzhenjie</groupId>
-  <artifactId>andserver</artifactId>
-  <version>1.1.3</version>
-</dependency>
-```
-
-* Jar
-It's in Jar folder of [release package](https://github.com/yanzhenjie/AndServer/releases/tag/1.1.3).  
 
 AndServer requires at minimum Java 7 or Android 2.3(Api level 9).
 
