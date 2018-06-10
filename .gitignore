@@ -6,3 +6,4 @@
 .DS_Store
 /captures
 .externalNativeBuild
+/maven-repo

@@ -1,64 +1,61 @@
 ext {
-    plugins = [
-            java       : 'java',
-            library    : 'com.android.library',
-            application: 'com.android.application',
-            maven      : 'com.github.dcendents.android-maven',
-            bintray    : 'com.jfrog.bintray'
-    ]
+    plugins = [java            : 'java',
+               javaLibrary     : 'java-library',
+               javaPluginGradle: 'java-gradle-plugin',
+               android         : 'com.android.application',
+               androidLibrary  : 'com.android.library',
+               maven           : 'com.github.dcendents.android-maven',
+               bintray         : 'com.jfrog.bintray',
+               andserver       : 'com.yanzhenjie.andserver']
 
-    android = [
-            applicationId          : "com.yanzhenjie.andserver.sample",
-            compileSdkVersion      : 27,
-            buildToolsVersion      : "27.0.3",
+    android = [applicationId          : "com.yanzhenjie.andserver.sample",
+               compileSdkVersion      : 27,
+               buildToolsVersion      : "27.0.3",
 
-            libraryMinSdkVersion   : 9,
-            libraryTargetSdkVersion: 27,
-            sampleMinSdkVersion    : 14,
-            sampleTargetSdkVersion : 22,
+               libraryMinSdkVersion   : 9,
+               libraryTargetSdkVersion: 27,
+               sampleMinSdkVersion    : 14,
+               sampleTargetSdkVersion : 22,
 
-            versionCode            : 16,
-            versionName            : "1.1.4",
-    ]
+               versionCode            : 17,
+               versionName            : "2.0.0",]
 
-    bintray = [
-            // library
-            version       : "1.1.4",
+    bintray = [version       : "2.0.0-alpha",
 
-            siteUrl       : 'https://github.com/yanzhenjie/AndServer',
-            gitUrl        : 'git@github.com:yanzhenjie/AndServer.git',
+               siteUrl       : 'https://github.com/yanzhenjie/AndServer',
+               gitUrl        : 'git@github.com:yanzhenjie/AndServer.git',
 
-            group         : "com.yanzhenjie",
+               group         : "com.yanzhenjie.andserver",
 
-            // project
-            packaging     : 'aar',
-            name          : 'AndServer',
-            description   : 'Android web server',
+               packaging     : 'aar',
+               name          : 'AndServer',
+               description   : 'Android web server',
 
-            // project.license
-            licenseName   : 'The Apache Software License, Version 2.0',
-            licenseUrl    : 'http://www.apache.org/licenses/LICENSE-2.0.txt',
+               licenseName   : 'The Apache Software License, Version 2.0',
+               licenseUrl    : 'http://www.apache.org/licenses/LICENSE-2.0.txt',
 
-            // project.developers
-            developerId   : 'yanzhenjie',
-            developerName : 'yanzhenjie',
-            developerEmail: 'smallajax@foxmail.com',
+               developerId   : 'yanzhenjie',
+               developerName : 'yanzhenjie',
+               developerEmail: 'smallajax@foxmail.com',
 
-            // bintray
-            binrayLibrary : "andserver",
-            bintrayRepo   : "maven",
-            bintrayUser   : 'yolanda',
-            bintrayLicense: "Apache-2.0"
-    ]
+               binrayLibrary : "",
+               bintrayRepo   : "maven",
+               bintrayUser   : 'yolanda',
+               bintrayLicense: "Apache-2.0"]
 
-    dependencies = [
-            httpcore  : "com.yanzhenjie.apache:httpcore:4.4.9",
-            fileupload: "com.yanzhenjie.apache:fileupload:1.3.3",
+    dependencies = [autoService        : 'com.google.auto.service:auto-service:1.0-rc4',
+                    javaPoet           : 'com.squareup:javapoet:1.11.1',
+                    commonsLang        : 'org.apache.commons:commons-lang3:3.7',
+                    commonsCollections : 'org.apache.commons:commons-collections4:4.1',
+                    httpcore           : "com.yanzhenjie.apache:httpcore:4.4.9",
+                    fileupload         : "com.yanzhenjie.apache:fileupload:1.3.3",
 
-            andserver : 'com.yanzhenjie:andserver:1.1.4',
-            appCompat : 'com.android.support:appcompat-v7:27.1.1',
-            design    : 'com.android.support:design:27.1.1',
+                    andserverApi       : 'com.yanzhenjie.andserver:api:2.0.0-alpha',
+                    andserverAnnotation: 'com.yanzhenjie.andserver:annotation:2.0.0-alpha',
+                    andserverProcessor : 'com.yanzhenjie.andserver:processor:2.0.0-alpha',
 
-            loading   : 'com.yanzhenjie:loading:1.0.0'
-    ]
+                    appCompat          : 'com.android.support:appcompat-v7:27.1.1',
+                    design             : 'com.android.support:design:27.1.1',
+                    loading            : 'com.yanzhenjie:loading:1.0.0',
+                    fastJson           : 'com.alibaba:fastjson:1.1.68.android',]
 }

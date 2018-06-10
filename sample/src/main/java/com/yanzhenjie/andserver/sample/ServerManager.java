@@ -39,7 +39,7 @@ public class ServerManager extends BroadcastReceiver {
      *
      * @param context context.
      */
-    public static void serverStart(Context context, String hostAddress) {
+    public static void onServerStart(Context context, String hostAddress) {
         sendBroadcast(context, CMD_VALUE_START, hostAddress);
     }
 
@@ -48,7 +48,7 @@ public class ServerManager extends BroadcastReceiver {
      *
      * @param context context.
      */
-    public static void serverError(Context context, String error) {
+    public static void onServerError(Context context, String error) {
         sendBroadcast(context, CMD_VALUE_ERROR, error);
     }
 
@@ -57,7 +57,7 @@ public class ServerManager extends BroadcastReceiver {
      *
      * @param context context.
      */
-    public static void serverStop(Context context) {
+    public static void onServerStop(Context context) {
         sendBroadcast(context, CMD_VALUE_STOP);
     }
 
@@ -88,19 +88,19 @@ public class ServerManager extends BroadcastReceiver {
         mActivity.registerReceiver(this, filter);
     }
 
+    /**
+     * UnRegister broadcast.
+     */
+    public void unRegister() {
+        mActivity.unregisterReceiver(this);
+    }
+
     public void startService() {
         mActivity.startService(mService);
     }
 
     public void stopService() {
         mActivity.stopService(mService);
-    }
-
-    /**
-     * UnRegister broadcast.
-     */
-    public void unRegister() {
-        mActivity.unregisterReceiver(this);
     }
 
     @Override
@@ -126,5 +126,4 @@ public class ServerManager extends BroadcastReceiver {
             }
         }
     }
-
 }

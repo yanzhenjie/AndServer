@@ -49,13 +49,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mBtnStart = (Button) findViewById(R.id.btn_start);
-        mBtnStop = (Button) findViewById(R.id.btn_stop);
-        mBtnBrowser = (Button) findViewById(R.id.btn_browse);
-        mTvMessage = (TextView) findViewById(R.id.tv_message);
+        mBtnStart = findViewById(R.id.btn_start);
+        mBtnStop = findViewById(R.id.btn_stop);
+        mBtnBrowser = findViewById(R.id.btn_browse);
+        mTvMessage = findViewById(R.id.tv_message);
 
         mBtnStart.setOnClickListener(this);
         mBtnStop.setOnClickListener(this);
@@ -150,15 +150,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showDialog() {
-        if (mDialog == null)
-            mDialog = new LoadingDialog(this);
-        if (!mDialog.isShowing())
-            mDialog.show();
+        if (mDialog == null) mDialog = new LoadingDialog(this);
+        if (!mDialog.isShowing()) mDialog.show();
     }
 
     private void closeDialog() {
-        if (mDialog != null && mDialog.isShowing())
-            mDialog.dismiss();
+        if (mDialog != null && mDialog.isShowing()) mDialog.dismiss();
     }
-
 }

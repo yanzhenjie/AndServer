@@ -29,14 +29,15 @@ public class NetUtils {
     /**
      * Ipv4 address check.
      */
-    private static final Pattern IPV4_PATTERN = Pattern.compile("^(" +
-            "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}" +
-            "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
+    private static final Pattern IPV4_PATTERN = Pattern.compile(
+      "^(" + "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}" +
+      "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
 
     /**
      * Check if valid IPV4 address.
      *
      * @param input the address string to check for validity.
+     *
      * @return True if the input parameter is a valid IPv4 address.
      */
     public static boolean isIPv4Address(String input) {
@@ -57,16 +58,14 @@ public class NetUtils {
             while (enumeration.hasMoreElements()) {
                 NetworkInterface nif = enumeration.nextElement();
                 Enumeration<InetAddress> inetAddresses = nif.getInetAddresses();
-                if (inetAddresses != null)
-                    while (inetAddresses.hasMoreElements()) {
-                        InetAddress inetAddress = inetAddresses.nextElement();
-                        if (!inetAddress.isLoopbackAddress() && isIPv4Address(inetAddress.getHostAddress())) {
-                            return inetAddress;
-                        }
+                if (inetAddresses != null) while (inetAddresses.hasMoreElements()) {
+                    InetAddress inetAddress = inetAddresses.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && isIPv4Address(inetAddress.getHostAddress())) {
+                        return inetAddress;
                     }
+                }
             }
         }
         return null;
     }
-
 }

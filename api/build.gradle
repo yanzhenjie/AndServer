@@ -1,0 +1,19 @@
+apply plugin: rootProject.ext.plugins.androidLibrary
+
+android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.libraryMinSdkVersion
+        targetSdkVersion rootProject.ext.android.libraryTargetSdkVersion
+    }
+}
+
+dependencies {
+    // api rootProject.ext.dependencies.andserverAnnotation
+    api project(':annotation')
+
+    implementation rootProject.ext.dependencies.httpcore
+    implementation rootProject.ext.dependencies.fileupload
+}
