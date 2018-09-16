@@ -1,41 +1,54 @@
 # AndServer
 ![Logo](./image/logo.png)
 
-Android platform web server and development framework.  
+Web server and Web framework of Android platform. It provides annotations like SpringMVC, and if you are familiar with SpringMVC, you can master it very quickly.
 
-* Dynamic website deployment.
-* Static website deployment.
-* Http api deployment.
+* Static html website deployment
+* Dynamic http api deployment
 
-Internal realization of the website based on Asset and external memory card. The contents of the external memory card support hot swap. Web site can support Http cache protocol, used to improve server performance.  
+```java
+@RestController
+@RequestMapping(path = "/user")
+public class UserController {
 
-Some of its features are learned from SpringMVC, It is perfect for developers who are specializing in android from java, which will be easier to understand how AndServer works.  
+    @PostMapping(path = "/login")
+    public String login(@RequestParam(name = "name") String name
+                 @RequestParam(name = "password") String password) {
+        if ("123".equals(name) && "123".equals(password)) {
+            return "Login successful.";
+        }
+        return "Account or password error.";
+    }
 
-It's these characteristics may be you like: Https, interceptors, filters, websites, file browser, http cache protocol, exception resolver, file upload and download.  
+    @GetMapping(path = "/detail")
+    public UserInfo detail(@RequestParam(name = "userId") String userId) {
+        UserInfo userInfo = new UserInfo()
+        ...
+        return userInfo;
+    }
+```
 
-For usage and other information see [this website](http://yanzhenjie.github.io/AndServer).  
+The above code will generate the following two http apis:
+```text
+POST http://ip:port/user/login
+GET http://ip:port/user/detail
+```
+
+For documentation and additional information see [the website](https://www.yanzhenjie.com/AndServer).
 
 ## Download
-Add the following dependencies in project's gradle.
 ```groovy
-implementation 'com.yanzhenjie:andserver:1.1.4'
-```
-
-AndServer requires at minimum Java 7 or Android 2.3(Api level 9).
-
-## ProGuard
-```
--keepclassmembers class ** {
-    @com.yanzhenjie.andserver.annotation.RequestMapping <methods>;
-}
--keepclassmembers public class com.yanzhenjie.andserver.RequestMethod {
-    <fields>;
+dependencies {
+    implementation 'com.yanzhenjie.andserver:api:2.0.0'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.0'
 }
 ```
+
+AndServer requires at minimum Android 2.3(Api level 9).
 
 ## License
 ```text
-Copyright 2017 Yan Zhenjie
+Copyright 2018 Yan Zhenjie
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
