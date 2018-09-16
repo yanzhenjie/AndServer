@@ -1,1 +1,1 @@
-include ':sample', ':api', ':annotation', ':processor', ':gradle-plugin'
+include ':sample', ':api', ':annotation', ':processor'
