@@ -7,13 +7,14 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.android.libraryMinSdkVersion
         targetSdkVersion rootProject.ext.android.libraryTargetSdkVersion
+        consumerProguardFiles 'proguard-rules.txt'
     }
 }
 
 dependencies {
-    // api rootProject.ext.dependencies.andserverAnnotation
-    api project(':annotation')
+    api rootProject.ext.dependencies.andserverAnnotation
 
     implementation rootProject.ext.dependencies.httpcore
     implementation rootProject.ext.dependencies.fileupload
+    compileOnly rootProject.ext.dependencies.annotation
 }

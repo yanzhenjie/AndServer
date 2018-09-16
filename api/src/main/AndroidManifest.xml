@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2017 Yan Zhenjie.
+    Copyright 2018 Yan Zhenjie.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,4 +14,14 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<manifest package="com.yanzhenjie.andserver" />
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.yanzhenjie.andserver">
+
+    <application>
+        <provider
+            android:name=".Initialization"
+            android:authorities="com.yanzhenjie.andserver.initialize"
+            android:exported="false"/>
+    </application>
+</manifest>

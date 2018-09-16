@@ -1,0 +1,1 @@
+-keep class * implements com.yanzhenjie.andserver.register.OnRegister

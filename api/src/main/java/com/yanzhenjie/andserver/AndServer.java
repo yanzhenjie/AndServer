@@ -15,7 +15,43 @@
  */
 package com.yanzhenjie.andserver;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.support.annotation.NonNull;
+
+import com.yanzhenjie.andserver.util.Assert;
+
 /**
  * Created by YanZhenjie on 2018/6/9.
  */
-public class AndServer {}
+public class AndServer {
+
+    public static final String TAG = "AndServer";
+
+    @SuppressLint("StaticFieldLeak")
+    private static Context sContext;
+
+    static void initialize(@NonNull Context context) {
+        Assert.notNull(context, "The context must not be null.");
+
+        if (sContext == null) {
+            synchronized (AndServer.class) {
+                if (sContext == null) sContext = context.getApplicationContext();
+            }
+        }
+    }
+
+    @NonNull
+    public static Context getContext() {
+        return sContext;
+    }
+
+    /**
+     * Create a Builder of Server.
+     *
+     * @return {@link Server.Builder}.
+     */
+    public static Server.Builder serverBuilder() {
+        return Server.newBuilder();
+    }
+}
