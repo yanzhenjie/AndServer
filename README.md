@@ -2,16 +2,34 @@
 
 ![Logo](./images/logo.png)
 
-AndServer是一个Android平台的WebServer服务器和WebServer开发框架，作为Web服务器它支持了IP、端口的绑定，以及SSL自定义证书。作为Web开发框架它支持静态网站部署、动态Http接口、文件的上传下载。
+Android平台的Web服务器和Web框架。 它提供了类似SpringMVC的注解和功能，如果您熟悉SpringMVC，则可以非常快速地掌握它。
 
-作为一个平台框架，它的最核心的功能应该是对Web开发的支持，它的这些特性可能是你喜欢的：
-* Request拦截器
-* RequestHandler过滤器
-* 全局异常处理者
+它有以下特点：
+* 部署静态网站
+* 部署动态Http Api
+* 全局请求拦截器
+* 全局异常处理器
+* 全局消息转换器
 
-比如Http缓存协议的实现就是基于RequestHandler过滤器的，里面还有一些好玩的小玩意。
 
 如果你有什么疑问，或者你想为AndServer贡献一些代码:  
 [https://github.com/yanzhenjie/AndServer](https://github.com/yanzhenjie/AndServer)
 
-对于一些没有做过WebServer开发的开发者来说，一下子可能难易理解WebServer端某些的概念，推荐这些开发者朋友下载Demo源码查看或者通读整个文档，这可能对理解WebServer开发有所帮助。
+对于一些没有做过Web开发的开发者来说，一下子可能难易理解服务端端某些的概念，推荐这些开发者朋友下载Demo源码查看或者通读整个文档，这可能使您更加容易理解AndServer。
+
+## 架构图和流程图
+系统层架构图  
+
+![系统层架构图](./images/system_flow_chat.png)
+
+系统层运行时流程图  
+
+![系统层运行时流程图](./images/system_flow_chat.gif)
+
+应用层架构图  
+
+![应用层架构图](./images/framework_flow_chat.png)
+
+应用层运行时流程图  
+
+![应用层运行时流程图](./images/system_flow_chat.gif)

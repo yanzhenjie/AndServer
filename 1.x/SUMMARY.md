@@ -1,7 +1,7 @@
 # Summary
 
 * [概述](README.md)
-* [架构图](base/README.md)
+* [基本Api](base/README.md)
 * [Https](ssl/README.md)
 * [Http接口](handler/README.md)
     * [返回图片](handler/image.md)
