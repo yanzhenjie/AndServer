@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Yan Zhenjie.
+ * Copyright 2018 Yan Zhenjie.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,14 @@
  */
 package com.yanzhenjie.andserver.annotation;
 
-import com.yanzhenjie.andserver.RequestMethod;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by YanZhenjie on 2017/12/19.
+ * Created by YanZhenjie on 2018/9/11.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface RequestMapping {
-
-    RequestMethod[] method() default {};
-}
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.SOURCE)
+public @interface Converter {}
