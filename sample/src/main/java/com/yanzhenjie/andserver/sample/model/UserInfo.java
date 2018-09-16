@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.sample.entity;
+package com.yanzhenjie.andserver.sample.model;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
 /**
  * Created by YanZhenjie on 2018/6/9.
  */
-public class UserInfo {
+public class UserInfo implements Parcelable {
 
     @JSONField(name = "userId")
     private String mUserId;
@@ -29,6 +32,34 @@ public class UserInfo {
 
     public UserInfo() {
     }
+
+    protected UserInfo(Parcel in) {
+        mUserId = in.readString();
+        mUserName = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mUserId);
+        dest.writeString(mUserName);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
+        @Override
+        public UserInfo createFromParcel(Parcel in) {
+            return new UserInfo(in);
+        }
+
+        @Override
+        public UserInfo[] newArray(int size) {
+            return new UserInfo[size];
+        }
+    };
 
     public String getUserId() {
         return mUserId;

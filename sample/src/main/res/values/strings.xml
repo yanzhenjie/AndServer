@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2017 Yan Zhenjie.
+    Copyright 2018 Yan Zhenjie.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -22,4 +22,5 @@
     <string name="start_browse">Open in browser</string>
 
     <string name="server_stop_succeed">The server has stopped.</string>
+    <string name="server_ip_error">Did not get the server IP address.</string>
 </resources>

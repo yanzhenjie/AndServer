@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Yan Zhenjie.
+ * Copyright © 2018 Yan Zhenjie.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,44 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.yanzhenjie.andserver.AndServer;
+import com.yanzhenjie.andserver.Server;
+import com.yanzhenjie.andserver.sample.util.NetUtils;
+
+import java.util.concurrent.TimeUnit;
+
 /**
- * Server service. Created by Yan Zhenjie on 2017/3/16.
+ * Created by Yan Zhenjie on 2018/6/9.
  */
 public class CoreService extends Service {
 
+    private Server mServer;
+
     @Override
-    public void onCreate() {}
+    public void onCreate() {
+        mServer = AndServer.serverBuilder()
+            .inetAddress(NetUtils.getLocalIPAddress())
+            .port(8080)
+            .timeout(10, TimeUnit.SECONDS)
+            .listener(new Server.ServerListener() {
+                @Override
+                public void onStarted() {
+                    String hostAddress = mServer.getInetAddress().getHostAddress();
+                    ServerManager.onServerStart(CoreService.this, hostAddress);
+                }
+
+                @Override
+                public void onStopped() {
+                    ServerManager.onServerStop(CoreService.this);
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    ServerManager.onServerError(CoreService.this, e.getMessage());
+                }
+            })
+            .build();
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -36,19 +67,28 @@ public class CoreService extends Service {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         stopServer();
+        super.onDestroy();
     }
 
     /**
      * Start server.
      */
-    private void startServer() {}
+    private void startServer() {
+        if (mServer.isRunning()) {
+            String hostAddress = mServer.getInetAddress().getHostAddress();
+            ServerManager.onServerStart(CoreService.this, hostAddress);
+        } else {
+            mServer.startup();
+        }
+    }
 
     /**
      * Stop server.
      */
-    private void stopServer() {}
+    private void stopServer() {
+        mServer.shutdown();
+    }
 
     @Nullable
     @Override

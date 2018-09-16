@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2017 Yan Zhenjie.
+    Copyright 2018 Yan Zhenjie.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,60 +15,60 @@
     limitations under the License.
 -->
 <android.support.design.widget.CoordinatorLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  android:fitsSystemWindows="true">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.v7.widget.Toolbar
-          android:id="@+id/toolbar"
-          android:layout_width="match_parent"
-          android:layout_height="?actionBarSize"
-          android:background="?attr/colorPrimary"
-          app:layout_scrollFlags="scroll|enterAlways|snap"
-          app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
-      android:id="@+id/content"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:orientation="vertical"
-      app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <Button
-          android:id="@+id/btn_start"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/start_server" />
+            android:id="@+id/btn_start"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start_server"/>
 
         <Button
-          android:id="@+id/btn_stop"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/stop_server"
-          android:visibility="gone" />
+            android:id="@+id/btn_stop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/stop_server"
+            android:visibility="gone"/>
 
         <Button
-          android:id="@+id/btn_browse"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/start_browse"
-          android:visibility="gone" />
+            android:id="@+id/btn_browse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start_browse"
+            android:visibility="gone"/>
 
         <TextView
-          android:id="@+id/tv_message"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_margin="@dimen/dp_15"
-          android:text="@string/server_stop_succeed" />
+            android:id="@+id/tv_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_15"
+            android:text="@string/server_stop_succeed"/>
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
