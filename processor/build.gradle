@@ -6,15 +6,11 @@ compileJava {
 }
 
 dependencies {
-    // api rootProject.ext.dependencies.andserverAnnotation
-    implementation project(':annotation')
+    implementation rootProject.ext.dependencies.andserverAnnotation
 
     implementation rootProject.ext.dependencies.autoService
     implementation rootProject.ext.dependencies.javaPoet
 
     implementation rootProject.ext.dependencies.commonsLang
     implementation rootProject.ext.dependencies.commonsCollections
-
-    implementation rootProject.ext.dependencies.httpcore
-    implementation rootProject.ext.dependencies.fileupload
 }

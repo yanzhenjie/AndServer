@@ -28,7 +28,7 @@ public class Logger {
     private Messager mMessager;
 
     public Logger(Messager messager) {
-        mMessager = messager;
+        this.mMessager = messager;
     }
 
     public void i(CharSequence info) {
@@ -46,8 +46,7 @@ public class Logger {
     public void e(Throwable error) {
         if (null != error) {
             mMessager.printMessage(Diagnostic.Kind.ERROR,
-              "An exception is encountered, " + error.getMessage() + "\n" +
-              formatStackTrace(error.getStackTrace()));
+                "An exception is encountered, " + error.getMessage() + "\n" + formatStackTrace(error.getStackTrace()));
         }
     }
 
