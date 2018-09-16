@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Yan Zhenjie.
+ * Copyright © 2018 Yan Zhenjie.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 /**
- * Created by Yan Zhenjie on 2017/3/17.
+ * Created by Yan Zhenjie on 2018/6/9.
  */
 public class ServerManager extends BroadcastReceiver {
 
@@ -95,11 +95,11 @@ public class ServerManager extends BroadcastReceiver {
         mActivity.unregisterReceiver(this);
     }
 
-    public void startService() {
+    public void startServer() {
         mActivity.startService(mService);
     }
 
-    public void stopService() {
+    public void stopServer() {
         mActivity.stopService(mService);
     }
 
@@ -111,16 +111,16 @@ public class ServerManager extends BroadcastReceiver {
             switch (cmd) {
                 case CMD_VALUE_START: {
                     String ip = intent.getStringExtra(MESSAGE_KEY);
-                    mActivity.serverStart(ip);
+                    mActivity.onServerStart(ip);
                     break;
                 }
                 case CMD_VALUE_ERROR: {
                     String error = intent.getStringExtra(MESSAGE_KEY);
-                    mActivity.serverError(error);
+                    mActivity.onServerError(error);
                     break;
                 }
                 case CMD_VALUE_STOP: {
-                    mActivity.serverStop();
+                    mActivity.onServerStop();
                     break;
                 }
             }

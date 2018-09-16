@@ -1,5 +1,4 @@
 apply plugin: rootProject.ext.plugins.android
-apply plugin: rootProject.ext.plugins.andserver
 
 android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
@@ -12,28 +11,35 @@ android {
         versionCode rootProject.ext.android.versionCode
         versionName rootProject.ext.android.versionName
     }
+
+    buildTypes {
+        debug {
+            debuggable true
+            zipAlignEnabled false
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            debuggable false
+            zipAlignEnabled true
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 }
 
 dependencies {
-    // implementation rootProject.ext.dependencies.andserverApi
-    // annotationProcessor rootProject.ext.dependencies.andserverProcessor
-    implementation project(':api')
-    annotationProcessor project(':processor')
+    implementation rootProject.ext.dependencies.andserverApi
+    annotationProcessor rootProject.ext.dependencies.andserverProcessor
 
     implementation rootProject.ext.dependencies.design
     implementation rootProject.ext.dependencies.appCompat
     implementation rootProject.ext.dependencies.loading
-    implementation rootProject.ext.dependencies.fastJson
-}
 
-buildscript {
-    repositories {
-        maven {
-            url uri('../maven-repo')
-        }
-    }
-
-    dependencies {
-        classpath 'com.yanzhenjie.andserver:gradle-plugin:2.0.0-alpha'
-    }
+    implementation rootProject.ext.dependencies.json
+    implementation rootProject.ext.dependencies.commonsLang
+    implementation rootProject.ext.dependencies.commonsCollections
 }

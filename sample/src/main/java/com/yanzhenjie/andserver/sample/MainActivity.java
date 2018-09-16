@@ -31,7 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by Yan Zhenjie on 2016/6/13.
+ * Created by Yan Zhenjie on 2018/6/9.
  */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -81,12 +81,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (id) {
             case R.id.btn_start: {
                 showDialog();
-                mServerManager.startService();
+                mServerManager.startServer();
                 break;
             }
             case R.id.btn_stop: {
                 showDialog();
-                mServerManager.stopService();
+                mServerManager.stopServer();
                 break;
             }
             case R.id.btn_browse: {
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Start notify.
      */
-    public void serverStart(String ip) {
+    public void onServerStart(String ip) {
         closeDialog();
         mBtnStart.setVisibility(View.GONE);
         mBtnStop.setVisibility(View.VISIBLE);
@@ -115,9 +115,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mRootUrl = "http://" + ip + ":8080/";
             addressList.add(mRootUrl);
             addressList.add("http://" + ip + ":8080/login.html");
-            addressList.add("http://" + ip + ":8080/image");
-            addressList.add("http://" + ip + ":8080/download");
-            addressList.add("http://" + ip + ":8080/upload");
             mTvMessage.setText(TextUtils.join("\n", addressList));
         } else {
             mRootUrl = null;
@@ -128,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Error notify.
      */
-    public void serverError(String message) {
+    public void onServerError(String message) {
         closeDialog();
         mRootUrl = null;
         mBtnStart.setVisibility(View.VISIBLE);
@@ -140,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Stop notify.
      */
-    public void serverStop() {
+    public void onServerStop() {
         closeDialog();
         mRootUrl = null;
         mBtnStart.setVisibility(View.VISIBLE);

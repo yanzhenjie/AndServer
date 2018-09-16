@@ -1,5 +1,6 @@
 # AndServer
-![Logo](./image/logo.png)
+
+![Logo](./images/logo.svg)
 
 Web server and Web framework of Android platform. It provides annotations like SpringMVC, and if you are familiar with SpringMVC, you can master it very quickly.
 
@@ -11,27 +12,27 @@ Web server and Web framework of Android platform. It provides annotations like S
 @RequestMapping(path = "/user")
 public class UserController {
 
-    @PostMapping(path = "/login")
-    public String login(@RequestParam(name = "name") String name
-                 @RequestParam(name = "password") String password) {
-        if ("123".equals(name) && "123".equals(password)) {
-            return "Login successful.";
+    @PostMapping("/login")
+    public String login(@RequestParam("account") String account, 
+        @RequestParam("password") String password) {
+        if (...) {
+            return "Successful.";
         }
-        return "Account or password error.";
+        return "Failed.";
     }
 
-    @GetMapping(path = "/detail")
-    public UserInfo detail(@RequestParam(name = "userId") String userId) {
-        UserInfo userInfo = new UserInfo()
-        ...
+    @GetMapping(path = "/info/{userId}")
+    public User detail(@PathVariable("userId") String userId) {
+        User user = ...;
         return userInfo;
     }
+}
 ```
 
 The above code will generate the following two http apis:
 ```text
-POST http://ip:port/user/login
-GET http://ip:port/user/detail
+POST http://host:port/user/login
+GET http://host:port/user/info/uid_001
 ```
 
 For documentation and additional information see [the website](https://www.yanzhenjie.com/AndServer).

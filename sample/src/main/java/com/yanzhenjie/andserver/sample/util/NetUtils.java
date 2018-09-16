@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Yan Zhenjie.
+ * Copyright © 2018 Yan Zhenjie.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.util.Enumeration;
 import java.util.regex.Pattern;
 
 /**
- * Created by YanZhenjie on 2017/12/20.
+ * Created by YanZhenjie on 2018/6/9.
  */
 public class NetUtils {
 
@@ -30,8 +30,8 @@ public class NetUtils {
      * Ipv4 address check.
      */
     private static final Pattern IPV4_PATTERN = Pattern.compile(
-      "^(" + "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}" +
-      "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
+        "^(" + "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}" +
+            "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
 
     /**
      * Check if valid IPV4 address.
@@ -58,10 +58,12 @@ public class NetUtils {
             while (enumeration.hasMoreElements()) {
                 NetworkInterface nif = enumeration.nextElement();
                 Enumeration<InetAddress> inetAddresses = nif.getInetAddresses();
-                if (inetAddresses != null) while (inetAddresses.hasMoreElements()) {
-                    InetAddress inetAddress = inetAddresses.nextElement();
-                    if (!inetAddress.isLoopbackAddress() && isIPv4Address(inetAddress.getHostAddress())) {
-                        return inetAddress;
+                if (inetAddresses != null) {
+                    while (inetAddresses.hasMoreElements()) {
+                        InetAddress inetAddress = inetAddresses.nextElement();
+                        if (!inetAddress.isLoopbackAddress() && isIPv4Address(inetAddress.getHostAddress())) {
+                            return inetAddress;
+                        }
                     }
                 }
             }

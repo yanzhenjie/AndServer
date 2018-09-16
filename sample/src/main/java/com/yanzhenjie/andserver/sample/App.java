@@ -1,5 +1,5 @@
 /*
- * Copyright © 2017 Yan Zhenjie.
+ * Copyright 2018 Yan Zhenjie.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,53 @@
 package com.yanzhenjie.andserver.sample;
 
 import android.app.Application;
+import android.content.Context;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+
+import com.yanzhenjie.andserver.sample.util.FileUtils;
+import com.yanzhenjie.andserver.util.IOUtils;
+
+import java.io.File;
 
 /**
- * Created by YanZhenjie on 2017/12/20.
+ * Created by YanZhenjie on 2018/6/9.
  */
 public class App extends Application {
 
-    private static App sInstance;
+    private static App mInstance;
+
+    private File mRootDir;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        if (sInstance == null) {
-            sInstance = this;
+
+        if (mInstance == null) {
+            mInstance = this;
+            initRootPath(this);
         }
     }
 
-    public static App get() {
-        return sInstance;
+    @NonNull
+    public static App getInstance() {
+        return mInstance;
+    }
+
+    @NonNull
+    public File getRootDir() {
+        return mRootDir;
+    }
+
+    private void initRootPath(Context context) {
+        if (mRootDir != null) return;
+
+        if (FileUtils.storageAvailable()) {
+            mRootDir = Environment.getExternalStorageDirectory();
+        } else {
+            mRootDir = context.getFilesDir();
+        }
+        mRootDir = new File(mRootDir, "AndServer");
+        IOUtils.createFolder(mRootDir);
     }
 }

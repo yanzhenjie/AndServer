@@ -13,21 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.sample.util;
+package com.yanzhenjie.andserver.sample.controller;
+
+import com.yanzhenjie.andserver.annotation.Controller;
+import com.yanzhenjie.andserver.annotation.GetMapping;
 
 /**
- * Created by YanZhenjie on 2018/6/9.
+ * Created by YanZhenjie on 2018/9/12.
  */
-public interface Constants {
+@Controller
+public class PageController {
 
-    /**
-     * Json content type.
-     */
-    String CONTENT_JSON = "application/json;charset=utf-8";
-
-    /**
-     * Html content type.
-     */
-    String CONTENT_HTML = "text/html;charset=utf-8";
-
+    @GetMapping(path = "/")
+    public String index() {
+        // Equivalent to [return "/index"].
+        return "forward:/index.html";
+    }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Copyright 2017 Yan Zhenjie.
+    Copyright 2018 Yan Zhenjie.
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@
     limitations under the License.
 -->
 <resources>
-  <string name="start_server">启动服务器</string>
-  <string name="stop_server">停止服务器</string>
-  <string name="start_browse">在浏览器中打开</string>
+    <string name="app_name">AndServer</string>
+    <string name="start_server">启动服务器</string>
+    <string name="stop_server">停止服务器</string>
+    <string name="start_browse">在浏览器中打开</string>
 
-  <string name="server_stop_succeed">服务器停止了</string>
-  <string name="server_ip_error">没有获取到服务器IP地址</string>
+    <string name="server_stop_succeed">服务器停止了</string>
+    <string name="server_ip_error">没有获取到服务器IP地址</string>
 </resources>

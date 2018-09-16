@@ -15,6 +15,9 @@
  */
 package com.yanzhenjie.andserver.framework.website;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -47,6 +50,7 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
     private final AssetsReader mReader;
     private final String mRootPath;
     private final Map<String, String> mPatternMap;
+    private final PackageInfo mPackageInfo;
 
     private boolean isScanned;
 
@@ -74,9 +78,17 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
             throw new IllegalArgumentException("The format of [%s] is wrong, it should be like [/root/project].");
         }
 
-        this.mReader = new AssetsReader(AndServer.getContext().getAssets());
+        Context context = AndServer.getContext();
+        this.mReader = new AssetsReader(context.getAssets());
         this.mRootPath = trimStartSlash(rootPath);
         this.mPatternMap = new HashMap<>();
+
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            mPackageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+        } catch (Exception ignored) {
+            throw new RuntimeException(ignored);
+        }
     }
 
     @Override
@@ -116,14 +128,19 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
 
     @Override
     public String getETag(@NonNull HttpRequest request) throws IOException {
-        String filePath = mPatternMap.get(request.getPath());
-        return mReader.isFile(filePath) ? DigestUtils.md5DigestAsHex(filePath) : null;
+        String httpPath = request.getPath();
+        String filePath = mPatternMap.get(httpPath);
+        final InputStream stream = mReader.getInputStream(filePath);
+        if (stream != null) {
+            return DigestUtils.md5DigestAsHex(stream);
+        }
+        throw new NotFoundException(httpPath);
     }
 
     @Override
     public long getLastModified(@NonNull HttpRequest request) throws IOException {
         String filePath = mPatternMap.get(request.getPath());
-        return mReader.isFile(filePath) ? 0 : -1;
+        return mReader.isFile(filePath) ? mPackageInfo.lastUpdateTime : -1;
     }
 
     @NonNull
