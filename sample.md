@@ -1,6 +1,6 @@
 # 入门
 
-一个Web Framework最基础且最重要的能力就是开发Http Api，本文主要带领读者写一些Http Api并成功运行起来供客户端访问。本文的例子非常简单，如果读者想了解的更深入，可以点击左侧菜单栏查看相关文档。
+一个Web Framework最基础且最重要的能力就是开发Http Api，本文主要带领开发者写一些Http Api并成功运行起来供客户端访问。本文的例子非常简单，如果开发者想了解的更深入，可以点击左侧菜单栏查看相关文档。
 
 AndServer从2.0.0开始，基于编译时注解实现了和SpringMVC几乎完全一样的注解Api来供开发者使用，因此下面我们将使用注解来入门。
 
@@ -13,30 +13,30 @@ AndServer从2.0.0开始，基于编译时注解实现了和SpringMVC几乎完全
 @Controller
 public class PageController {
 
-    @GetMapping(path = "/")
+    @GetMapping("/")
     public String index() {
         return "forward:/index.html";
     }
 }
 ```
 
-如上代码即可完成一个Http Api，在Java允许的范围内方法名随便取，只需要在类上加`Controller`注解，在目标方法上加`GetMapping`注解即可，再不需要任何操作。
+上述示例完成了一个Http Api，在Java允许的范围内方法名随便取，只需要在类上加`Controller`注解，在目标方法上加`GetMapping`注解即可，再不需要任何操作。
 
 假设我们本机的IP地址是`192.168.1.11`，当用户在浏览器地址栏输入`http://192.168.1.11/`时，上面的这个方法会被调用，而返回值中`forward:`表示在服务器内部转发，`forward:/index.html`则表示转发到`/`下的`index.html`页面。
 
-为了帮助读者更深刻的理解这个含义，下面再举一个例子。假设服务端有一个Http Api的地址是：`http://192.168.1.11/project/info`，我们想在用户访问`http://192.168.1.11/projectInfo`时转发到上述地址：
+为了帮助开发者更深刻的理解这个含义，下面再举一个例子。假设服务端有一个Http Api的地址是：`http://192.168.1.11/project/info`，我们想在用户访问`http://192.168.1.11/projectInfo`时转发到上述地址：
 
 ```java
 @Controller
 public class ProjectController {
 
     @ResponseBody
-    @GetMapping(path = "/project/info")
+    @GetMapping("/project/info")
     public String newInfo() {
         return "I am new api.";
     }
 
-    @GetMapping(path = "/projectInfo")
+    @GetMapping("/projectInfo")
     public String oldInfo() {
         return "forward:/project/info";
     }
@@ -50,12 +50,12 @@ public class ProjectController {
 public class ProjectController {
 
     @ResponseBody
-    @GetMapping(path = "/project/info")
+    @GetMapping("/project/info")
     public String newInfo() {
         return "I am new api.";
     }
 
-    @GetMapping(path = "/projectInfo")
+    @GetMapping("/projectInfo")
     public String oldInfo() {
         return "redirect:/project/info";
     }
@@ -66,11 +66,11 @@ public class ProjectController {
 下面我们将写一个模拟用户登录的Http Api：
 ```java
 @RestController
-class TestController {
+public class UserController {
 
-    @PostMapping(path = "/user/login")
-    String login(@RequestParam(name = "account") String account,
-                 @RequestParam(name = "password") String password) {
+    @PostMapping("/user/login")
+    String login(@RequestParam("account") String account,
+        @RequestParam("password") String password) {
         if("123".equals(account) && "123".equals(password)) {
             return "Login successful.";
         } else {
@@ -84,6 +84,6 @@ class TestController {
 
 在RestController中，返回值可以是JSONString、可以是Model对象等。
 
-**现在，几个简单的Http Api就写完了**，你不需要任何注册或者配置，只需要启动[服务器](/server.md)就可以查看效果了。
+**现在，几个简单的Http Api就写完了**，你不需要任何注册或者配置，只需要启动[服务器](/server.md)就可以通过浏览器或者测试工具访问上面的几个Http Api了。
 
 更多内容请点击左侧菜单查看相关文档。

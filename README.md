@@ -6,6 +6,7 @@ AndServer是Android平台的Web Server和Web Framework。 它基于编译时注�
 
 源码地址：[https://github.com/yanzhenjie/AndServer](https://github.com/yanzhenjie/AndServer)  
 文档地址：[https://www.yanzhenjie.com/AndServer](https://www.yanzhenjie.com/AndServer)  
+旧版文档：[https://www.yanzhenjie.com/AndServer/1.x](https://www.yanzhenjie.com/AndServer/1.x)  
 
 ## 特性
 * 部署静态网站
