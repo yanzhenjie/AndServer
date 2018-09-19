@@ -47,7 +47,7 @@ public class ProjectController {
     @ResponseBody
     @GetMapping("/project/info")
     public String newInfo() {
-        return "I am new api.";
+        ...
     }
 
     @GetMapping("/projectInfo")
@@ -68,12 +68,32 @@ public class ProjectController {
     @ResponseBody
     @GetMapping("/project/info")
     public String newInfo() {
-        return "I am new api.";
+        ...
     }
 
     @GetMapping("/projectInfo")
     public String oldInfo() {
-        return "redirect:/project/info";
+        ...
     }
 }
 ```
+
+## 无返回值示例
+
+开发者也不可以不写返回值，直接操作`HttpRequest`和`HttpResponse`：
+```java
+@Controller
+public class ProjectController {
+
+    @GetMapping("/project/info")
+    public void info(HttpRequest request, HttpResponse response) {
+        ...
+    }
+}
+```
+
+----
+
+相关阅读推荐：  
+* [RestController](restController.md)
+* [RequestMapping](requestMapping.md)

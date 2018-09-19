@@ -238,3 +238,10 @@ public class UserController {
 上述示例中，如果客户端的`Accept`是`*/*`或者`application/json`是不能通过校验的。
 
 > 如果客户端的请求违反约束，则会抛出`ContentNotAcceptableException`异常，异常处理请参考[ExceptionResolver](../class/exception.md)。
+
+----
+
+相关阅读推荐：  
+* [Controller](controller.md)  
+* [RestController](restController.md)
+* [RequestParam](requestParam.md)

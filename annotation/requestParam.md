@@ -39,7 +39,7 @@ public class UserController {
 ```
 上述示例中，如果客户端请求中没有提交`id`参数或者`id`参数为空，那么开发者接受到的值则是`123`。
 
-## 接受上传文件示例
+## 接受文件示例
 ```java
 @RestController
 public class UserController {
@@ -54,3 +54,42 @@ public class UserController {
 ```
 
 入参`MultipartFile`是一个临时文件，你可以把这个文件转移到任何位置保存。
+
+## 无注解示例
+一些特殊参数不需要注解就可以拿到，支持不用注解的参数有`Context`、`HttpRequest`、`HttpResponse`、`RequestBody`。
+
+> 上述`Context`是Android中的`android.content.Context`。
+
+```java
+@Controller
+public class ProjectController {
+    
+    @GetMapping("/project/get")
+    public String get() {
+        ...
+    }
+
+    @GetMapping("/project/info")
+    public void info(HttpRequest request, HttpResponse response) {
+        ...
+    }
+
+    @GetMapping("/project/context")
+    public Project get(Context context, @RequestParam("name") String name) {
+        ...
+    }
+
+    @GetMapping("/project/body")
+    public void body(RequestBody body, HttpResponse response) {
+        ...
+    }
+}
+```
+
+方法的返回值可以有，也可以没有。
+
+----
+
+相关阅读推荐：  
+* [QueryParam](queryParam.md)  
+* [FormPart](formPart.md)  

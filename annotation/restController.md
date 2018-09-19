@@ -11,7 +11,6 @@ Controller这个单词的愿意是控制器或者调节器，在开发中我们�
 
 > MessageConverter非常有用，比如将客户端的参数转化为Model，将服务端的Model转化为JSON、Prorobuf等个时候输出等，具体使用方法请参考[MessageConveter](../class/converter.md)类和[Converter](converter.md)注解。
 
-## 示例
 根据字面意思`RestController`就是写RESTFUL风格的Api的，因此它更加适合输出一些JSON格式、Protubuf格式的数据。
 
 ## 返回String示例
@@ -64,13 +63,21 @@ public class UserController {
         }
         return JSON.toJSONString(users);
     }
+
+    /**
+     * Get user list.
+     */
+    @GetMapping("/user/get")
+    JSONObject userList() {
+        JSONObject jsonObj = ...;
+        return jsonObj;
+    }
 }
 ```
 
 上述代码中第一个方法是用户详情Http Api，第二个方法用户列表Http Api，数据格式都为JSON，示例中是由开发者手动把数据转为JSON的，略嫌麻烦。
 
 ## 返回Model示例
-如果开发者使用了[MessageConverter](../class/converter.md)，那么开发者可以直接返回Model对象：
 ```java
 @RestController
 public class UserController {
@@ -102,4 +109,45 @@ public class UserController {
 }
 ```
 
-> 如果开发者没有使用[MessageConverter](../class/converter.md)，那么返回出去的Model将会被`toString()`后当作`String`输出。
+> 直接返回Model需要开发者提供`MessageConverter`来做数据转换，否则返回出去的Model将会被`toString()`后当作`String`输出，具体使用方法请参考[Converter](converter.md)注解和[MessageConverter](../class/converter.md)类。
+
+## 无返回值示例
+开发者也不可以不写返回值，直接操作`HttpRequest`和`HttpResponse`：
+```java
+@Controller
+public class ProjectController {
+
+    @GetMapping("/project/get")
+    public void get() {
+        ...
+    }
+
+    @GetMapping("/project/info")
+    public void info(HttpRequest request, HttpResponse response) {
+        ...
+    }
+}
+```
+
+AndServer支持一些方法参数是不需注解，直接写上就可以获取到，支持不用注解的参数有`Context`、`HttpRequest`、`HttpResponse`、`RequestBody`：
+```java
+@Controller
+public class ProjectController {
+
+    @GetMapping("/project/context")
+    public void get(Context context, @RequestParam("name") String name) {
+        ...
+    }
+
+    @GetMapping("/project/body")
+    public void body(RequestBody body, HttpResponse response) {
+        ...
+    }
+}
+```
+
+----
+
+相关阅读推荐：  
+* [Controller](Controller.md)
+* [RequestMapping](requestMapping.md)
