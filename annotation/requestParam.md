@@ -15,9 +15,9 @@
 public class UserController {
 
     @PostMapping("/user/login")
-    String login(@RequestParam("account") String account,
+    void login(@RequestParam("account") String account,
         @RequestParam("password") String password) {
-        return "User login.";
+        ...
     }
 }
 ```
@@ -25,15 +25,15 @@ public class UserController {
 
 > 异常处理请参考[ExceptionResolver](../class/exception.md)。
 
-如果开发者想让某参数不是必填的，因为非必填所以值可能为空，我们可以给它一个默认值：
+我们也可以让某参数不是必填的，同时也可以选择给它一个默认值：
 ```java
 @RestController
 public class UserController {
 
     @GetMapping("/user/info")
-    String info(@RequestParam(name = "id",  required = false, defaultValue = "123")
+    void info(@RequestParam(name = "id",  required = false, defaultValue = "123")
         long id) {
-        return "User info.";
+        ...
     }
 }
 ```
@@ -55,7 +55,7 @@ public class UserController {
 
 入参`MultipartFile`是一个临时文件，你可以把这个文件转移到任何位置保存。
 
-## 无注解示例
+## 无需注解的参数
 一些特殊参数不需要注解就可以拿到，支持不用注解的参数有`Context`、`HttpRequest`、`HttpResponse`、`RequestBody`。
 
 > 上述`Context`是Android中的`android.content.Context`。

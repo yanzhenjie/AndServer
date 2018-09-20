@@ -24,13 +24,13 @@
 public class UserController {
 
     @GetMapping("/user/info")
-    String info() {
-        return "UserInfo";
+    void info() {
+        ...
     }
 
     @PostMapping("/user/register")
-    String register() {
-        return "UserRegister";
+    void register() {
+        ...
     }
 }
 ```
@@ -44,13 +44,13 @@ public class UserController {
 public class UserController {
 
     @GetMapping("/info")
-    String info() {
-        return "UserInfo";
+    void info() {
+        ...
     }
 
     @PostMapping("/register")
-    String register() {
-        return "UserRegister";
+    void register() {
+        ...
     }
 }
 ```
@@ -63,8 +63,8 @@ public class UserController {
 public class UserController {
 
     @PostMapping(path = {"/user/register", "/user/create"})
-    String register() {
-        return "UserRegister";
+    void register() {
+        ...
     }
 }
 ```
@@ -75,8 +75,8 @@ public class UserController {
 public class UserController {
 
     @PostMapping(path = {"/register", "/create"})
-    String register() {
-        return "UserRegister";
+    void register() {
+        ...
     }
 }
 ```
@@ -91,14 +91,14 @@ public class UserController {
 
     @RequestMapping(path = "/info"
         method = RequestMethod.GET)
-    String info() {
-        return "UserInfo";
+    void info() {
+        ...
     }
 
     @RequestMapping(path = "/register"
         method = {RequestMethod.GET, RequestMethod.POST})
-    String register() {
-        return "UserRegister";
+    void register() {
+        ...
     }
 }
 ```
@@ -110,18 +110,18 @@ public class UserController {
 public class UserController {
 
     @RequestMapping(path = "/info")
-    String info() {
-        return "UserInfo";
+    void info() {
+        ...
     }
 
     @RequestMapping(path = "/register")
-    String register() {
-        return "UserRegister";
+    void register() {
+        ...
     }
 
     @DeleteMapping("/delete")
-    String delete() {
-        return "DeleteUser";
+    void delete() {
+        ...
     }
 }
 ```
@@ -138,8 +138,8 @@ public class UserController {
 
     @GetMapping(path = "/info",
         param = "name=123")
-    String info() {
-        return "UserInfo";
+    void info() {
+        ...
     }
 }
 ```
@@ -157,8 +157,8 @@ public class UserController {
 
     @GetMapping(path = "/info",
         param = {"name!=123", "password"})
-    String info() {
-        return "UserInfo";
+    void info() {
+        ...
     }
 }
 ```
@@ -188,14 +188,14 @@ public class UserController {
 
     @PostMapping(path = "/info",
         consume = "application/json")
-    String info() {
-        return "UserInfo";
+    void info() {
+        ...
     }
 
     @PostMapping(path = "/create",
         consume = {"!text/*", "!application/xml"})
-    String create() {
-        return "UserCreate";
+    void create() {
+        ...
     }
 }
 ```
@@ -217,7 +217,7 @@ public class UserController {
     @PostMapping(path = "/info",
         produce = "application/json")
     String info() {
-        return "UserInfo";
+        ...
     }
 }
 ```
@@ -231,7 +231,7 @@ public class UserController {
     @PostMapping(path = "/info",
         produce = "!application/json")
     String info() {
-        return "UserInfo";
+        ...
     }
 }
 ```

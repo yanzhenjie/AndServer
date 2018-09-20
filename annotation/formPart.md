@@ -16,11 +16,42 @@
 public class UserController {
 
     @PostMapping("/goods/publish")
-    String login(@FormPart("images") List<String> images) {
-        ...;
+    void login(@FormPart("images") List<String> images) {
+        ...
+    }
+
+    @PostMapping("/goods/sort")
+    String upload(@FormPart("items") List<Goods> goodsList) throws IOException {
+        File localFile = ...; // Create a file at the target location.
+        file.transferTo(localFile); // Transfer the file to the target location.
+        return localFile.getAbsolutePath();
     }
 }
 ```
+
+如上所示，第一个Http Api客户端应该在表单中添加一个`key`为`images`的参数，其`value`的JSON结构应该是：
+```json
+[
+    "string1",
+    "string2"
+]
+```
+
+第二个Http Api客户端应该在表单中添加一个`key`为`items`的参数，其`value`的JSON结构应该是：
+```json
+[
+    {
+        "id": "123",
+        "name":"Kotlin"
+    },
+    {
+        "id":"124",
+        "name":"Android"
+    }
+]
+```
+
+> 因为不同的`MessageConverter`实现可能是对JSON的转化、XML的转化或者Protobuf的转化等，上述示例是以JSON为例，开发者应注意举一反三。
 
 ----
 
