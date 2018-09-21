@@ -7,9 +7,9 @@ Controller这个单词的愿意是控制器或者调节器，在开发中我们�
 ## 作用
 添加了`RestController`注解的类中的方法拥有将返回值直接输出到客户端的能力。
 
-添加了`Controller`注解的控制器中的方法的返回值经过`ViewResolver`分析，如果是[ResponseBody](responseBody.md)则会直接写出到客户端、如果是其它类型的数据会先经过[MessageConverter](../class/converter.md)转化成`ResponseBody`再输出到客户端，如果开发者没有提供`MessageConverter`怎会将返回值`toString()`后组成`StringBody`输出。
+添加了`Controller`注解的控制器中的方法的返回值经过`ViewResolver`分析，如果是[ResponseBody](ResponseBody.md)则会直接写出到客户端、如果是其它类型的数据会先经过[MessageConverter](../class/MessageConverter.md)转化成`ResponseBody`再输出到客户端，如果开发者没有提供`MessageConverter`怎会将返回值`toString()`后组成`StringBody`输出。
 
-> MessageConverter非常有用，比如将客户端的参数转化为Model，将服务端的Model转化为JSON、Prorobuf等个时候输出等，具体使用方法请参考[MessageConveter](../class/converter.md)类和[Converter](converter.md)注解。
+> MessageConverter非常有用，比如将客户端的参数转化为Model，将服务端的Model转化为JSON、Prorobuf等个时候输出等，具体使用方法请参考[MessageConveter](../class/MessageConverter.md)类和[Converter](Converter.md)注解。
 
 根据字面意思`RestController`就是写RESTFUL风格的Api的，因此它更加适合输出一些JSON格式、Protubuf格式的数据。
 
@@ -30,7 +30,7 @@ public class UserController {
 }
 ```
 
-> 示例中的`PostMapping`注解请参考[RequestMapping](requestMapping.md)章节，`RequestParam`注解请参考[RequestParam](requestParam.md)章节。
+> 示例中的`PostMapping`注解请参考[RequestMapping](RequestMapping.md)章节，`RequestParam`注解请参考[RequestParam](RequestParam.md)章节。
 
 上述示例则完成了一个模拟用户登录的Http Api，假设服务器的IP地址是`192.168.1.11`，监听的端口是`8080`，此时即可通过`http://192.168.1.11:8080/user/login`方法此Http Api，需要带上`account`和`password`参数。
 
@@ -109,7 +109,23 @@ public class UserController {
 }
 ```
 
-> 直接返回Model需要开发者提供`MessageConverter`来做数据转换，否则返回出去的Model将会被`toString()`后当作`String`输出，具体使用方法请参考[Converter](converter.md)注解和[MessageConverter](../class/converter.md)类。
+> 直接返回Model需要开发者提供`MessageConverter`来做数据转换，否则返回出去的Model将会被`toString()`后当作`String`输出，具体使用方法请参考[Converter](Converter.md)注解和[MessageConverter](../class/MessageConverter.md)类。
+
+## 返回ResponseBody示例
+事实上，以上示例中的返回值，最后无不被包装为[ResponseBody](../class/ResponseBody.md)后发送出去，因此如果开发者返回`ResponseBody`将被直接发送到客户端而不经过`MessageConverter`，因此我们可以直接返回`ResponseBody`：
+```java
+@Controller
+public class ProjectController {
+
+    @GetMapping("/project/info")
+    public void info() {
+        String context = ...;
+        return new StringBody(context);
+    }
+}
+```
+
+更多使用方法请参考[ResponseBody](../class/ResponseBody.md)类。
 
 ## 无返回值示例
 开发者也不可以不写返回值，直接操作`HttpRequest`和`HttpResponse`：
@@ -146,8 +162,25 @@ public class ProjectController {
 }
 ```
 
+直接操作`HttpResponse`时可能会涉及到设置[ResponseBody](../class/ResponseBody.md)。
+```java
+@Controller
+public class ProjectController {
+
+    @GetMapping("/project/info")
+    public void info(HttpRequest request, HttpResponse response) {
+        String content = ...;
+        RequestBody body = new StringBody(content);
+        response.setBody(body);
+    }
+}
+```
+
+更多使用方法请参考[ResponseBody](../class/ResponseBody.md)类。
+
 ----
 
 相关阅读推荐：  
 * [Controller](Controller.md)
-* [RequestMapping](requestMapping.md)
+* [RequestMapping](RequestMapping.md)
+* [ResponseBody](ResponseBody.md)

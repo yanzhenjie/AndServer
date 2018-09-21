@@ -6,7 +6,7 @@
 
 `RequestMapping`既可以用在类上，也可以用在方法上。当它仅仅用在类上时没有任何作用，当使用它的类中有方法也使用了它时，相当于把用在类上的`RequestMapping`的参数合并在方法的`RequestMapping`上。
 
-> 使用`RequestMapping`注解的方法，其所在的类必须使用[Controller](controller.md)注解或者[RestController](restController.md)注解才能生效，否则是无意义的。
+> 使用`RequestMapping`注解的方法，其所在的类必须使用[Controller](Controller.md)注解或者[RestController](RestController.md)注解才能生效，否则是无意义的。
 
 ----
 
@@ -81,7 +81,7 @@ public class UserController {
 }
 ```
 
-> 如果客户端请求的地址在服务器上不存在，将会抛出`NotFoundException`异常，异常处理请参考[ExceptionResolver](../class/exception.md)。
+> 如果客户端请求的地址在服务器上不存在，将会抛出`NotFoundException`异常，异常处理请参考[ExceptionResolver](../class/ExceptionResolver.md)。
 
 ## method示例
 除了使用`PostMapping`这样明确请求方法的注解之外，还可以使用`RequestMapping`指定请求方法，而且可以支持一个Http Api支持多种请求方法：
@@ -128,7 +128,7 @@ public class UserController {
 
 如上示例，前两个方法没有指定请求方法，但是由它们所在的类指定了它们的请求方法是`GET`，第三个方法同事支持`GET`请求方法和`DELETE`请求方法。
 
-> 如果客户端请求的地址不支持客户端使用的请求方法，将会抛出`MethodNotSupportException`异常，异常处理请参考[ExceptionResolver](../class/exception.md)。
+> 如果客户端请求的地址不支持客户端使用的请求方法，将会抛出`MethodNotSupportException`异常，异常处理请参考[ExceptionResolver](../class/ExceptionResolver.md)。
 
 ## param示例
 为了方便展开说明，我们先看一段示例：
@@ -136,8 +136,7 @@ public class UserController {
 @RestController
 public class UserController {
 
-    @GetMapping(path = "/info",
-        param = "name=123")
+    @GetMapping(path = "/info", param = "name=123")
     void info() {
         ...
     }
@@ -155,8 +154,7 @@ public class UserController {
 @RestController
 public class UserController {
 
-    @GetMapping(path = "/info",
-        param = {"name!=123", "password"})
+    @GetMapping(path = "/info", param = {"name!=123", "password"})
     void info() {
         ...
     }
@@ -165,12 +163,12 @@ public class UserController {
 
 上述示例中，`param`的含义是不能包含`name=123`这一参数键值对，但是必须包含`password`参数。
 
-> 如果客户端的请求违反约束，则会抛出`ParamValidateException`异常，异常处理请参考[ExceptionResolver](../class/exception.md)。
+> 如果客户端的请求违反约束，则会抛出`ParamValidateException`异常，异常处理请参考[ExceptionResolver](../class/ExceptionResolver.md)。
 
 ## header示例
 `header`的使用方法和`param`完全一致，只是它用来规定请求头，而`param`用来规定请求参数。
 
-> 如果客户端的请求违反约束，则会抛出`HeaderValidateException`异常，异常处理请参考[ExceptionResolver](../class/exception.md)。
+> 如果客户端的请求违反约束，则会抛出`HeaderValidateException`异常，异常处理请参考[ExceptionResolver](../class/ExceptionResolver.md)。
 
 ## consume示例
 Consume单词的字面意思是消耗、消费，在转换到程序中来就是说：*你能消费什么？你能处理什么？*因此它适合用于校验客户端的`Content-Type`头，Contnet-Type的意思是内容类型，因此`consume`的含义就是*能消费什么内容*了。
@@ -186,14 +184,12 @@ Consume单词的字面意思是消耗、消费，在转换到程序中来就是�
 @RestController
 public class UserController {
 
-    @PostMapping(path = "/info",
-        consume = "application/json")
+    @PostMapping(path = "/info", consume = "application/json")
     void info() {
         ...
     }
 
-    @PostMapping(path = "/create",
-        consume = {"!text/*", "!application/xml"})
+    @PostMapping(path = "/create", consume = {"!text/*", "!application/xml"})
     void create() {
         ...
     }
@@ -202,7 +198,7 @@ public class UserController {
 
 上述示例中，第一个方法表示客户端请求时的`Content-Type`只能是`application/json`，比如客户端是`application/json; charset=utf-8`也是允许通过的；第二个示例表示客户端请求时`Content-Type`不能是`text/plain`、`text/xml`和`text/css`等，也不能是`application/xml`。
 
-> 如果客户端的请求违反约束，则会抛出`ContentNotSupportedException`异常，异常处理请参考[ExceptionResolver](../class/exception.md)。
+> 如果客户端的请求违反约束，则会抛出`ContentNotSupportedException`异常，异常处理请参考[ExceptionResolver](../class/ExceptionResolver.md)。
 
 ## produce示例
 `produce`的语法和`consume`完全一致，只是它用来规定客户端的`Accept`头，而`consume`用来规定客户端的`Content-Type`头。
@@ -214,8 +210,7 @@ public class UserController {
 @RestController
 public class UserController {
 
-    @PostMapping(path = "/info",
-        produce = "application/json")
+    @PostMapping(path = "/info", produce = "application/json")
     String info() {
         ...
     }
@@ -228,8 +223,7 @@ public class UserController {
 @RestController
 public class UserController {
 
-    @PostMapping(path = "/info",
-        produce = "!application/json")
+    @PostMapping(path = "/info", produce = "!application/json")
     String info() {
         ...
     }
@@ -237,11 +231,37 @@ public class UserController {
 ```
 上述示例中，如果客户端的`Accept`是`*/*`或者`application/json`是不能通过校验的。
 
-> 如果客户端的请求违反约束，则会抛出`ContentNotAcceptableException`异常，异常处理请参考[ExceptionResolver](../class/exception.md)。
+> 如果客户端的请求违反约束，则会抛出`ContentNotAcceptableException`异常，异常处理请参考[ExceptionResolver](../class/ExceptionResolver.md)。
+
+**特别注意**，`produce`的值会作为服务端响应消息的`Content-Type`发送到客户端。
+
+如下所示，`produce`不会作为`Content-Type`被发送客户端：
+```java
+@RestController
+public class UserController {
+
+    @PostMapping(path = "/info", produce = "!application/json")
+    String info() {
+        ...
+    }
+}
+```
+
+如下所示，`produce`会作为`Content-Type`被发送客户端：
+```java
+@RestController
+public class UserController {
+
+    @PostMapping(path = "/info", produce = "application/json; charset=utf-8")
+    String info() {
+        ...
+    }
+}
+```
 
 ----
 
 相关阅读推荐：  
-* [Controller](controller.md)  
-* [RestController](restController.md)
-* [RequestParam](requestParam.md)
+* [Controller](Controller.md)  
+* [RestController](RestController.md)
+* [RequestParam](RequestParam.md)

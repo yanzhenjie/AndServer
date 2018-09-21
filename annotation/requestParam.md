@@ -1,13 +1,13 @@
 # RequestParam
 
-来到这一章的开发者想必是看过[Controller](controller.md)、[RestController](restContoller.md)和[RequestMapping](requestMapping.md)了，如果没有阅读而且不会使用的开发者应先阅读上述几个章节。
+没有阅读[Controller](Controller.md)、[RestController](RestContoller.md)和[RequestMapping](RequestMapping.md)章节的开发者应先阅读上述几个章节。
 
 ## 作用
 只能用在方法参数上，用来获取客户端的请求参数。
 
-`RequestParam`支持注解的参数类型有：`MultipartFile`、`String`、`int`、`long`、`float`、`double`、`boolean`，其中[MultipartFile](../class/multipartFile.md)表示表单中的文件，其它类型可以是Url中的参数、Body中的参数（客户端`Content-Type`是`application/x-www-form-urlencoded`，数据又在Body中时）、表单中的参数。
+`RequestParam`支持注解的参数类型有：`MultipartFile`、`String`、`int`、`long`、`float`、`double`、`boolean`，其中[MultipartFile](../class/MultipartFile.md)表示表单中的文件，其它类型可以是Url中的参数、Body中的参数（客户端`Content-Type`是`application/x-www-form-urlencoded`，数据又在Body中时）、表单中的参数。
 
-如果要单独获取Url中的参数请使用[QueryParam](queryParam.md)注解。
+如果要单独获取Url中的参数请使用[QueryParam](QueryParam.md)注解。
 
 ## 接受普通参数示例
 ```java
@@ -23,7 +23,7 @@ public class UserController {
 ```
 上述示例是一个模拟用户登录的Http Api，客户端必须提交`account`和`parssword`参数，否则将会抛出`ParamMissingException`异常。
 
-> 异常处理请参考[ExceptionResolver](../class/exception.md)。
+> 异常处理请参考[ExceptionResolver](../class/ExceptionResolver.md)。
 
 我们也可以让某参数不是必填的，同时也可以选择给它一个默认值：
 ```java
@@ -91,5 +91,5 @@ public class ProjectController {
 ----
 
 相关阅读推荐：  
-* [QueryParam](queryParam.md)  
-* [FormPart](formPart.md)  
+* [QueryParam](QueryParam.md)  
+* [FormPart](FormPart.md)  
