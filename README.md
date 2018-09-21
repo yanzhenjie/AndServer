@@ -41,3 +41,14 @@ dependencies {
 应用层运行时流程图  
 
 ![应用层运行时流程图](./images/framework_flow_chat.gif)
+
+## 关于作者
+严振杰，Java、Android开发者，热爱开源，在Github上有多个开源项目。
+
+邮箱：[im.yanzhenjie@gmail.com](mailto:im.yanzhenjie@gmail.com)  
+网址：[https://www.yanzhenjie.com](https://www.yanzhenjie.com)  
+博客：[http://blog.yanzhenjie.com](http://blog.yanzhenjie.com)  
+
+**作者微信公众号**
+
+![wechat](./images/wechat.jpg)
