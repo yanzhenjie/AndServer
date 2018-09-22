@@ -1,31 +1,14 @@
-# 网站
+# Website
 
-在[基本Api](../base/README.md)章节中我们演示了如何注册网站，在AndServer中如何注册一个网站。
+Website的原意是网站，它本身可以做一些动态网站和静态网站的部署，但是AndServer它更方便做一些静态页面的部署、文件下载等功能。
 
-## Website
-AndServer为了实现静态网站内容部署，提供了`Website`这个接口，开发者实现这个接口后注册到AndServer中即可启动网站。
+AndServer提供了`Website`几个默认实现：
+* [AssetsWebsite](AssetsWebsite.md)，基于`asserts`中任意文件夹的网站，支持缓存
+* [StorageWebsite](StorageWebsite.md)，基于SD卡任意文件夹的网站，支持缓存，支持热插拔
+* [FileBrowser](FileBrowser.md)，基于SD卡的文件浏览器
 
-```java
-public class MyWeibsite implement Website {
-	
-	@Override
-	public boolean intercept(HttpRequest request, HttpContext context)
-			throws HttpException, IOException {
-		// 1. 是否拦截这个请求，如果拦截返回true，不拦截返回false。
-		// 2. 拦截请求后AndServer将会调用下面的handle()方法。
-	}
+`Website`需要结合[Website](../annotation/Website.md)注解使用，首先需要一个类继承`Website`类，然后在该类上加上`Website`注解即可使用，不需要其他配置。
 
-	@Override
-	public void handle(HttpRequest request, HttpResponse response, HttpContext context)
-			throws HttpException, IOException {
-		// 处理请求并返回内容。
-	}
+> **注意**：实现类必须提供一个无参构造方法供AndServer调用，否则编译不通过。
 
-}
-```
-
-## AndServer自带的几个网站实现
-
-* [AssetsWebsite](./assets.md)可部署assets下的网站
-* [StorageWebsite](.stoage.md)可部署SD卡下的网站
-* [FileBrowser](./file.md)可部署SD卡下的内容，网页访问时以文件浏览器的实行展示
+示例请参考源码中`AssetsWebsite`、`StorageWebsite`、`FileBrowser`的实现。

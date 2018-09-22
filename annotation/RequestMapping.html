@@ -1,0 +1,945 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>RequestMapping · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="RequestParam.html" />
+    
+    
+    <link rel="prev" href="RestController.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    概述
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../sample/">
+            
+                <a href="../sample/">
+            
+                    
+                    入门
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../server/">
+            
+                <a href="../server/">
+            
+                    
+                    服务器
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    注解
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="Controller.html">
+            
+                <a href="Controller.html">
+            
+                    
+                    Controller
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="RestController.html">
+            
+                <a href="RestController.html">
+            
+                    
+                    RestController
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.3" data-path="RequestMapping.html">
+            
+                <a href="RequestMapping.html">
+            
+                    
+                    RequestMapping
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="RequestParam.html">
+            
+                <a href="RequestParam.html">
+            
+                    
+                    RequestParam
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="PathVariable.html">
+            
+                <a href="PathVariable.html">
+            
+                    
+                    PathVariable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="QueryParam.html">
+            
+                <a href="QueryParam.html">
+            
+                    
+                    QueryParam
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="FormPart.html">
+            
+                <a href="FormPart.html">
+            
+                    
+                    FormPart
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="ResponseBody.html">
+            
+                <a href="ResponseBody.html">
+            
+                    
+                    ResponseBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="RequestBody.html">
+            
+                <a href="RequestBody.html">
+            
+                    
+                    RequestBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="CookieValue.html">
+            
+                <a href="CookieValue.html">
+            
+                    
+                    CookieValue
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="RequestHeader.html">
+            
+                <a href="RequestHeader.html">
+            
+                    
+                    RequestHeader
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="Addition.html">
+            
+                <a href="Addition.html">
+            
+                    
+                    Addition
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.13" data-path="Interceptor.html">
+            
+                <a href="Interceptor.html">
+            
+                    
+                    Interceptor
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.14" data-path="Converter.html">
+            
+                <a href="Converter.html">
+            
+                    
+                    Converter
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.15" data-path="Resolver.html">
+            
+                <a href="Resolver.html">
+            
+                    
+                    Resolver
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.16" data-path="Website.html">
+            
+                <a href="Website.html">
+            
+                    
+                    Website
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../class/">
+            
+                <a href="../class/">
+            
+                    
+                    类与接口
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../class/MultipartFile.html">
+            
+                <a href="../class/MultipartFile.html">
+            
+                    
+                    MultipartFile
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../class/MessageConverter.html">
+            
+                <a href="../class/MessageConverter.html">
+            
+                    
+                    MessageConverter
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../class/HandlerInterceptor.html">
+            
+                <a href="../class/HandlerInterceptor.html">
+            
+                    
+                    HandlerInterceptor
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../class/ExceptionResolver.html">
+            
+                <a href="../class/ExceptionResolver.html">
+            
+                    
+                    ExeceptionResolver
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../class/ResponseBody.html">
+            
+                <a href="../class/ResponseBody.html">
+            
+                    
+                    ResponseBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" data-path="../class/RequestBody.html">
+            
+                <a href="../class/RequestBody.html">
+            
+                    
+                    RequestBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" data-path="../class/Cookie.html">
+            
+                <a href="../class/Cookie.html">
+            
+                    
+                    Cookie
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.8" data-path="../class/Addition.html">
+            
+                <a href="../class/Addition.html">
+            
+                    
+                    Addition
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../website/">
+            
+                <a href="../website/">
+            
+                    
+                    网站
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../website/AssetsWebsite.html">
+            
+                <a href="../website/AssetsWebsite.html">
+            
+                    
+                    AssetsWebsite
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../website/StorageWebsite.html">
+            
+                <a href="../website/StorageWebsite.html">
+            
+                    
+                    StorageWebsite
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../website/FileBrowser.html">
+            
+                <a href="../website/FileBrowser.html">
+            
+                    
+                    FileBrowser
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../cache/">
+            
+                <a href="../cache/">
+            
+                    
+                    缓存
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../cache/ETag.html">
+            
+                <a href="../cache/ETag.html">
+            
+                    
+                    ETag
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2" data-path="../cache/Modified.html">
+            
+                <a href="../cache/Modified.html">
+            
+                    
+                    LastModified
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >RequestMapping</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="requestmapping">RequestMapping</h1>
+<p><code>RequestMapping</code>&#x5728;AndServer&#x662F;&#x626E;&#x6F14;&#x7684;&#x89D2;&#x8272;&#x975E;&#x5E38;&#x91CD;&#x8981;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x89C4;&#x5B9A;&#x4E00;&#x4E2A;Http Api&#x8BF7;&#x6C42;&#x8DEF;&#x5F84;&#x3001;&#x8BF7;&#x6C42;&#x65B9;&#x6CD5;&#x3001;&#x53C2;&#x6570;&#x6821;&#x9A8C;&#x3001;&#x8BF7;&#x6C42;&#x5934;&#x6821;&#x9A8C;&#x3001;Accept&#x3001;ContentType&#x7B49;&#x91CD;&#x8981;&#x89C4;&#x5219;&#x3002;</p>
+<p><code>RequestMapping</code>&#x7684;&#x53D8;&#x4F53;&#x6709;<code>GetMapping</code>&#x3001;<code>PostMapping</code>&#x3001;<code>PutMapping</code>&#x3001;<code>PatchMapping</code>&#x3001;<code>DeleteMapping</code>&#xFF0C;<code>GetMapping</code>&#x8868;&#x793A;&#x4EC5;&#x652F;&#x6301;<code>GET</code>&#x8BF7;&#x6C42;&#x3001;<code>PostMapping</code>&#x8868;&#x793A;&#x53EA;&#x652F;&#x6301;<code>POST</code>&#x8BF7;&#x6C42;&#xFF0C;&#x4EE5;&#x6B64;&#x7C7B;&#x63A8;&#xFF0C;&#x4E0B;&#x6587;&#x5C06;&#x7EDF;&#x79F0;&#x4E3A;<code>RequestMapping</code>&#x3002;</p>
+<p><code>RequestMapping</code>&#x65E2;&#x53EF;&#x4EE5;&#x7528;&#x5728;&#x7C7B;&#x4E0A;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x7528;&#x5728;&#x65B9;&#x6CD5;&#x4E0A;&#x3002;&#x5F53;&#x5B83;&#x4EC5;&#x4EC5;&#x7528;&#x5728;&#x7C7B;&#x4E0A;&#x65F6;&#x6CA1;&#x6709;&#x4EFB;&#x4F55;&#x4F5C;&#x7528;&#xFF0C;&#x5F53;&#x4F7F;&#x7528;&#x5B83;&#x7684;&#x7C7B;&#x4E2D;&#x6709;&#x65B9;&#x6CD5;&#x4E5F;&#x4F7F;&#x7528;&#x4E86;&#x5B83;&#x65F6;&#xFF0C;&#x76F8;&#x5F53;&#x4E8E;&#x628A;&#x7528;&#x5728;&#x7C7B;&#x4E0A;&#x7684;<code>RequestMapping</code>&#x7684;&#x53C2;&#x6570;&#x5408;&#x5E76;&#x5728;&#x65B9;&#x6CD5;&#x7684;<code>RequestMapping</code>&#x4E0A;&#x3002;</p>
+<blockquote>
+<p>&#x4F7F;&#x7528;<code>RequestMapping</code>&#x6CE8;&#x89E3;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x5176;&#x6240;&#x5728;&#x7684;&#x7C7B;&#x5FC5;&#x987B;&#x4F7F;&#x7528;<a href="Controller.html">Controller</a>&#x6CE8;&#x89E3;&#x6216;&#x8005;<a href="RestController.html">RestController</a>&#x6CE8;&#x89E3;&#x624D;&#x80FD;&#x751F;&#x6548;&#xFF0C;&#x5426;&#x5219;&#x662F;&#x65E0;&#x610F;&#x4E49;&#x7684;&#x3002;</p>
+</blockquote>
+<hr>
+<p>&#x6587;&#x672C;&#x76EE;&#x5F55;&#xFF1A;</p>
+<ul>
+<li><a href="#path&#x793A;&#x4F8B;">path&#x793A;&#x4F8B;</a></li>
+<li><a href="#method&#x793A;&#x4F8B;">method&#x793A;&#x4F8B;</a></li>
+<li><a href="#param&#x793A;&#x4F8B;">param&#x793A;&#x4F8B;</a></li>
+<li><a href="#header&#x793A;&#x4F8B;">header&#x793A;&#x4F8B;</a></li>
+<li><a href="#consume&#x793A;&#x4F8B;">consume&#x793A;&#x4F8B;</a></li>
+<li><a href="#produce&#x793A;&#x4F8B;">produce&#x793A;&#x4F8B;</a></li>
+</ul>
+<h2 id="path&#x793A;&#x4F8B;">path&#x793A;&#x4F8B;</h2>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@GetMapping</span>(<span class="hljs-string">&quot;/user/info&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">info</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+
+    <span class="hljs-meta">@PostMapping</span>(<span class="hljs-string">&quot;/user/register&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">register</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<p>&#x5047;&#x8BBE;&#x670D;&#x52A1;&#x5668;&#x7684;IP&#x5730;&#x5740;&#x662F;<code>192.168.1.11</code>&#xFF0C;&#x76D1;&#x542C;&#x7684;&#x7AEF;&#x53E3;&#x662F;<code>8080</code>&#xFF0C;&#x4E0A;&#x8FF0;&#x793A;&#x4F8B;&#x7684;&#x8BBF;&#x95EE;&#x5730;&#x5740;&#x5219;&#x662F;&#xFF1A;<code>http://192.168.1.11:8080/user/info</code>&#x548C;<code>http://192.168.1.11:8080/user/register</code>&#x3002;</p>
+<p>&#x5982;&#x4E0A;&#x6240;&#x793A;&#xFF0C;&#x4E00;&#x4E2A;<code>Controller</code>&#x4E2D;&#x4E00;&#x822C;&#x4F1A;&#x5199;&#x591A;&#x4E2A;&#x5C5E;&#x4E8E;&#x540C;&#x4E00;&#x4E2A;&#x6A21;&#x5757;&#x7684;Http Api&#xFF0C;&#x5219;&#x6BCF;&#x4E2A;Http Api&#x7684;&#x8DEF;&#x5F84;&#x90FD;&#x4F1A;&#x4EE5;<code>/user</code>&#x5F00;&#x5934;&#xFF0C;&#x8FD9;&#x6837;&#x4F1A;&#x663E;&#x5F97;&#x5F88;&#x9EBB;&#x70E6;&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5728;&#x7C7B;&#x4E0A;&#x6DFB;&#x52A0;<code>RequestMapping</code>&#x6765;&#x7B80;&#x5316;&#x5B83;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RequestMapping</span>(<span class="hljs-string">&quot;/user&quot;</span>)
+<span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@GetMapping</span>(<span class="hljs-string">&quot;/info&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">info</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+
+    <span class="hljs-meta">@PostMapping</span>(<span class="hljs-string">&quot;/register&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">register</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<p>&#x4EE5;&#x4E0A;&#x4E24;&#x4E2A;&#x793A;&#x4F8B;&#x662F;&#x7B49;&#x4EF7;&#x7684;&#x3002;</p>
+<p>&#x53E6;&#x5916;&#x540C;&#x4E00;&#x4E2A;&#x65B9;&#x6CD5;&#x53EF;&#x4EE5;&#x62E5;&#x6709;&#x591A;&#x4E2A;<code>path</code>&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@PostMapping</span>(path = {<span class="hljs-string">&quot;/user/register&quot;</span>, <span class="hljs-string">&quot;/user/create&quot;</span>})
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">register</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<p>&#x6216;&#x8005;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RequestMapping</span>(<span class="hljs-string">&quot;/user&quot;</span>)
+<span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@PostMapping</span>(path = {<span class="hljs-string">&quot;/register&quot;</span>, <span class="hljs-string">&quot;/create&quot;</span>})
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">register</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<blockquote>
+<p>&#x5982;&#x679C;&#x5BA2;&#x6237;&#x7AEF;&#x8BF7;&#x6C42;&#x7684;&#x5730;&#x5740;&#x5728;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x4E0D;&#x5B58;&#x5728;&#xFF0C;&#x5C06;&#x4F1A;&#x629B;&#x51FA;<code>NotFoundException</code>&#x5F02;&#x5E38;&#xFF0C;&#x5F02;&#x5E38;&#x5904;&#x7406;&#x8BF7;&#x53C2;&#x8003;<a href="../class/ExceptionResolver.html">ExceptionResolver</a>&#x3002;</p>
+</blockquote>
+<h2 id="method&#x793A;&#x4F8B;">method&#x793A;&#x4F8B;</h2>
+<p>&#x9664;&#x4E86;&#x4F7F;&#x7528;<code>PostMapping</code>&#x8FD9;&#x6837;&#x660E;&#x786E;&#x8BF7;&#x6C42;&#x65B9;&#x6CD5;&#x7684;&#x6CE8;&#x89E3;&#x4E4B;&#x5916;&#xFF0C;&#x8FD8;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;<code>RequestMapping</code>&#x6307;&#x5B9A;&#x8BF7;&#x6C42;&#x65B9;&#x6CD5;&#xFF0C;&#x800C;&#x4E14;&#x53EF;&#x4EE5;&#x652F;&#x6301;&#x4E00;&#x4E2A;Http Api&#x652F;&#x6301;&#x591A;&#x79CD;&#x8BF7;&#x6C42;&#x65B9;&#x6CD5;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@RequestMapping</span>(path = <span class="hljs-string">&quot;/info&quot;</span>
+        method = RequestMethod.GET)
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">info</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+
+    <span class="hljs-meta">@RequestMapping</span>(path = <span class="hljs-string">&quot;/register&quot;</span>
+        method = {RequestMethod.GET, RequestMethod.POST})
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">register</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<p>&#x4E5F;&#x53EF;&#x4EE5;&#x7531;&#x65B9;&#x6CD5;&#x6240;&#x5728;&#x7684;&#x7C7B;&#x6765;&#x6307;&#x5B9A;&#x5B83;&#x7684;&#x8BF7;&#x6C42;&#x65B9;&#x6CD5;&#x662F;&#x4EC0;&#x4E48;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RequestMapping</span>(method = RequestMethod.GET)
+<span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@RequestMapping</span>(path = <span class="hljs-string">&quot;/info&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">info</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+
+    <span class="hljs-meta">@RequestMapping</span>(path = <span class="hljs-string">&quot;/register&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">register</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+
+    <span class="hljs-meta">@DeleteMapping</span>(<span class="hljs-string">&quot;/delete&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">delete</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<p>&#x5982;&#x4E0A;&#x793A;&#x4F8B;&#xFF0C;&#x524D;&#x4E24;&#x4E2A;&#x65B9;&#x6CD5;&#x6CA1;&#x6709;&#x6307;&#x5B9A;&#x8BF7;&#x6C42;&#x65B9;&#x6CD5;&#xFF0C;&#x4F46;&#x662F;&#x7531;&#x5B83;&#x4EEC;&#x6240;&#x5728;&#x7684;&#x7C7B;&#x6307;&#x5B9A;&#x4E86;&#x5B83;&#x4EEC;&#x7684;&#x8BF7;&#x6C42;&#x65B9;&#x6CD5;&#x662F;<code>GET</code>&#xFF0C;&#x7B2C;&#x4E09;&#x4E2A;&#x65B9;&#x6CD5;&#x540C;&#x4E8B;&#x652F;&#x6301;<code>GET</code>&#x8BF7;&#x6C42;&#x65B9;&#x6CD5;&#x548C;<code>DELETE</code>&#x8BF7;&#x6C42;&#x65B9;&#x6CD5;&#x3002;</p>
+<blockquote>
+<p>&#x5982;&#x679C;&#x5BA2;&#x6237;&#x7AEF;&#x8BF7;&#x6C42;&#x7684;&#x5730;&#x5740;&#x4E0D;&#x652F;&#x6301;&#x5BA2;&#x6237;&#x7AEF;&#x4F7F;&#x7528;&#x7684;&#x8BF7;&#x6C42;&#x65B9;&#x6CD5;&#xFF0C;&#x5C06;&#x4F1A;&#x629B;&#x51FA;<code>MethodNotSupportException</code>&#x5F02;&#x5E38;&#xFF0C;&#x5F02;&#x5E38;&#x5904;&#x7406;&#x8BF7;&#x53C2;&#x8003;<a href="../class/ExceptionResolver.html">ExceptionResolver</a>&#x3002;</p>
+</blockquote>
+<h2 id="param&#x793A;&#x4F8B;">param&#x793A;&#x4F8B;</h2>
+<p>&#x4E3A;&#x4E86;&#x65B9;&#x4FBF;&#x5C55;&#x5F00;&#x8BF4;&#x660E;&#xFF0C;&#x6211;&#x4EEC;&#x5148;&#x770B;&#x4E00;&#x6BB5;&#x793A;&#x4F8B;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@GetMapping</span>(path = <span class="hljs-string">&quot;/info&quot;</span>, param = <span class="hljs-string">&quot;name=123&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">info</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<p>&#x793A;&#x4F8B;&#x4E2D;&#x7684;&#x4EE3;&#x7801;&#x4E2D;<code>param=&quot;name=123&quot;</code>&#x662F;<code>param</code>&#x7684;&#x5176;&#x4E2D;&#x4E00;&#x4E2A;&#x8BED;&#x6CD5;&#xFF0C;<code>param</code>&#x6709;&#x56DB;&#x79CD;&#x8BED;&#x6CD5;&#xFF1A;</p>
+<ol>
+<li><code>key=value</code>&#xFF0C;&#x89C4;&#x5B9A;&#x4E86;&#x67D0;key&#x5FC5;&#x987B;&#x7B49;&#x4E8E;&#x67D0;value&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;<code>param = &quot;name=123&quot;</code>&#x3002;</li>
+<li><code>key!=value</code>&#xFF0C;&#x89C4;&#x5B9A;&#x4E86;&#x67D0;key&#x5FC5;&#x987B;&#x4E0D;&#x7B49;&#x4E8E;&#x67D0;value&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;<code>param = &quot;name!=123&quot;</code>&#x3002;</li>
+<li><code>key</code>&#xFF0C;&#x89C4;&#x5B9A;&#x4E86;&#x53C2;&#x6570;&#x4E2D;&#x5FC5;&#x987B;&#x6709;&#x67D0;key&#xFF0C;&#x4E14;&#x503C;&#x4E0D;&#x80FD;&#x4E3A;&#x7A7A;&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;<code>param = &quot;name&quot;</code>&#x3002;</li>
+<li><code>!key</code>&#xFF0C;&#x89C4;&#x5B9A;&#x4E86;&#x53C2;&#x6570;&#x4E2D;&#x5FC5;&#x987B;&#x4E0D;&#x80FD;&#x7531;&#x67D0;key&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;<code>param = &quot;!name&quot;</code>&#x3002;</li>
+</ol>
+<p>&#x4E0A;&#x8FF0;&#x8BED;&#x6CD5;&#x662F;&#x53EF;&#x4EE5;&#x6DF7;&#x5408;&#x4F7F;&#x7528;&#x7684;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@GetMapping</span>(path = <span class="hljs-string">&quot;/info&quot;</span>, param = {<span class="hljs-string">&quot;name!=123&quot;</span>, <span class="hljs-string">&quot;password&quot;</span>})
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">info</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<p>&#x4E0A;&#x8FF0;&#x793A;&#x4F8B;&#x4E2D;&#xFF0C;<code>param</code>&#x7684;&#x542B;&#x4E49;&#x662F;&#x4E0D;&#x80FD;&#x5305;&#x542B;<code>name=123</code>&#x8FD9;&#x4E00;&#x53C2;&#x6570;&#x952E;&#x503C;&#x5BF9;&#xFF0C;&#x4F46;&#x662F;&#x5FC5;&#x987B;&#x5305;&#x542B;<code>password</code>&#x53C2;&#x6570;&#x3002;</p>
+<blockquote>
+<p>&#x5982;&#x679C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8BF7;&#x6C42;&#x8FDD;&#x53CD;&#x7EA6;&#x675F;&#xFF0C;&#x5219;&#x4F1A;&#x629B;&#x51FA;<code>ParamValidateException</code>&#x5F02;&#x5E38;&#xFF0C;&#x5F02;&#x5E38;&#x5904;&#x7406;&#x8BF7;&#x53C2;&#x8003;<a href="../class/ExceptionResolver.html">ExceptionResolver</a>&#x3002;</p>
+</blockquote>
+<h2 id="header&#x793A;&#x4F8B;">header&#x793A;&#x4F8B;</h2>
+<p><code>header</code>&#x7684;&#x4F7F;&#x7528;&#x65B9;&#x6CD5;&#x548C;<code>param</code>&#x5B8C;&#x5168;&#x4E00;&#x81F4;&#xFF0C;&#x53EA;&#x662F;&#x5B83;&#x7528;&#x6765;&#x89C4;&#x5B9A;&#x8BF7;&#x6C42;&#x5934;&#xFF0C;&#x800C;<code>param</code>&#x7528;&#x6765;&#x89C4;&#x5B9A;&#x8BF7;&#x6C42;&#x53C2;&#x6570;&#x3002;</p>
+<blockquote>
+<p>&#x5982;&#x679C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8BF7;&#x6C42;&#x8FDD;&#x53CD;&#x7EA6;&#x675F;&#xFF0C;&#x5219;&#x4F1A;&#x629B;&#x51FA;<code>HeaderValidateException</code>&#x5F02;&#x5E38;&#xFF0C;&#x5F02;&#x5E38;&#x5904;&#x7406;&#x8BF7;&#x53C2;&#x8003;<a href="../class/ExceptionResolver.html">ExceptionResolver</a>&#x3002;</p>
+</blockquote>
+<h2 id="consume&#x793A;&#x4F8B;">consume&#x793A;&#x4F8B;</h2>
+<p>Consume&#x5355;&#x8BCD;&#x7684;&#x5B57;&#x9762;&#x610F;&#x601D;&#x662F;&#x6D88;&#x8017;&#x3001;&#x6D88;&#x8D39;&#xFF0C;&#x5728;&#x8F6C;&#x6362;&#x5230;&#x7A0B;&#x5E8F;&#x4E2D;&#x6765;&#x5C31;&#x662F;&#x8BF4;&#xFF1A;<em>&#x4F60;&#x80FD;&#x6D88;&#x8D39;&#x4EC0;&#x4E48;&#xFF1F;&#x4F60;&#x80FD;&#x5904;&#x7406;&#x4EC0;&#x4E48;&#xFF1F;</em>&#x56E0;&#x6B64;&#x5B83;&#x9002;&#x5408;&#x7528;&#x4E8E;&#x6821;&#x9A8C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;<code>Content-Type</code>&#x5934;&#xFF0C;Contnet-Type&#x7684;&#x610F;&#x601D;&#x662F;&#x5185;&#x5BB9;&#x7C7B;&#x578B;&#xFF0C;&#x56E0;&#x6B64;<code>consume</code>&#x7684;&#x542B;&#x4E49;&#x5C31;&#x662F;<em>&#x80FD;&#x6D88;&#x8D39;&#x4EC0;&#x4E48;&#x5185;&#x5BB9;</em>&#x4E86;&#x3002;</p>
+<p><code>consume</code>&#x7684;&#x8BED;&#x6CD5;&#x6709;&#x4E24;&#x79CD;&#xFF1A;</p>
+<ol>
+<li><code>application/json</code>&#xFF0C;&#x89C4;&#x5B9A;&#x4E86;&#x5BA2;&#x6237;&#x7AEF;&#x63D0;&#x4EA4;&#x7684;<code>Content-Type</code>&#x987B;&#x662F;JSON&#x683C;&#x5F0F;&#x3002;</li>
+<li><code>!applicatioln/xml</code>&#xFF0C;&#x89C4;&#x5B9A;&#x4E86;&#x5BA2;&#x6237;&#x7AEF;&#x63D0;&#x4EA4;&#x7684;<code>Content-Type</code>&#x4E0D;&#x80FD;&#x662F;XML&#x683C;&#x5F0F;&#x3002;</li>
+</ol>
+<p>&#x540C;&#x65F6;&#x5B83;&#x652F;&#x6301;<code>*</code>&#xFF0C;&#x4F8B;&#x5982;<code>application/*</code>&#x5219;<strong>&#x652F;&#x6301;</strong>&#x5BA2;&#x6237;&#x7AEF;&#x63D0;&#x4EA4;<code>application/json</code>&#x548C;<code>application/zip</code>&#x7B49;&#x7C7B;&#x578B;&#x6570;&#x636E;&#xFF0C;&#x4F8B;&#x5982;<code>!text/*</code>&#x5219;<strong>&#x4E0D;&#x652F;&#x6301;</strong>&#x5BA2;&#x6237;&#x7AEF;&#x63D0;&#x4EA4;<code>text/plain</code>&#x548C;<code>text/xml</code>&#x7B49;&#x7C7B;&#x578B;&#x6570;&#x636E;&#x3002;</p>
+<p>&#x793A;&#x4F8B;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@PostMapping</span>(path = <span class="hljs-string">&quot;/info&quot;</span>, consume = <span class="hljs-string">&quot;application/json&quot;</span>)
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">info</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+
+    <span class="hljs-meta">@PostMapping</span>(path = <span class="hljs-string">&quot;/create&quot;</span>, consume = {<span class="hljs-string">&quot;!text/*&quot;</span>, <span class="hljs-string">&quot;!application/xml&quot;</span>})
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">create</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<p>&#x4E0A;&#x8FF0;&#x793A;&#x4F8B;&#x4E2D;&#xFF0C;&#x7B2C;&#x4E00;&#x4E2A;&#x65B9;&#x6CD5;&#x8868;&#x793A;&#x5BA2;&#x6237;&#x7AEF;&#x8BF7;&#x6C42;&#x65F6;&#x7684;<code>Content-Type</code>&#x53EA;&#x80FD;&#x662F;<code>application/json</code>&#xFF0C;&#x6BD4;&#x5982;&#x5BA2;&#x6237;&#x7AEF;&#x662F;<code>application/json; charset=utf-8</code>&#x4E5F;&#x662F;&#x5141;&#x8BB8;&#x901A;&#x8FC7;&#x7684;&#xFF1B;&#x7B2C;&#x4E8C;&#x4E2A;&#x793A;&#x4F8B;&#x8868;&#x793A;&#x5BA2;&#x6237;&#x7AEF;&#x8BF7;&#x6C42;&#x65F6;<code>Content-Type</code>&#x4E0D;&#x80FD;&#x662F;<code>text/plain</code>&#x3001;<code>text/xml</code>&#x548C;<code>text/css</code>&#x7B49;&#xFF0C;&#x4E5F;&#x4E0D;&#x80FD;&#x662F;<code>application/xml</code>&#x3002;</p>
+<blockquote>
+<p>&#x5982;&#x679C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8BF7;&#x6C42;&#x8FDD;&#x53CD;&#x7EA6;&#x675F;&#xFF0C;&#x5219;&#x4F1A;&#x629B;&#x51FA;<code>ContentNotSupportedException</code>&#x5F02;&#x5E38;&#xFF0C;&#x5F02;&#x5E38;&#x5904;&#x7406;&#x8BF7;&#x53C2;&#x8003;<a href="../class/ExceptionResolver.html">ExceptionResolver</a>&#x3002;</p>
+</blockquote>
+<h2 id="produce&#x793A;&#x4F8B;">produce&#x793A;&#x4F8B;</h2>
+<p><code>produce</code>&#x7684;&#x8BED;&#x6CD5;&#x548C;<code>consume</code>&#x5B8C;&#x5168;&#x4E00;&#x81F4;&#xFF0C;&#x53EA;&#x662F;&#x5B83;&#x7528;&#x6765;&#x89C4;&#x5B9A;&#x5BA2;&#x6237;&#x7AEF;&#x7684;<code>Accept</code>&#x5934;&#xFF0C;&#x800C;<code>consume</code>&#x7528;&#x6765;&#x89C4;&#x5B9A;&#x5BA2;&#x6237;&#x7AEF;&#x7684;<code>Content-Type</code>&#x5934;&#x3002;</p>
+<p>&#x4E0E;<code>consume</code>&#x4E0D;&#x540C;&#x7684;&#x662F;&#xFF0C;&#x5B83;&#x5728;&#x670D;&#x52A1;&#x7AEF;&#x4E0D;&#x652F;&#x6301;<code>*</code>&#xFF0C;&#x4F46;&#x662F;&#x5B83;&#x652F;&#x6301;&#x5BA2;&#x6237;&#x7AEF;&#x7684;<code>*</code>&#x3002;&#x56E0;&#x4E3A;&#x5BF9;&#x4E8E;<code>Content-Type</code>&#x6765;&#x8BF4;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x4E0A;&#x884C;&#x6216;&#x8005;&#x670D;&#x52A1;&#x7AEF;&#x4E0B;&#x884C;&#x65F6;&#x5185;&#x5BB9;&#x7C7B;&#x578B;&#x90FD;&#x662F;&#x660E;&#x786E;&#x7684;&#xFF0C;&#x56E0;&#x6B64;&#x670D;&#x52A1;&#x7AEF;&#x6821;&#x9A8C;<code>Content-Type</code>&#x65F6;&#x53EF;&#x4EE5;&#x7528;&#x975E;&#x660E;&#x786E;&#x7684;&#x503C;&#x53BB;&#x505A;&#x5305;&#x542B;&#x3002;&#x800C;&#x5BF9;&#x4E8E;<code>Accept</code>&#xFF0C;&#x56E0;&#x4E3A;&#x4E0D;&#x77E5;&#x9053;&#x670D;&#x52A1;&#x7AEF;&#x4E0B;&#x53D1;&#x7684;<code>Content-Type</code>&#xFF0C;&#x6240;&#x4EE5;&#x5BA2;&#x6237;&#x7AEF;&#x53EF;&#x4EE5;&#x7528;&#x975E;&#x660E;&#x786E;&#x7684;&#x503C;&#x505A;&#x5305;&#x542B;&#xFF0C;&#x56E0;&#x6B64;&#x5BA2;&#x6237;&#x7AEF;&#x7684;<code>Accept</code>&#x503C;&#x6709;&#x53EF;&#x80FD;&#x662F;<code>*/*</code>&#x3002;</p>
+<p>&#x4F8B;&#x5982;&#xFF0C;&#x89C4;&#x5B9A;&#x5BA2;&#x6237;&#x7AEF;&#x80FD;&#x63A5;&#x53D7;JSON&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@PostMapping</span>(path = <span class="hljs-string">&quot;/info&quot;</span>, produce = <span class="hljs-string">&quot;application/json&quot;</span>)
+    <span class="hljs-function">String <span class="hljs-title">info</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<p>&#x4E0A;&#x8FF0;&#x793A;&#x4F8B;&#x4E2D;&#xFF0C;&#x5982;&#x679C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;<code>Accept</code>&#x662F;<code>*/*</code>&#x6216;&#x8005;<code>application/json</code>&#x5C31;&#x53EF;&#x4EE5;&#x6821;&#x9A8C;&#x901A;&#x8FC7;&#x3002;</p>
+<p>&#x4F8B;&#x5982;&#xFF0C;&#x89C4;&#x5B9A;&#x80FD;&#x63A5;&#x53D7;JSON&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x6821;&#x9A8C;&#x4E0D;&#x901A;&#x8FC7;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@PostMapping</span>(path = <span class="hljs-string">&quot;/info&quot;</span>, produce = <span class="hljs-string">&quot;!application/json&quot;</span>)
+    <span class="hljs-function">String <span class="hljs-title">info</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<p>&#x4E0A;&#x8FF0;&#x793A;&#x4F8B;&#x4E2D;&#xFF0C;&#x5982;&#x679C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;<code>Accept</code>&#x662F;<code>*/*</code>&#x6216;&#x8005;<code>application/json</code>&#x662F;&#x4E0D;&#x80FD;&#x901A;&#x8FC7;&#x6821;&#x9A8C;&#x7684;&#x3002;</p>
+<blockquote>
+<p>&#x5982;&#x679C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8BF7;&#x6C42;&#x8FDD;&#x53CD;&#x7EA6;&#x675F;&#xFF0C;&#x5219;&#x4F1A;&#x629B;&#x51FA;<code>ContentNotAcceptableException</code>&#x5F02;&#x5E38;&#xFF0C;&#x5F02;&#x5E38;&#x5904;&#x7406;&#x8BF7;&#x53C2;&#x8003;<a href="../class/ExceptionResolver.html">ExceptionResolver</a>&#x3002;</p>
+</blockquote>
+<p><strong>&#x7279;&#x522B;&#x6CE8;&#x610F;</strong>&#xFF0C;<code>produce</code>&#x7684;&#x503C;&#x4F1A;&#x4F5C;&#x4E3A;&#x670D;&#x52A1;&#x7AEF;&#x54CD;&#x5E94;&#x6D88;&#x606F;&#x7684;<code>Content-Type</code>&#x53D1;&#x9001;&#x5230;&#x5BA2;&#x6237;&#x7AEF;&#x3002;</p>
+<p>&#x5982;&#x4E0B;&#x6240;&#x793A;&#xFF0C;<code>produce</code>&#x4E0D;&#x4F1A;&#x4F5C;&#x4E3A;<code>Content-Type</code>&#x88AB;&#x53D1;&#x9001;&#x5BA2;&#x6237;&#x7AEF;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@PostMapping</span>(path = <span class="hljs-string">&quot;/info&quot;</span>, produce = <span class="hljs-string">&quot;!application/json&quot;</span>)
+    <span class="hljs-function">String <span class="hljs-title">info</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<p>&#x5982;&#x4E0B;&#x6240;&#x793A;&#xFF0C;<code>produce</code>&#x4F1A;&#x4F5C;&#x4E3A;<code>Content-Type</code>&#x88AB;&#x53D1;&#x9001;&#x5BA2;&#x6237;&#x7AEF;&#xFF1A;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
+
+    <span class="hljs-meta">@PostMapping</span>(path = <span class="hljs-string">&quot;/info&quot;</span>, produce = <span class="hljs-string">&quot;application/json; charset=utf-8&quot;</span>)
+    <span class="hljs-function">String <span class="hljs-title">info</span><span class="hljs-params">()</span> </span>{
+        ...
+    }
+}
+</code></pre>
+<hr>
+<p>&#x76F8;&#x5173;&#x9605;&#x8BFB;&#x63A8;&#x8350;&#xFF1A;  </p>
+<ul>
+<li><a href="Controller.html">Controller</a>  </li>
+<li><a href="RestController.html">RestController</a></li>
+<li><a href="RequestParam.html">RequestParam</a></li>
+</ul>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="RestController.html" class="navigation navigation-prev " aria-label="Previous page: RestController">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="RequestParam.html" class="navigation navigation-next " aria-label="Next page: RequestParam">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"RequestMapping","level":"1.4.3","depth":2,"next":{"title":"RequestParam","level":"1.4.4","depth":2,"path":"annotation/RequestParam.md","ref":"annotation/RequestParam.md","articles":[]},"previous":{"title":"RestController","level":"1.4.2","depth":2,"path":"annotation/RestController.md","ref":"annotation/RestController.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"annotation/RequestMapping.md","mtime":"2018-09-21T14:06:51.385Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2018-09-22T09:51:03.238Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
