@@ -1,6 +1,6 @@
 # ResponseBody
 
-本文主要介绍`ResponseBody`注解的使用方法，开发者不可将`ResponseBody`注解和[ResponseBody](../class/ResponseBody.md)类混淆。
+本文主要介绍`ResponseBody`注解的使用方法，开发者不可将`ResponseBody`注解和[ResponseBody](../class/ResponseBody.md)注解混淆。
 
 `ResponseBody`注解用于使用了[Controller](Controller.md)注解的类中的方法上，它的作用是让使用了[Controller](Controller.md)注解的类中的方法像使用了[RestController](RestController.md)注解的类中的方法一样，直接将返回值作为响应发送给客户端。
 

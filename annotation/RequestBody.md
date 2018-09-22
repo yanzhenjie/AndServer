@@ -1,6 +1,6 @@
 # RequestBody
 
-本文主要介绍`RequestBody`注解的使用方法，开发者不可将`RequestBody`注解和[RequestBody](../class/RequestBody.md)类混淆。
+本文主要介绍`RequestBody`注解的使用方法，开发者不可将`RequestBody`注解和[RequestBody](../class/RequestBody.md)注解混淆。
 
 客户端可以把一段JSON或者一个文件整体写到请求的Body中发送服务端，服务端的处理方法有两种，第一种是拿到[RequestBody](../class/RequestBody.md)对象，由开发者自行转换为目标对象，第二种是使用`RequestBody`注解结合[MessageConverter](../class/MessageConverter.md)自动转换为目标对象。
 
