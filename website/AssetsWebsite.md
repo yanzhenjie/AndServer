@@ -25,19 +25,17 @@ public class InternalWebsite extends AssetsWebsite {
 ```
 
 如上所示，`/web`表示项目下的`assets`中的`web文件夹`：
-```
+
+```text
 ├─app
 │   ├─src
 │   │  ├─assets
 │   │  │  └─web
 │   │  │     ├─..
 │   │  │     └─...
-│   │  │  
 │   │  ├─java
 │   │  └─res
-│   │
 │   ├─build.gradle
 │   └─app.iml
-│
 └─library
-``
+```

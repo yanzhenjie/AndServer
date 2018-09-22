@@ -49,6 +49,6 @@ dependencies {
 网址：[https://www.yanzhenjie.com](https://www.yanzhenjie.com)  
 博客：[http://blog.yanzhenjie.com](http://blog.yanzhenjie.com)  
 
-**作者微信公众号**
+**微信公众号**
 
 ![wechat](./images/wechat.jpg)
