@@ -1,6 +1,6 @@
 # 概述
 
-![Logo](./images/logo.png)
+![Logo](./images/logo.svg)
 
 AndServer是Android平台的Web Server和Web Framework。 它基于编译时注解提供了类似SpringMVC的注解和功能，如果您熟悉SpringMVC，则可以非常快速地掌握它。
 
@@ -27,11 +27,11 @@ dependencies {
 ## 架构图
 系统层架构图  
 
-![系统层架构图](./images/system_structure.png)
+![系统层架构图](./images/system_structure.svg)
 
 应用层架构图  
 
-![应用层架构图](./images/framework_structure.png)
+![应用层架构图](./images/framework_structure.svg)
 
 ## 流程图
 系统层运行时流程图  
@@ -51,4 +51,4 @@ dependencies {
 
 **微信公众号**
 
-![wechat](./images/wechat.jpg)
+![wechat](./images/wechat.svg)

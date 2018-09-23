@@ -1,6 +1,6 @@
 # 概述
 
-![Logo](./images/logo.png)
+![Logo](./images/logo.svg)
 
 AndServer是一个Android平台的WebServer服务器和WebServer开发框架，作为Web服务器它支持了IP、端口的绑定，以及SSL自定义证书。作为Web开发框架它支持静态网站部署、动态Http接口、文件的上传下载。
 
