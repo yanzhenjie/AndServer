@@ -17,6 +17,7 @@ package com.yanzhenjie.andserver;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.support.annotation.NonNull;
 
 import com.yanzhenjie.andserver.util.Assert;
@@ -30,20 +31,39 @@ public class AndServer {
 
     @SuppressLint("StaticFieldLeak")
     private static Context sContext;
+    private static boolean sDebug;
 
     static void initialize(@NonNull Context context) {
         Assert.notNull(context, "The context must not be null.");
 
         if (sContext == null) {
             synchronized (AndServer.class) {
-                if (sContext == null) sContext = context.getApplicationContext();
+                if (sContext == null) {
+                    sContext = context.getApplicationContext();
+                    ApplicationInfo appInfo = context.getApplicationInfo();
+                    sDebug = (appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+                }
             }
         }
     }
 
+    /**
+     * Get the context of the current application.
+     *
+     * @return {@link Context}.
+     */
     @NonNull
     public static Context getContext() {
         return sContext;
+    }
+
+    /**
+     * Whether the application is in debug mode.
+     *
+     * @return true, otherwise is false.
+     */
+    public static boolean isDebug() {
+        return sDebug;
     }
 
     /**

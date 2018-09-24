@@ -16,10 +16,7 @@
 package com.yanzhenjie.andserver;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.yanzhenjie.andserver.register.OnRegister;
-import com.yanzhenjie.andserver.register.Register;
 import com.yanzhenjie.andserver.util.Executors;
 
 import org.apache.commons.io.Charsets;
@@ -31,14 +28,11 @@ import org.apache.httpcore.impl.bootstrap.SSLServerSetupHandler;
 import org.apache.httpcore.impl.bootstrap.ServerBootstrap;
 
 import java.net.InetAddress;
-import java.util.Enumeration;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLServerSocket;
-
-import dalvik.system.DexFile;
 
 /**
  * Created by YanZhenjie on 2018/9/10.
@@ -87,7 +81,8 @@ public class Server {
             @Override
             public void run() {
                 DispatcherHandler handler = new DispatcherHandler(AndServer.getContext());
-                registerComponent(handler);
+                ComponentRegister register = new ComponentRegister(AndServer.getContext());
+                register.register(handler);
 
                 mHttpServer = ServerBootstrap.bootstrap()
                     .setSocketConfig(SocketConfig.custom()
@@ -132,36 +127,6 @@ public class Server {
                 }
             }
         });
-    }
-
-    private void registerComponent(Register onRegister) {
-        try {
-            DexFile df = new DexFile(AndServer.getContext().getPackageCodePath());
-            Enumeration<String> entries = df.entries();
-
-            String interfaceName = OnRegister.class.getName();
-            while (entries.hasMoreElements()) {
-                String className = entries.nextElement();
-                if (className.startsWith("com.yanzhenjie.andserver.register.")) {
-                    Class clazz = Class.forName(className);
-                    if (clazz.isInterface()) continue;
-
-                    Class<?>[] interfaces = clazz.getInterfaces();
-                    for (Class<?> anInterface : interfaces) {
-                        if (interfaceName.equals(anInterface.getName())) {
-                            Object obj = clazz.newInstance();
-                            if (obj instanceof OnRegister) {
-                                OnRegister register = (OnRegister)obj;
-                                register.onRegister(onRegister);
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-        } catch (Throwable ignored) {
-            Log.w(AndServer.TAG, ignored);
-        }
     }
 
     /**
