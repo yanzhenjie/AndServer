@@ -124,8 +124,9 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
     private TypeName mRequest;
     private TypeName mRequestMultipart;
     private TypeName mResponse;
-    private TypeName mRequestBody;
     private TypeName mHttpMethod;
+    private TypeName mSession;
+    private TypeName mRequestBody;
     private TypeName mMultipart;
 
     private TypeName mAddition;
@@ -184,6 +185,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         mRequestMultipart = TypeName.get(mElements.getTypeElement(Constants.REQUEST_TYPE_MULTIPART).asType());
         mResponse = TypeName.get(mElements.getTypeElement(Constants.RESPONSE_TYPE).asType());
         mHttpMethod = TypeName.get(mElements.getTypeElement(Constants.HTTP_METHOD_TYPE).asType());
+        mSession = TypeName.get(mElements.getTypeElement(Constants.SESSION_TYPE).asType());
         mRequestBody = TypeName.get(mElements.getTypeElement(Constants.REQUEST_BODY_TYPE).asType());
         mMultipart = TypeName.get(mElements.getTypeElement(Constants.MULTIPART_TYPE).asType());
 
@@ -269,8 +271,11 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
             String typeName = type.getQualifiedName().toString();
             Mapping typeMapping = getTypeMapping(type);
-            if (typeMapping != null) validateMapping(typeMapping, typeName);
-            else typeMapping = new Null();
+            if (typeMapping != null) {
+                validateMapping(typeMapping, typeName);
+            } else {
+                typeMapping = new Null();
+            }
 
             TypeName controllerType = TypeName.get(type.asType());
             FieldSpec hostField = FieldSpec.builder(controllerType, "mHost", Modifier.PRIVATE).build();
@@ -703,6 +708,13 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                 if (mResponse.equals(typeName)) {
                     if (paramBuild.length() > 0) paramBuild.append(", ");
                     paramBuild.append("response");
+                    continue;
+                }
+
+                if (mSession.equals(typeName)) {
+                    handleCode.add("\n").addStatement("$T session$L = request.getValidSession()", mSession, i);
+                    if (paramBuild.length() > 0) paramBuild.append(", ");
+                    paramBuild.append(String.format("session%s", i));
                     continue;
                 }
 

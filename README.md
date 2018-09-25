@@ -40,8 +40,8 @@ For documentation and additional information see [the website](https://www.yanzh
 ## Download
 ```groovy
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.0.0'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.0'
+    implementation 'com.yanzhenjie.andserver:api:2.0.1'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.1'
 }
 ```
 
