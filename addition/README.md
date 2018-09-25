@@ -27,11 +27,11 @@ public class UserController {
 [https://github.com/yanzhenjie/AndServer](https://github.com/yanzhenjie/AndServer)  
 
 下文将依次介绍以下三点：  
-1. 系统层架构蓝图
-2. 应用层架构蓝图
+1. 系统层架构
+2. 应用层架构
 3. 使用示例
 
-## 1. 系统层架构蓝图
+## 1. 系统层架构
 我们都知道Http是根据Http协议使用Socket做了连接属性、数据格式、交互逻辑方面的包装，我们来**模拟**一段服务端启动Server的代码：
 ```java
 public void startServer(String address, int port) {
@@ -47,7 +47,9 @@ public void startServer(String address, int port) {
 }
 ```
 
-`ServerSocket`监听了某个端口，当有`Socket`连接上来的时候去把这个`Socket`解析为`HttpConnection`，可想而知，作为服务端程序，`HttpConnection`至少包涵了`Request`和`Response`对象：
+`ServerSocket`监听了某个端口，当有`Socket`连接上来的时候去把这个`Socket`解析为`HttpConnection`，解析过程是按照Http协议拟定的格式，从`Socket`的`InputStream`读取一些数据后，用`Request`和`Response`包装`Socket`和未读取的流（比如标记下次读取流的起点），下文会再提到。
+
+接着`HttpParser`用`HttpConnection`包装了`Request`和`Reponse`返回，可想而知，作为服务端程序，`HttpConnection`至少包涵了`Request`和`Response`对象：
 ```java
 public class HttpConnection {
     private Request mRequest;
@@ -57,7 +59,7 @@ public class HttpConnection {
 }
 ```
 
-紧接着启动了一个线程去处理这个`Request`，怎么处理这个`Request`是一个WebFramework的核心，假设我们有一个类叫做`HttpDispatcher`，负责派发请求到Html File或者Java Method处理：
+紧接着启动了一个线程去处理当前连接，其实也就是处理当前`Request`，用`Response`写出数据，怎么处理这个`Request`是一个WebFramework的核心，作为Http服务端程序，应该能提供Html文件、JS文件、Java Method（Http Api）等让客户端访问，因此得有一个管理员来负责请求和资源的匹配，所以有一个叫做`HttpDispatcher`的类来决定这个`Request`应该发给哪个资源去处理：
 ```java
 public class HttpDispatcher {
 
@@ -68,7 +70,7 @@ public class HttpDispatcher {
 }
 ```
 
-`HttpThead`只需要负责调用`HttpDispatcher#diaptch()`即可，到这里就比较清晰了，只需要`HttpDispatcher`把当前`Request`派发到对应的Html File或者Java Method处理就可以了。
+在`HttpThead`里面，当线程被唤起时只需要负责调用`HttpDispatcher#diaptch()`即可，到这里就比较清晰了，只需要`HttpDispatcher`把当前`Request`派发到对应的Html File或者Java Method处理就可以了，具体的处理就属于HttpFramework的事，我们下文再讲。
 
 这就是一个简单的WebServer的蓝图，我们根据设想画出了系统层架构图：
 
@@ -80,10 +82,10 @@ public class HttpDispatcher {
 
 上图中，`Handler`表示处理请求的操作手柄，可能是Html File或者Java Method。值得高兴的一点是，在我们迭代了几个版本后，发现Apache组织提供了上述蓝图中的`HttpParser`层，因此为了稳定性和节省人力我们已经替换该层为Apache的实现。
 
-## 2. 应用层架构蓝图
-应用层就是上文中提到的WebFramework的核心，也就是上一个小节流程图的`Framework`层，包括了Session的处理、Cookie的处理、Cache的处理等。
+## 2. 应用层架构
+应用层就是上文中提到的WebFramework，也就是上一个小节流程图的`Framework`层，包括了Session的处理、Cookie的处理、Cache的处理等。
 
-接着上文，`HttpDispatcher`需要把当前`Request`派发到对应的Html File或者Java Method处理，而`Handler`代表了Html File或者Java Method，那么因为此二者区别极大，因此我们想到了使用`Adapter`模式，所以有了一个抽象类`RequestHandler`：
+接着上文，`HttpDispatcher`需要把当前`Request`派发到对应的Html File或者Java Method处理，而`Handler`代表了Html File或者Java Method，因为此二者区别极大，用一个类来表示它们显然有些不合理，于是我们想到了使用`Adapter`模式，所以有了一个抽象类`RequestHandler`：
 ```java
 public abstract class RequestHandler {
 
@@ -91,15 +93,19 @@ public abstract class RequestHandler {
 }
 ```
 
-所以必须得有一个`HandlerAdapter`去做`Handler`适配：
+`RequestHandler`可以表示任何文件或者Java Method，`HttpDispatcher`的作用是分发请求到各个资源，所以`HttpDispatcher`不应该来分析某个`RequestHandler`具体是什么东西，它应该直接调用`RequestHandler`来处理请求，因为Html File或者Java Method对应的`RequestHandler`在实现上显然大有不同，所以这里适用`Adapter`模式，于是我们用`HandlerAdapter`去做`RequestHandler`的适配：
 ```java
 public class HandlerAdapter {
 
     public RequestHandler getHandler(Request request) {
         ...
     }
+
+    ...
 }
 ```
+
+`HandlerAdapter`除了能获取`RequestHandler`之外，还需要做一些描述性的工作，好让`HttpDispatcher`知道当前适配的`RequestHandler`是可以处理正要分发的这个`Request`的。
 
 因为Html File和Java Method的返回值又是大相径庭，因为返回值是输出到客户端展示的，所以我们把返回值抽象为`View`：
 ```java
@@ -108,8 +114,11 @@ public class View {
     public Object output() {
         ...
     }
+
+    ...
 }
 ```
+如上所以，`output()`方法就是获取`Handler`输出的内容，还有其他方法是对这个输出的描述，这里不例举。
 
 因为`View`是返回值，没有具体的交互了，所以不适用`Adapter`模式了，因此我们必须有一个处理返回值的机制，把处理返回值的机制叫做`ViewResolver`：
 ```java
@@ -121,6 +130,8 @@ public class ViewResolver {
 }
 ```
 
+在`ViewResolver`中根据输出内容的类型不同，处理方式也不同，最终把输出内容通过`Response`对象写出去，底层是使用上文中提到的被`Response`包装的`Socket`写出。
+
 这就是一个简单的WebFramework的蓝图，我们根据设想画出了应用层架构图：
 
 ![应用层架构图](../images/framework_structure.svg)
@@ -129,11 +140,11 @@ public class ViewResolver {
 
 ![应用层流程图](../images/framework_flow_chat.gif)
 
-上图中，`Interceptor`表示拦截请求的拦截器，比如可以做一些不允许没登录或者没权限的请求进入的工作。`ExceptionResolver`表示全局异常处理器，比如某个Api发生了异常，会转到`ExceptionResolver`中处理，而不至于当前请求不响应或者响应了不想被客户端看到的消息。
+上图中，`Interceptor`表示对请求的拦截器，比如可以做一些不允许没登录或者没权限的请求进入的工作。`ExceptionResolver`表示全局异常处理器，比如某个Api发生了异常，会转到`ExceptionResolver`中处理，而不至于当前请求不响应或者响应了不想被客户端看到的消息。
 
 > 另外需要补充的是，上文中提到的都是粗略的设计，中间还有一些细节，例如Session的处理、Cookie的处理、缓存的处理等都未提到，其中任何一个知识点单独拿出来都可以写一篇文章，由于篇幅关系这里不做详细介绍。
 
-架构设计和流程到此就都介绍完了，有兴趣的开发者也可以自己实现一下，下面我们将简单介绍一下AndServer的使用。
+架构设计和流程到此就都介绍完了，有兴趣的开发者也可以自己实现一下。
 
 ## 3. 使用示例
 AndServer对于方便使用的理念是：只需要添加注解即可，不需要再做额外的配置。所以除了像文章开头那样用注解写好Api之外，只需要指定监听端口启动服务器就可以了。
@@ -152,7 +163,7 @@ public class InternalWebsite extends AssetsWebsite {
 }
 ```
 
-因此SD的文件可以删除也可以增加，想做到热插拔，就署位于SD卡的网站：
+因此SD的文件可以删除也可以增加，所以很方便做一些文件的热插拔，部署SD卡的网站：
 ```java
 @Website
 public class InternalWebsite extends StorageWebsite {
@@ -196,6 +207,8 @@ POST http://192.168.1.11:8080/user/login
 GET  http://192.168.1.11:8080/user/info/uid_001
 ```
 
+接下来什么配置都不用做，只需要启动服务器，这几个地址就可以用了。
+
 ### 3.3. 启动服务器
 ```java
 AndServer.serverBuilder()
@@ -206,7 +219,7 @@ AndServer.serverBuilder()
     .start();
 ```
 
-如上所示只需要指定要监听的服务端地址和端口，启动服务器即可。
+如上所示只需要指定要监听的服务端地址和端口，启动服务器就可以访问上面的所有地址了，不需要再做其他配置。
 
-本人到此就结束，由于篇幅关系，介绍的比较粗略，有兴趣的开发者可以看看项目使用文档：  
+由于篇幅关系，本文到此结束，介绍的比较粗略，有兴趣的开发者可以看看项目使用文档：  
 [https://www.yanzhenjie.com/AndServer](https://www.yanzhenjie.com/AndServer)
