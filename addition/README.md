@@ -1,4 +1,4 @@
-# 在Android上像SpringMVC一样做Web开发
+# 像SpringMVC一样在Android上做Web开发
 
 一部分Android开发者看到这个标题时可能有点疑惑，SpringMVC不是用来做JavaWeb开发的吗？难道被移植到Android上来了？答案是否定的，因为SpringMVC是基于Servlet的，在Android上开发一个支持Servlet的容器（Tomcat、JBoss）可不简单，所以我们是在Android上开发了一套全新的WebServer + WebFramework。
 

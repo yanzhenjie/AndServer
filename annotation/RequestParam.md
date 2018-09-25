@@ -56,7 +56,7 @@ public class UserController {
 入参`MultipartFile`是一个临时文件，你可以把这个文件转移到任何位置保存。
 
 ## 无需注解的参数
-一些特殊参数不需要注解就可以拿到，支持不用注解的参数有`Context`、`HttpRequest`、`HttpResponse`、`RequestBody`。
+一些特殊参数不需要注解就可以拿到，支持不用注解的参数有`Context`、`HttpRequest`、`HttpResponse`、`Session`、`RequestBody`。
 
 > 上述`Context`是Android中的`android.content.Context`。
 
