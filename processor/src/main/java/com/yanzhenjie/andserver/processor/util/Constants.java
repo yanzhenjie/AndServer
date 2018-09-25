@@ -54,6 +54,7 @@ public interface Constants {
     String REQUEST_TYPE_MULTIPART = PACKAGE_NAME + ".http.multipart.MultipartRequest";
     String RESPONSE_TYPE = PACKAGE_NAME + ".http.HttpResponse";
     String HTTP_METHOD_TYPE = PACKAGE_NAME + ".http.HttpMethod";
+    String SESSION_TYPE = PACKAGE_NAME + ".http.session.Session";
     String REQUEST_BODY_TYPE = PACKAGE_NAME + ".http.RequestBody";
     String MULTIPART_TYPE = PACKAGE_NAME + ".http.multipart.MultipartFile";
 
