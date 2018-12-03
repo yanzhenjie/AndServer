@@ -24,15 +24,17 @@ public class UserController {
     @GetMapping(path = "/info/{userId}")
     public User detail(@PathVariable("userId") String userId) {
         User user = ...;
-        return userInfo;
+        ...;
+
+        return user;
     }
 }
 ```
 
 The above code will generate the following two http apis:
 ```text
-POST http://host:port/user/login
-GET http://host:port/user/info/uid_001
+POST http://.../user/login
+GET http://.../user/info/uid_001
 ```
 
 For documentation and additional information see [the website](https://www.yanzhenjie.com/AndServer).
@@ -40,7 +42,7 @@ For documentation and additional information see [the website](https://www.yanzh
 ## Download
 ```groovy
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.0.1'
+    implementation 'com.yanzhenjie.andserver:api:2.0.2'
     annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.1'
 }
 ```
