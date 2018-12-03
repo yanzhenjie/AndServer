@@ -409,10 +409,13 @@ public class StandardRequest implements HttpRequest {
     @Override
     public RequestBody getBody() {
         if (getMethod().allowBody()) {
-            HttpEntityEnclosingRequest request = (HttpEntityEnclosingRequest)mRequest;
-            HttpEntity entity = request.getEntity();
-            if (entity == null) return null;
-            return new EntityToBody(entity);
+            if (mRequest instanceof HttpEntityEnclosingRequest) {
+                HttpEntityEnclosingRequest request = (HttpEntityEnclosingRequest)mRequest;
+                HttpEntity entity = request.getEntity();
+                if (entity == null) return null;
+                return new EntityToBody(entity);
+            }
+            return null;
         }
         throw new UnsupportedOperationException("This method does not allow body.");
     }

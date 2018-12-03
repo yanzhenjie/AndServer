@@ -109,7 +109,6 @@ public class WebsiteProcessor extends BaseProcessor {
 
                 if (mTypes.isSubtype(superclass, mWebstieMirror)) {
                     elements.add(typeElement);
-                    break;
                 } else {
                     mLog.w(String.format("The annotation Website must be used in a subclass of [Website] on %s.",
                         typeElement.getQualifiedName()));

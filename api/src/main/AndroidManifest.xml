@@ -21,7 +21,7 @@
     <application>
         <provider
             android:name=".Initialization"
-            android:authorities="com.yanzhenjie.andserver.initialize"
+            android:authorities="${applicationId}.andserver.initialize"
             android:exported="false"/>
     </application>
 </manifest>
