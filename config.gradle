@@ -15,10 +15,10 @@ ext {
                sampleMinSdkVersion    : 14,
                sampleTargetSdkVersion : 22,
 
-               versionCode            : 18,
-               versionName            : '2.0.1',]
+               versionCode            : 19,
+               versionName            : '2.0.2',]
 
-    bintray = [version       : '2.0.1',
+    bintray = [version       : '2.0.2',
                group         : 'com.yanzhenjie.andserver',
 
                siteUrl       : 'https://github.com/yanzhenjie/AndServer',
@@ -49,7 +49,7 @@ ext {
                     annotation         : 'com.android.support:support-annotations:27.1.1',
 
                     andserverAnnotation: 'com.yanzhenjie.andserver:annotation:2.0.0',
-                    andserverApi       : 'com.yanzhenjie.andserver:api:2.0.1',
+                    andserverApi       : 'com.yanzhenjie.andserver:api:2.0.2',
                     andserverProcessor : 'com.yanzhenjie.andserver:processor:2.0.1',
 
                     appCompat          : 'com.android.support:appcompat-v7:27.1.1',
