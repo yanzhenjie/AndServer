@@ -33,7 +33,7 @@ public class AndServer {
     private static Context sContext;
     private static boolean sDebug;
 
-    static void initialize(@NonNull Context context) {
+    public static void initialize(@NonNull Context context) {
         Assert.notNull(context, "The context must not be null.");
 
         if (sContext == null) {
