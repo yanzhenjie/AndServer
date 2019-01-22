@@ -437,7 +437,7 @@ public class StandardRequest implements HttpRequest {
     @Override
     public Session getSession() {
         Object objSession = getAttribute(REQUEST_CREATED_SESSION);
-        if (objSession != null && objSession instanceof Session) {
+        if (objSession instanceof Session) {
             return (Session)objSession;
         }
 
@@ -516,14 +516,12 @@ public class StandardRequest implements HttpRequest {
         StringTokenizer tokenizer = new StringTokenizer(input, "&");
         while (tokenizer.hasMoreElements()) {
             String element = tokenizer.nextToken();
-            int end = element.lastIndexOf("=");
+            int end = element.indexOf("=");
 
-            if (end > 0) {
+            if (end > 0 && end < element.length() - 1) {
                 String key = element.substring(0, end);
-                if (end + 1 <= element.length()) {
-                    String value = element.substring(end + 1, element.length());
-                    parameters.add(key, UrlCoder.urlDecode(value, Charsets.UTF_8));
-                }
+                String value = element.substring(end + 1);
+                parameters.add(key, UrlCoder.urlDecode(value, Charsets.UTF_8));
             }
         }
         return parameters;
