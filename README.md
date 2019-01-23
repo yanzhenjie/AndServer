@@ -2,6 +2,8 @@
 
 ![Logo](./images/logo.svg)
 
+[中文文档](./README-CN.md)
+
 Web server and Web framework of Android platform. It provides annotations like SpringMVC, and if you are familiar with SpringMVC, you can master it very quickly.
 
 * Static html website deployment
@@ -23,8 +25,8 @@ public class UserController {
 
     @GetMapping(path = "/info/{userId}")
     public User detail(@PathVariable("userId") String userId) {
-        User user = ...;
-        ...;
+        User user = findUserById(userId);
+        ...
 
         return user;
     }
@@ -42,16 +44,19 @@ For documentation and additional information see [the website](https://www.yanzh
 ## Download
 ```groovy
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.0.2'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.1'
+    implementation 'com.yanzhenjie.andserver:api:2.0.3'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.3'
 }
 ```
 
 AndServer requires at minimum Android 2.3(Api level 9).
 
+## Contributing
+Before submitting pull requests, contributors must abide by the [agreement](./CONTRIBUTING.md) .
+
 ## License
 ```text
-Copyright 2018 Yan Zhenjie
+Copyright 2019 Zhenjie Yan
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
