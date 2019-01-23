@@ -226,7 +226,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         return true;
     }
 
-    private void findMapping(Set<? extends Element> set, Map<TypeElement, List<ExecutableElement>> controllers) {
+    private void findMapping(Set<? extends Element> set, Map<TypeElement, List<ExecutableElement>> controllerMap) {
         for (Element element : set) {
             if (element instanceof ExecutableElement) {
                 ExecutableElement execute = (ExecutableElement)element;
@@ -252,10 +252,10 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                     mLog.w(String.format("The modifier static is redundant on %s.", host));
                 }
 
-                List<ExecutableElement> elementList = controllers.get(type);
+                List<ExecutableElement> elementList = controllerMap.get(type);
                 if (CollectionUtils.isEmpty(elementList)) {
                     elementList = new ArrayList<>();
-                    controllers.put(type, elementList);
+                    controllerMap.put(type, elementList);
                 }
                 elementList.add(execute);
             }
@@ -263,7 +263,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
     }
 
     private void createHandlerAdapter(Map<TypeElement, List<ExecutableElement>> controllers) {
-        List<String> adapterList = new ArrayList<>();
+        Map<String, List<String>> adapterMap = new HashMap<>();
         for (Map.Entry<TypeElement, List<ExecutableElement>> entry : controllers.entrySet()) {
             TypeElement type = entry.getKey();
             List<ExecutableElement> executes = entry.getValue();
@@ -340,10 +340,16 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                 throw new RuntimeException(e);
             }
 
+            String group = getGroup(type);
+            List<String> adapterList = adapterMap.get(group);
+            if (CollectionUtils.isEmpty(adapterList)) {
+                adapterList = new ArrayList<>();
+                adapterMap.put(group, adapterList);
+            }
             adapterList.add(packageName + "." + className);
         }
 
-        if (!adapterList.isEmpty()) createRegister(adapterList);
+        if (!adapterMap.isEmpty()) createRegister(adapterMap);
     }
 
     private Mapping getTypeMapping(TypeElement type) {
@@ -1062,14 +1068,25 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             .endControlFlow();
     }
 
-    private void createRegister(List<String> adapterList) {
-        TypeName typeName = ParameterizedTypeName.get(ClassName.get(List.class), mAdapter);
-        FieldSpec listField = FieldSpec.builder(typeName, "mList", Modifier.PRIVATE).build();
+    private void createRegister(Map<String, List<String>> adapterMap) {
+        TypeName listTypeName = ParameterizedTypeName.get(ClassName.get(List.class), mAdapter);
+        TypeName typeName = ParameterizedTypeName.get(ClassName.get(Map.class), mString, listTypeName);
+        FieldSpec mapField = FieldSpec.builder(typeName, "mMap", Modifier.PRIVATE).build();
 
-        CodeBlock.Builder rootCode = CodeBlock.builder().addStatement("this.mList = new $T<>()", ArrayList.class);
-        for (String adapterName : adapterList) {
-            ClassName className = ClassName.bestGuess(adapterName);
-            rootCode.addStatement("this.mList.add(new $T())", className);
+        CodeBlock.Builder rootCode = CodeBlock.builder().addStatement("this.mMap = new $T<>()", HashMap.class);
+        for (Map.Entry<String, List<String>> entry : adapterMap.entrySet()) {
+            String group = entry.getKey();
+            List<String> adapterList = entry.getValue();
+
+            CodeBlock.Builder groupCode = CodeBlock.builder()
+                .addStatement("List<$T> $LList = new $T<>()", mAdapter, group, ArrayList.class);
+            for (String adapterName : adapterList) {
+                ClassName className = ClassName.bestGuess(adapterName);
+                groupCode.addStatement("$LList.add(new $T())", group, className);
+            }
+
+            rootCode.add(groupCode.build());
+            rootCode.addStatement("this.mMap.put($S, $LList)", group, group);
         }
         MethodSpec rootMethod = MethodSpec.constructorBuilder()
             .addModifiers(Modifier.PUBLIC)
@@ -1079,9 +1096,13 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         MethodSpec registerMethod = MethodSpec.methodBuilder("onRegister")
             .addAnnotation(Override.class)
             .addModifiers(Modifier.PUBLIC)
+            .addParameter(mString, "group")
             .addParameter(mRegisterType, "register")
-            .beginControlFlow("for ($T item : mList)", mAdapter)
-            .addStatement("register.addAdapter(item)")
+            .addStatement("List<$T> list = mMap.get(group)", mAdapter)
+            .beginControlFlow("if(list != null && !list.isEmpty())")
+            .beginControlFlow("for ($T adapter : list)", mAdapter)
+            .addStatement("register.addAdapter(adapter)")
+            .endControlFlow()
             .endControlFlow()
             .build();
 
@@ -1091,7 +1112,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             .addJavadoc(Constants.DOC_EDIT_WARN)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .addSuperinterface(mOnRegisterType)
-            .addField(listField)
+            .addField(mapField)
             .addMethod(rootMethod)
             .addMethod(registerMethod)
             .build();
@@ -1102,6 +1123,18 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getGroup(TypeElement type) {
+        Controller controller = type.getAnnotation(Controller.class);
+        if (controller != null) {
+            return controller.value();
+        }
+        RestController restController = type.getAnnotation(RestController.class);
+        if (restController != null) {
+            return restController.value();
+        }
+        throw new IllegalStateException(String.format("The type is not a Controller: %1$s.", type));
     }
 
     @Override

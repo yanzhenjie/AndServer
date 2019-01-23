@@ -58,7 +58,7 @@ public class ComponentRegister {
         this.mContext = context;
     }
 
-    public void register(Register register) {
+    public void register(Register register, String group) {
         List<String> paths = getDexFilePaths(mContext);
 
         for (final String path : paths) {
@@ -75,7 +75,7 @@ public class ComponentRegister {
                 while (dexEntries.hasMoreElements()) {
                     String className = dexEntries.nextElement();
                     if (className.startsWith(COMPONENT_PACKAGE_NAME)) {
-                        registerClass(register, className);
+                        registerClass(register, group, className);
                     }
                 }
             } catch (Throwable e) {
@@ -91,7 +91,7 @@ public class ComponentRegister {
         }
     }
 
-    private void registerClass(Register register, String className) throws Exception {
+    private void registerClass(Register register, String group, String className) throws Exception {
         Class clazz = Class.forName(className);
         if (clazz.isInterface()) return;
 
@@ -102,7 +102,7 @@ public class ComponentRegister {
                 if (obj instanceof OnRegister) {
                     Log.i(AndServer.TAG, String.format("Loading %s.", className));
                     OnRegister onRegister = (OnRegister)obj;
-                    onRegister.onRegister(register);
+                    onRegister.onRegister(group, register);
                 }
                 break;
             }

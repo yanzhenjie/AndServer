@@ -25,4 +25,10 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.SOURCE)
-public @interface Resolver {}
+public @interface Resolver {
+
+    /**
+     * Group name.
+     */
+    String value() default "default";
+}

@@ -25,4 +25,10 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.SOURCE)
-public @interface Interceptor {}
+public @interface Interceptor {
+
+    /**
+     * Group name.
+     */
+    String value() default "default";
+}

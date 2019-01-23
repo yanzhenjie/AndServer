@@ -33,8 +33,9 @@ import org.apache.commons.lang3.Validate;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.Filer;
@@ -57,10 +58,11 @@ public class ResolverProcessor extends BaseProcessor {
     private Elements mElements;
     private Logger mLog;
 
-    private TypeName mResolver;
-
     private TypeName mOnRegisterType;
     private TypeName mRegisterType;
+
+    private TypeName mResolver;
+    private TypeName mString;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -72,20 +74,21 @@ public class ResolverProcessor extends BaseProcessor {
         mRegisterType = TypeName.get(mElements.getTypeElement(Constants.REGISTER_TYPE).asType());
 
         mResolver = TypeName.get(mElements.getTypeElement(Constants.RESOLVER_TYPE).asType());
+        mString = TypeName.get(String.class);
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnv) {
         if (CollectionUtils.isEmpty(set)) return false;
 
-        List<TypeElement> elements = findAnnotation(roundEnv);
-        if (!elements.isEmpty()) createRegister(elements);
+        Map<String, TypeElement> resolverMap = findAnnotation(roundEnv);
+        if (!resolverMap.isEmpty()) createRegister(resolverMap);
         return true;
     }
 
-    private List<TypeElement> findAnnotation(RoundEnvironment roundEnv) {
+    private Map<String, TypeElement> findAnnotation(RoundEnvironment roundEnv) {
         Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(Resolver.class);
-        List<TypeElement> elements = new ArrayList<>();
+        Map<String, TypeElement> resolverMap = new HashMap<>();
 
         for (Element element : set) {
             if (element instanceof TypeElement) {
@@ -104,7 +107,7 @@ public class ResolverProcessor extends BaseProcessor {
                 }
                 for (TypeMirror typeMirror : interfaces) {
                     if (mResolver.equals(TypeName.get(typeMirror))) {
-                        elements.add(typeElement);
+                        resolverMap.put(getGroup(typeElement), typeElement);
                         break;
                     } else {
                         mLog.w(String.format(
@@ -114,29 +117,35 @@ public class ResolverProcessor extends BaseProcessor {
                 }
             }
         }
-        return elements;
+        return resolverMap;
     }
 
-    private void createRegister(List<TypeElement> elements) {
-        TypeName typeName = ParameterizedTypeName.get(ClassName.get(List.class), mResolver);
-        FieldSpec hostField = FieldSpec.builder(typeName, "mList", Modifier.PRIVATE).build();
+    private void createRegister(Map<String, TypeElement> resolverMap) {
+        TypeName typeName = ParameterizedTypeName.get(ClassName.get(Map.class), mString, mResolver);
+        FieldSpec mapField = FieldSpec.builder(typeName, "mMap", Modifier.PRIVATE).build();
 
-        CodeBlock.Builder rootCode = CodeBlock.builder();
-        for (TypeElement type : elements) {
-            mLog.i(String.format("------ Processing %s ------", type.getSimpleName()));
-            rootCode.addStatement("this.mList.add(new $T())", type);
+        CodeBlock.Builder rootCode = CodeBlock.builder().addStatement("this.mMap = new $T<>()", HashMap.class);
+        for (Map.Entry<String, TypeElement> entry : resolverMap.entrySet()) {
+            String group = entry.getKey();
+            TypeElement resolver = entry.getValue();
+            mLog.i(String.format("------ Processing %s ------", resolver.getSimpleName()));
+            rootCode.addStatement("this.mMap.put($S, new $T())", group, resolver);
         }
+
         MethodSpec rootMethod = MethodSpec.constructorBuilder()
             .addModifiers(Modifier.PUBLIC)
-            .addStatement("this.mList = new $T<>()", ArrayList.class)
             .addCode(rootCode.build())
             .build();
 
         MethodSpec registerMethod = MethodSpec.methodBuilder("onRegister")
             .addAnnotation(Override.class)
             .addModifiers(Modifier.PUBLIC)
+            .addParameter(mString, "group")
             .addParameter(mRegisterType, "register")
-            .addStatement("register.setResolver(mList.get(0))")
+            .addStatement("$T resolver = mMap.get(group)", mResolver)
+            .beginControlFlow("if(resolver != null)")
+            .addStatement("register.setResolver(resolver)")
+            .endControlFlow()
             .build();
 
         String packageName = Constants.REGISTER_PACKAGE;
@@ -144,7 +153,7 @@ public class ResolverProcessor extends BaseProcessor {
             .addJavadoc(Constants.DOC_EDIT_WARN)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .addSuperinterface(mOnRegisterType)
-            .addField(hostField)
+            .addField(mapField)
             .addMethod(rootMethod)
             .addMethod(registerMethod)
             .build();
@@ -155,6 +164,15 @@ public class ResolverProcessor extends BaseProcessor {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    private String getGroup(TypeElement type) {
+        Resolver resolver = type.getAnnotation(Resolver.class);
+        if (resolver != null) {
+            return resolver.value();
+        }
+        throw new IllegalStateException(String.format("The type is not a Resolver: %1$s.", type));
     }
 
     @Override

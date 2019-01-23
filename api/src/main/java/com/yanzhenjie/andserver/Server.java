@@ -40,9 +40,14 @@ import javax.net.ssl.SSLServerSocket;
 public class Server {
 
     public static Builder newBuilder() {
-        return new Builder();
+        return newBuilder("default");
     }
 
+    public static Builder newBuilder(@NonNull String group) {
+        return new Builder(group);
+    }
+
+    private final String mGroup;
     private final InetAddress mInetAddress;
     private final int mPort;
     private final int mTimeout;
@@ -54,12 +59,13 @@ public class Server {
     private boolean isRunning;
 
     private Server(Builder builder) {
-        this.mInetAddress = builder.mInetAddress;
-        this.mPort = builder.mPort;
-        this.mTimeout = builder.mTimeout;
-        this.mSSLContext = builder.mSSLContext;
-        this.mSSLInitializer = builder.mSSLInitializer;
-        this.mListener = builder.mListener;
+        this.mGroup = builder.group;
+        this.mInetAddress = builder.inetAddress;
+        this.mPort = builder.port;
+        this.mTimeout = builder.timeout;
+        this.mSSLContext = builder.sslContext;
+        this.mSSLInitializer = builder.sslInitializer;
+        this.mListener = builder.listener;
     }
 
     /**
@@ -77,12 +83,12 @@ public class Server {
     public void startup() {
         if (isRunning) return;
 
-        Executors.getInstance().submit(new Runnable() {
+        Executors.getInstance().execute(new Runnable() {
             @Override
             public void run() {
                 DispatcherHandler handler = new DispatcherHandler(AndServer.getContext());
                 ComponentRegister register = new ComponentRegister(AndServer.getContext());
-                register.register(handler);
+                register.register(handler, mGroup);
 
                 mHttpServer = ServerBootstrap.bootstrap()
                     .setSocketConfig(SocketConfig.custom()
@@ -174,21 +180,23 @@ public class Server {
 
     public static class Builder {
 
-        private InetAddress mInetAddress;
-        private int mPort;
-        private int mTimeout;
-        private SSLContext mSSLContext;
-        private SSLInitializer mSSLInitializer;
-        private ServerListener mListener;
+        private String group;
+        private InetAddress inetAddress;
+        private int port;
+        private int timeout;
+        private SSLContext sslContext;
+        private SSLInitializer sslInitializer;
+        private ServerListener listener;
 
-        private Builder() {
+        private Builder(String group) {
+            this.group = group;
         }
 
         /**
          * Specified server need to monitor the ip address.
          */
         public Builder inetAddress(InetAddress inetAddress) {
-            this.mInetAddress = inetAddress;
+            this.inetAddress = inetAddress;
             return this;
         }
 
@@ -196,7 +204,7 @@ public class Server {
          * Specify the port on which the server listens.
          */
         public Builder port(int port) {
-            this.mPort = port;
+            this.port = port;
             return this;
         }
 
@@ -205,7 +213,7 @@ public class Server {
          */
         public Builder timeout(int timeout, TimeUnit timeUnit) {
             long timeoutMs = timeUnit.toMillis(timeout);
-            this.mTimeout = (int)Math.min(timeoutMs, Integer.MAX_VALUE);
+            this.timeout = (int)Math.min(timeoutMs, Integer.MAX_VALUE);
             return this;
         }
 
@@ -213,7 +221,7 @@ public class Server {
          * Setting up the server is based on the SSL protocol.
          */
         public Builder sslContext(SSLContext sslContext) {
-            this.mSSLContext = sslContext;
+            this.sslContext = sslContext;
             return this;
         }
 
@@ -221,7 +229,7 @@ public class Server {
          * Set SSLServerSocket's initializer.
          */
         public Builder sslSocketInitializer(SSLInitializer initializer) {
-            this.mSSLInitializer = initializer;
+            this.sslInitializer = initializer;
             return this;
         }
 
@@ -229,7 +237,7 @@ public class Server {
          * Set the server listener.
          */
         public Builder listener(ServerListener listener) {
-            this.mListener = listener;
+            this.listener = listener;
             return this;
         }
 

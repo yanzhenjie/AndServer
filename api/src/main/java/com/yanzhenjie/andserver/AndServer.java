@@ -71,7 +71,20 @@ public class AndServer {
      *
      * @return {@link Server.Builder}.
      */
+    @NonNull
     public static Server.Builder serverBuilder() {
         return Server.newBuilder();
+    }
+
+    /**
+     * Create a Builder of Server.
+     *
+     * @param group group name.
+     *
+     * @return {@link Server.Builder}.
+     */
+    @NonNull
+    public static Server.Builder serverBuilder(@NonNull String group) {
+        return Server.newBuilder(group);
     }
 }

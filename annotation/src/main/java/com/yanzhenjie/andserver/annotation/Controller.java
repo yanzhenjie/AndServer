@@ -25,4 +25,10 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.SOURCE)
-public @interface Controller {}
+public @interface Controller {
+
+    /**
+     * Group name.
+     */
+    String value() default "default";
+}

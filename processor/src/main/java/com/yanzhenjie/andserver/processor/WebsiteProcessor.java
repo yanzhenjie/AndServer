@@ -34,7 +34,9 @@ import org.apache.commons.lang3.Validate;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.processing.Filer;
@@ -64,6 +66,7 @@ public class WebsiteProcessor extends BaseProcessor {
 
     private TypeMirror mWebstieMirror;
     private TypeName mWebsite;
+    private TypeName mString;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -77,20 +80,21 @@ public class WebsiteProcessor extends BaseProcessor {
 
         mWebstieMirror = mElements.getTypeElement(Constants.WEBSITE_TYPE).asType();
         mWebsite = TypeName.get(mWebstieMirror);
+        mString = TypeName.get(String.class);
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnv) {
         if (CollectionUtils.isEmpty(set)) return false;
 
-        List<TypeElement> elements = findAnnotation(roundEnv);
-        if (!elements.isEmpty()) createRegister(elements);
+        Map<String, List<TypeElement>> websiteMap = findAnnotation(roundEnv);
+        if (!websiteMap.isEmpty()) createRegister(websiteMap);
         return true;
     }
 
-    private List<TypeElement> findAnnotation(RoundEnvironment roundEnv) {
+    private Map<String, List<TypeElement>> findAnnotation(RoundEnvironment roundEnv) {
         Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(Website.class);
-        List<TypeElement> elements = new ArrayList<>();
+        Map<String, List<TypeElement>> websiteMap = new HashMap<>();
 
         for (Element element : set) {
             if (element instanceof TypeElement) {
@@ -108,37 +112,58 @@ public class WebsiteProcessor extends BaseProcessor {
                 }
 
                 if (mTypes.isSubtype(superclass, mWebstieMirror)) {
-                    elements.add(typeElement);
+                    String group = getGroup(typeElement);
+                    List<TypeElement> elementList = websiteMap.get(group);
+                    if (CollectionUtils.isEmpty(elementList)) {
+                        elementList = new ArrayList<>();
+                        websiteMap.put(group, elementList);
+                    }
+                    elementList.add(typeElement);
                 } else {
                     mLog.w(String.format("The annotation Website must be used in a subclass of [Website] on %s.",
                         typeElement.getQualifiedName()));
                 }
             }
         }
-        return elements;
+        return websiteMap;
     }
 
-    private void createRegister(List<TypeElement> elements) {
-        TypeName typeName = ParameterizedTypeName.get(ClassName.get(List.class), mWebsite);
-        FieldSpec hostField = FieldSpec.builder(typeName, "mList", Modifier.PRIVATE).build();
+    private void createRegister(Map<String, List<TypeElement>> websiteMap) {
+        TypeName listTypeName = ParameterizedTypeName.get(ClassName.get(List.class), mWebsite);
+        TypeName typeName = ParameterizedTypeName.get(ClassName.get(Map.class), mString, listTypeName);
+        FieldSpec mapField = FieldSpec.builder(typeName, "mMap", Modifier.PRIVATE).build();
 
-        CodeBlock.Builder rootCode = CodeBlock.builder();
-        for (TypeElement type : elements) {
-            mLog.i(String.format("------ Processing %s ------", type.getSimpleName()));
-            rootCode.addStatement("this.mList.add(new $T())", type);
+        CodeBlock.Builder rootCode = CodeBlock.builder().addStatement("this.mMap = new $T<>()", HashMap.class);
+        for (Map.Entry<String, List<TypeElement>> entry : websiteMap.entrySet()) {
+            String group = entry.getKey();
+            List<TypeElement> interceptorList = entry.getValue();
+
+            CodeBlock.Builder groupCode = CodeBlock.builder()
+                .addStatement("List<$T> $LList = new $T<>()", mWebsite, group, ArrayList.class);
+            for (TypeElement type : interceptorList) {
+                mLog.i(String.format("------ Processing %s ------", type.getSimpleName()));
+                groupCode.addStatement("$LList.add(new $T())", group, type);
+            }
+
+            rootCode.add(groupCode.build());
+            rootCode.addStatement("this.mMap.put($S, $LList)", group, group);
         }
+
         MethodSpec rootMethod = MethodSpec.constructorBuilder()
             .addModifiers(Modifier.PUBLIC)
-            .addStatement("this.mList = new $T<>()", ArrayList.class)
             .addCode(rootCode.build())
             .build();
 
         MethodSpec registerMethod = MethodSpec.methodBuilder("onRegister")
             .addAnnotation(Override.class)
             .addModifiers(Modifier.PUBLIC)
+            .addParameter(mString, "group")
             .addParameter(mRegisterType, "register")
-            .beginControlFlow("for ($T item : mList)", mWebsite)
-            .addStatement("register.addAdapter(item)")
+            .addStatement("List<$T> list = mMap.get(group)", mWebsite)
+            .beginControlFlow("if(list != null && !list.isEmpty())")
+            .beginControlFlow("for ($T website : list)", mWebsite)
+            .addStatement("register.addAdapter(website)")
+            .endControlFlow()
             .endControlFlow()
             .build();
 
@@ -147,7 +172,7 @@ public class WebsiteProcessor extends BaseProcessor {
             .addJavadoc(Constants.DOC_EDIT_WARN)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
             .addSuperinterface(mOnRegisterType)
-            .addField(hostField)
+            .addField(mapField)
             .addMethod(rootMethod)
             .addMethod(registerMethod)
             .build();
@@ -158,6 +183,14 @@ public class WebsiteProcessor extends BaseProcessor {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getGroup(TypeElement type) {
+        Website website = type.getAnnotation(Website.class);
+        if (website != null) {
+            return website.value();
+        }
+        throw new IllegalStateException(String.format("The type is not a Website: %1$s.", type));
     }
 
     @Override

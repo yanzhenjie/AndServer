@@ -23,8 +23,9 @@ public interface OnRegister {
     /**
      * Register the component.
      *
+     * @param group group name.
      * @param register onRegister.
      */
-    void onRegister(Register register);
+    void onRegister(String group, Register register);
 
 }
