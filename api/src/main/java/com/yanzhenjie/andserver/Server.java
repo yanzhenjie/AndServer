@@ -144,13 +144,16 @@ public class Server {
         Executors.getInstance().execute(new Runnable() {
             @Override
             public void run() {
-                if (mHttpServer != null) mHttpServer.shutdown(3, TimeUnit.MINUTES);
-                Executors.getInstance().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mListener != null) mListener.onStopped();
-                    }
-                });
+                if (mHttpServer != null) {
+                    mHttpServer.shutdown(3, TimeUnit.MINUTES);
+                    isRunning = false;
+                    Executors.getInstance().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mListener != null) mListener.onStopped();
+                        }
+                    });
+                }
             }
         });
     }
