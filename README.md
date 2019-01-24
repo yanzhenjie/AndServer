@@ -2,7 +2,7 @@
 
 ![Logo](./images/logo.svg)
 
-[中文文档](./README-CN.md)
+[中文介绍](./README-CN.md)
 
 Web server and Web framework of Android platform. It provides annotations like SpringMVC, and if you are familiar with SpringMVC, you can master it very quickly.
 
@@ -44,10 +44,12 @@ For documentation and additional information see [the website](https://www.yanzh
 ## Download
 ```groovy
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.0.3'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.3'
+    implementation 'com.yanzhenjie.andserver:api:2.0.4'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.4'
 }
 ```
+
+If you are using Kotlin, replace `annotationProcessor` with `kapt`.
 
 AndServer requires at minimum Android 2.3(Api level 9).
 

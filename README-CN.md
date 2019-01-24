@@ -40,9 +40,11 @@ GET http://.../user/info/uid_001
 ## 下载
 ```groovy
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.0.3'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.3'
+    implementation 'com.yanzhenjie.andserver:api:2.0.4'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.4'
 }
 ```
+
+如果你正在使用Kotlin，请使用`kapt`代替`annotationProcessor`。
 
 AndServer最低支持Android 2.3(Api level 9)。
