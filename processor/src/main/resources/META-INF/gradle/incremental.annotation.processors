@@ -1,0 +1,5 @@
+com.yanzhenjie.andserver.processor.ControllerProcessor,isolating
+                                                             com.yanzhenjie.andserver.processor.ConverterProcessor,isolating
+                                                             com.yanzhenjie.andserver.processor.InterceptorProcessor,isolating
+                                                             com.yanzhenjie.andserver.processor.ResolverProcessor,isolating
+                                                             com.yanzhenjie.andserver.processor.WebsiteProcessor,isolating
