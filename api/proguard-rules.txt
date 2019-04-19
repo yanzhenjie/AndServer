@@ -1,1 +1,1 @@
--keep class * implements com.yanzhenjie.andserver.register.OnRegister
+-keep public class * implements com.yanzhenjie.andserver.register.OnRegister {*;}
