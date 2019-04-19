@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLServerSocket;

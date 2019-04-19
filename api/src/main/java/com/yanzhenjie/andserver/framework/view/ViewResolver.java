@@ -15,8 +15,8 @@
  */
 package com.yanzhenjie.andserver.framework.view;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.error.NotFoundException;
 import com.yanzhenjie.andserver.error.ServerInternalException;

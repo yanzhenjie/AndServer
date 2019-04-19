@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver.register;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.framework.MessageConverter;
 import com.yanzhenjie.andserver.framework.HandlerInterceptor;

@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver.mapping;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by YanZhenjie on 2018/9/9.

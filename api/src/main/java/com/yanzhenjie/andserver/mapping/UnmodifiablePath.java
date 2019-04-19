@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver.mapping;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.Collections;
 import java.util.List;

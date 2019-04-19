@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver.framework;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.framework.handler.RequestHandler;
 import com.yanzhenjie.andserver.http.HttpRequest;

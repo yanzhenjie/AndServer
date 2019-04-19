@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver.framework.view;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Created by YanZhenjie on 2018/8/29.

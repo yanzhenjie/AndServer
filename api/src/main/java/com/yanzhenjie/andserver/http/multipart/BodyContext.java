@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver.http.multipart;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.http.RequestBody;
 import com.yanzhenjie.andserver.util.MediaType;

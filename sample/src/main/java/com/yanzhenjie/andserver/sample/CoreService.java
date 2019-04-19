@@ -18,13 +18,14 @@ package com.yanzhenjie.andserver.sample;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 
 import com.yanzhenjie.andserver.AndServer;
 import com.yanzhenjie.andserver.Server;
 import com.yanzhenjie.andserver.sample.util.NetUtils;
 
 import java.util.concurrent.TimeUnit;
+
+import androidx.annotation.Nullable;
 
 /**
  * Created by Yan Zhenjie on 2018/6/9.

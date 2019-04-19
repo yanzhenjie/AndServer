@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver.framework.handler;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.error.ContentNotAcceptableException;
 import com.yanzhenjie.andserver.error.ContentNotSupportedException;

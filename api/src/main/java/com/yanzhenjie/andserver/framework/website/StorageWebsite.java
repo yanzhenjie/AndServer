@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver.framework.website;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.error.NotFoundException;
 import com.yanzhenjie.andserver.framework.body.FileBody;

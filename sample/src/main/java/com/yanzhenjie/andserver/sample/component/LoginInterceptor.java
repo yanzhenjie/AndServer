@@ -15,8 +15,6 @@
  */
 package com.yanzhenjie.andserver.sample.component;
 
-import android.support.annotation.NonNull;
-
 import com.yanzhenjie.andserver.annotation.Interceptor;
 import com.yanzhenjie.andserver.error.BasicException;
 import com.yanzhenjie.andserver.framework.HandlerInterceptor;
@@ -28,6 +26,8 @@ import com.yanzhenjie.andserver.http.session.Session;
 import com.yanzhenjie.andserver.mapping.Addition;
 
 import org.apache.commons.lang3.ArrayUtils;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by YanZhenjie on 2018/9/11.

@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.util.Executors;
 

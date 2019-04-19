@@ -16,7 +16,7 @@
  */
 package com.yanzhenjie.andserver.http.session;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;

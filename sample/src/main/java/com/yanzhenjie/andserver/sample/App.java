@@ -18,12 +18,13 @@ package com.yanzhenjie.andserver.sample;
 import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 
 import com.yanzhenjie.andserver.sample.util.FileUtils;
 import com.yanzhenjie.andserver.util.IOUtils;
 
 import java.io.File;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by YanZhenjie on 2018/6/9.

@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver.http;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 /**
  * Created by YanZhenjie on 2018/8/31.
