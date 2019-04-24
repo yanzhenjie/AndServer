@@ -117,17 +117,17 @@ class TestController {
     }
 
     @PostMapping(path = "/formPart")
-    String forPart(@FormPart(name = "user") UserInfo userInfo) {
-        return JSON.toJSONString(userInfo);
+    UserInfo forPart(@FormPart(name = "user") UserInfo userInfo) {
+        return userInfo;
     }
 
     @PostMapping(path = "/jsonBody")
-    String jsonBody(@RequestBody UserInfo userInfo) {
-        return JSON.toJSONString(userInfo);
+    UserInfo jsonBody(@RequestBody UserInfo userInfo) {
+        return userInfo;
     }
 
     @PostMapping(path = "/listBody")
-    String jsonBody(@RequestBody List<UserInfo> infoList) {
-        return JSON.toJSONString(infoList);
+    List<UserInfo> jsonBody(@RequestBody List<UserInfo> infoList) {
+        return infoList;
     }
 }
