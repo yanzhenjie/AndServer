@@ -391,7 +391,7 @@ public class StandardRequest implements HttpRequest {
         }
 
         MediaType mediaType = getContentType();
-        if (MediaType.APPLICATION_FORM_URLENCODED.equals(mediaType)) {
+        if (MediaType.APPLICATION_FORM_URLENCODED.includes(mediaType)) {
             try {
                 RequestBody body = getBody();
                 String bodyString = body == null ? "" : body.string();
