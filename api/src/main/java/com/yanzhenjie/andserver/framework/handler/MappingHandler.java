@@ -101,7 +101,7 @@ public abstract class MappingHandler implements MethodHandler {
         List<Path.Rule> ruleList = mMapping.getPath().getRuleList();
         for (Path.Rule rule : ruleList) {
             List<Path.Segment> segments = rule.getSegments();
-            if (httpSegments.size() != httpSegments.size()) continue;
+            if (httpSegments.size() != segments.size()) continue;
 
             String path = Path.listToPath(segments);
             if (path.equals(httpPath)) return Collections.emptyMap();
