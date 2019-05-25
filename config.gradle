@@ -42,6 +42,7 @@ ext {
 
     dependencies = [autoService        : 'com.google.auto.service:auto-service:1.0-rc5',
                     javaPoet           : 'com.squareup:javapoet:1.11.1',
+                    activation         : 'javax.activation:activation:1.1.1',
                     commonsLang        : 'org.apache.commons:commons-lang3:3.8',
                     commonsCollections : 'org.apache.commons:commons-collections4:4.3',
                     httpcore           : "com.yanzhenjie.apache:httpcore:4.4.11",

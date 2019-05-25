@@ -10,7 +10,7 @@ dependencies {
 
     implementation rootProject.ext.dependencies.autoService
     implementation rootProject.ext.dependencies.javaPoet
-
+    implementation rootProject.ext.dependencies.activation
     implementation rootProject.ext.dependencies.commonsLang
     implementation rootProject.ext.dependencies.commonsCollections
 }
