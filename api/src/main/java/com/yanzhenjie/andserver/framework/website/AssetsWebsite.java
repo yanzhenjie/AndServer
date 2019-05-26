@@ -19,8 +19,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.AndServer;
 import com.yanzhenjie.andserver.error.NotFoundException;
@@ -41,6 +39,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Created by YanZhenjie on 2018/9/7.
@@ -75,7 +76,8 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
         Assert.isTrue(!StringUtils.isEmpty(indexFileName), "The indexFileName cannot be empty.");
 
         if (!rootPath.matches(PATH)) {
-            throw new IllegalArgumentException("The format of [%s] is wrong, it should be like [/root/project].");
+            String message = String.format("The format of [%s] is wrong, it should be like [/root/project].", rootPath);
+            throw new IllegalArgumentException(message);
         }
 
         Context context = AndServer.getContext();

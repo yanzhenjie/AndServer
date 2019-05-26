@@ -18,9 +18,10 @@ package com.yanzhenjie.andserver;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.util.Assert;
+
+import androidx.annotation.NonNull;
 
 /**
  * Created by YanZhenjie on 2018/6/9.
@@ -33,7 +34,7 @@ public class AndServer {
     private static Context sContext;
     private static boolean sDebug;
 
-    static void initialize(@NonNull Context context) {
+    public static void initialize(@NonNull Context context) {
         Assert.notNull(context, "The context must not be null.");
 
         if (sContext == null) {
@@ -52,8 +53,10 @@ public class AndServer {
      *
      * @return {@link Context}.
      */
-    @NonNull
     public static Context getContext() {
+        if (sContext == null) {
+            throw new RuntimeException("Please invoke AndServer.initialize(Application) on Application#onCreate()");
+        }
         return sContext;
     }
 
