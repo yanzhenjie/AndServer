@@ -15,8 +15,6 @@
  */
 package com.yanzhenjie.andserver.http;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
@@ -25,6 +23,9 @@ import com.yanzhenjie.andserver.util.MultiValueMap;
 import com.yanzhenjie.andserver.util.ObjectUtils;
 import com.yanzhenjie.andserver.util.Patterns;
 import com.yanzhenjie.andserver.util.StringUtils;
+import com.yanzhenjie.andserver.util.UrlCoder;
+
+import org.apache.commons.io.Charsets;
 
 import java.net.URI;
 import java.util.Collections;
@@ -33,6 +34,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Add the mPath to the URL, such as:
@@ -367,14 +371,12 @@ public class Uri implements Patterns {
             StringTokenizer tokenizer = new StringTokenizer(query, "&");
             while (tokenizer.hasMoreElements()) {
                 String element = tokenizer.nextToken();
-                int end = element.lastIndexOf("=");
+                int end = element.indexOf("=");
 
-                if (end > 0) {
+                if (end > 0 && end < element.length() - 1) {
                     String key = element.substring(0, end);
-                    if (end + 1 <= element.length()) {
-                        String value = element.substring(end + 1, element.length());
-                        valueMap.add(key, value);
-                    }
+                    String value = element.substring(end + 1);
+                    valueMap.add(key, UrlCoder.urlDecode(value, Charsets.UTF_8));
                 }
             }
         }
