@@ -20,6 +20,16 @@ package com.yanzhenjie.andserver.processor.mapping;
  */
 public class Null implements Mapping {
 
+    private boolean isRest;
+
+    public Null() {
+        this(false);
+    }
+
+    public Null(boolean isRest) {
+        this.isRest = isRest;
+    }
+
     @Override
     public String[] value() {
         return new String[0];
@@ -57,6 +67,6 @@ public class Null implements Mapping {
 
     @Override
     public boolean isRest() {
-        return false;
+        return isRest;
     }
 }

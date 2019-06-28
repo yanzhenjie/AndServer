@@ -379,6 +379,9 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             DeleteMapping deleteMapping = type.getAnnotation(DeleteMapping.class);
             if (deleteMapping != null) mapping = new Delete(deleteMapping, isRest);
         }
+        if (mapping == null) {
+            mapping = new Null(isRest);
+        }
         return mapping;
     }
 
