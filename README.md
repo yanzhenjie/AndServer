@@ -2,12 +2,10 @@
 
 ![Logo](./images/logo.svg)
 
-[中文介绍](./README-CN.md)
-
 Web server and Web framework of Android platform. It provides annotations like SpringMVC, and if you are familiar with SpringMVC, you can master it very quickly.
 
-* Static html website deployment
-* Dynamic http api deployment
+- Static html website deployment
+- Dynamic http api deployment
 
 ```java
 @RestController
@@ -15,37 +13,50 @@ Web server and Web framework of Android platform. It provides annotations like S
 public class UserController {
 
     @PostMapping("/login")
-    public String login(@RequestParam("account") String account, 
+    public String login(
+        @RequestParam("account") String account,
         @RequestParam("password") String password) {
-        if (...) {
-            return "Successful.";
-        }
-        return "Failed.";
+
+        ...
+        return "Successful.";
     }
 
-    @GetMapping(path = "/info/{userId}")
-    public User detail(@PathVariable("userId") String userId) {
-        User user = findUserById(userId);
+    @GetMapping(path = "/{userId}")
+    public User info(
+        @PathVariable("userId") String userId,
+        @QueryParam("fields", required = false) String fields) {
+
+        User user = findUserById(userId, fields);
         ...
 
         return user;
+    }
+
+    @PutMapping(path = "/{userId}")
+    public void modify(
+        @PathVariable("userId") String userId
+        @RequestParam("age") int age) {
+        ...
     }
 }
 ```
 
 The above code will generate the following two http apis:
+
 ```text
 POST http://.../user/login
-GET http://.../user/info/uid_001
+GET http://.../user/uid_001?fields=id,name,age
+PUT http://.../user/uid_001
 ```
 
 For documentation and additional information see [the website](https://www.yanzhenjie.com/AndServer).
 
 ## Download
+
 ```groovy
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.0.4'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.4'
+    implementation 'com.yanzhenjie.andserver:api:2.0.5'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.5'
 }
 ```
 
@@ -54,9 +65,11 @@ If you are using Kotlin, replace `annotationProcessor` with `kapt`.
 AndServer requires at minimum Android 2.3(Api level 9).
 
 ## Contributing
+
 Before submitting pull requests, contributors must abide by the [agreement](./CONTRIBUTING.md) .
 
 ## License
+
 ```text
 Copyright 2019 Zhenjie Yan
 
