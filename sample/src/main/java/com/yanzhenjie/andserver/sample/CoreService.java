@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Yan Zhenjie.
+ * Copyright © 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 import androidx.annotation.Nullable;
 
 /**
- * Created by Yan Zhenjie on 2018/6/9.
+ * Created by Zhenjie Yan on 2018/6/9.
  */
 public class CoreService extends Service {
 
@@ -36,7 +36,7 @@ public class CoreService extends Service {
 
     @Override
     public void onCreate() {
-        mServer = AndServer.serverBuilder()
+        mServer = AndServer.serverBuilder(this)
             .inetAddress(NetUtils.getLocalIPAddress())
             .port(8080)
             .timeout(10, TimeUnit.SECONDS)

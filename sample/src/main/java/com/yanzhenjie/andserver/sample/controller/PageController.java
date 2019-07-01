@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import com.yanzhenjie.andserver.annotation.Controller;
 import com.yanzhenjie.andserver.annotation.GetMapping;
 
 /**
- * Created by YanZhenjie on 2018/9/12.
+ * Created by Zhenjie Yan on 2018/9/12.
  */
 @Controller
 public class PageController {

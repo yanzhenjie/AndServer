@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 YanZhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import com.yanzhenjie.andserver.sample.model.ReturnData;
 import java.lang.reflect.Type;
 
 /**
- * Created by YanZhenjie on 2018/6/9.
+ * Created by Zhenjie Yan on 2018/6/9.
  */
 public class JsonUtils {
 

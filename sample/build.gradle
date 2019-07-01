@@ -37,8 +37,8 @@ android {
 }
 
 dependencies {
-    implementation rootProject.ext.dependencies.andserverApi
-    annotationProcessor rootProject.ext.dependencies.andserverProcessor
+    implementation project(':api')
+    annotationProcessor project(':processor')
 
     implementation rootProject.ext.dependencies.design
     implementation rootProject.ext.dependencies.appCompat
