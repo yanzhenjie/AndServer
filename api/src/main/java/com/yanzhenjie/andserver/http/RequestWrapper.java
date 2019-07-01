@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 YanZhenjie.
+ * Copyright © 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by YanZhenjie on 2018/9/6.
+ * Created by Zhenjie Yan on 2018/9/6.
  */
 public class RequestWrapper implements HttpRequest {
 

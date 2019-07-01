@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package com.yanzhenjie.andserver.http.multipart;
 
-import android.content.Context;
-import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.yanzhenjie.andserver.AndServer;
@@ -38,7 +36,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.Charsets;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -46,57 +43,38 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+
 /**
- * Created by YanZhenjie on 2018/8/9.
+ * Created by Zhenjie Yan on 2018/8/9.
  */
 public class StandardMultipartResolver implements MultipartResolver {
 
     private DiskFileItemFactory mFileItemFactory;
     private FileUpload mFileUpload;
 
-    public StandardMultipartResolver(Context context) {
+    public StandardMultipartResolver() {
         this.mFileItemFactory = new DiskFileItemFactory();
-        this.mFileItemFactory.setRepository(new File(context.getCacheDir(), "andserver_upload"));
         this.mFileUpload = new FileUpload(mFileItemFactory);
     }
 
-    /**
-     * Set the maximum size (in bytes) allowed for uploading. -1 indicates no limit (the default).
-     *
-     * @param allFileMaxSize the maximum upload size allowed.
-     *
-     * @see FileUpload#setSizeMax(long)
-     */
+    @Override
     public void setAllFileMaxSize(long allFileMaxSize) {
         this.mFileUpload.setSizeMax(allFileMaxSize);
     }
 
-    /**
-     * Set the maximum size (in bytes) allowed for each individual file. -1 indicates no limit (the default).
-     *
-     * @param fileMaxSize the maximum upload size per file.
-     *
-     * @see FileUpload#setFileSizeMax(long)
-     */
+    @Override
     public void setFileMaxSize(long fileMaxSize) {
         this.mFileUpload.setFileSizeMax(fileMaxSize);
     }
 
-    /**
-     * Set the maximum allowed size (in bytes) before uploads are written to disk, default is 10240.
-     *
-     * @param maxInMemorySize the maximum in memory size allowed.
-     *
-     * @see DiskFileItemFactory#setSizeThreshold(int)
-     */
+    @Override
     public void setMaxInMemorySize(int maxInMemorySize) {
         this.mFileItemFactory.setSizeThreshold(maxInMemorySize);
     }
 
-    /**
-     * Set the temporary directory where uploaded files get stored.
-     */
-    public void setUploadTempDir(File uploadTempDir) throws IOException {
+    @Override
+    public void setUploadTempDir(File uploadTempDir) {
         if (!uploadTempDir.exists() && !uploadTempDir.mkdirs()) {
             String message = "Given uploadTempDir [" + uploadTempDir + "] could not be created.";
             throw new IllegalArgumentException(message);

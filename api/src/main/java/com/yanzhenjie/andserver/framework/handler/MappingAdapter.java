@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- * Created by YanZhenjie on 2018/9/8.
+ * Created by Zhenjie Yan on 2018/9/8.
  */
 public abstract class MappingAdapter implements HandlerAdapter, Patterns {
 

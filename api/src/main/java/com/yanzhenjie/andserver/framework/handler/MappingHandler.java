@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by YanZhenjie on 2018/9/9.
+ * Created by Zhenjie Yan on 2018/9/9.
  */
 public abstract class MappingHandler implements MethodHandler {
 

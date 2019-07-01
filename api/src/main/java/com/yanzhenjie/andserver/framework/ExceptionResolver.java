@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import com.yanzhenjie.andserver.framework.body.StringBody;
 import com.yanzhenjie.andserver.util.StatusCode;
 
 /**
- * Created by YanZhenjie on 2018/8/8.
+ * Created by Zhenjie Yan on 2018/8/8.
  */
 public interface ExceptionResolver {
 

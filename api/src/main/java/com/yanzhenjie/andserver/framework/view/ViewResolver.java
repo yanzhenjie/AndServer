@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 YanZhenjie.
+ * Copyright © 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 package com.yanzhenjie.andserver.framework.view;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.error.NotFoundException;
 import com.yanzhenjie.andserver.error.ServerInternalException;
@@ -33,8 +30,11 @@ import com.yanzhenjie.andserver.util.Patterns;
 import com.yanzhenjie.andserver.util.StatusCode;
 import com.yanzhenjie.andserver.util.StringUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 /**
- * Created by YanZhenjie on 2018/8/31.
+ * Created by Zhenjie Yan on 2018/8/31.
  */
 public class ViewResolver implements Patterns, StatusCode, HttpHeaders {
 
@@ -82,7 +82,7 @@ public class ViewResolver implements Patterns, StatusCode, HttpHeaders {
     @Nullable
     private MediaType obtainProduce(@NonNull HttpRequest request) {
         final Object mtAttribute = request.getAttribute(HttpContext.RESPONSE_PRODUCE_TYPE);
-        if (mtAttribute != null && mtAttribute instanceof MediaType) {
+        if (mtAttribute instanceof MediaType) {
             return (MediaType)mtAttribute;
         }
         return null;

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 YanZhenjie.
+ * Copyright © 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,16 @@
  */
 package com.yanzhenjie.andserver.register;
 
-import androidx.annotation.NonNull;
-
-import com.yanzhenjie.andserver.framework.MessageConverter;
-import com.yanzhenjie.andserver.framework.HandlerInterceptor;
 import com.yanzhenjie.andserver.framework.ExceptionResolver;
+import com.yanzhenjie.andserver.framework.HandlerInterceptor;
+import com.yanzhenjie.andserver.framework.MessageConverter;
+import com.yanzhenjie.andserver.framework.config.Multipart;
 import com.yanzhenjie.andserver.framework.handler.HandlerAdapter;
 
+import androidx.annotation.NonNull;
+
 /**
- * Created by YanZhenjie on 2018/9/10.
+ * Created by Zhenjie Yan on 2018/9/10.
  */
 public interface Register {
 
@@ -55,4 +56,11 @@ public interface Register {
      * @param resolver {@link ExceptionResolver}.
      */
     void setResolver(@NonNull ExceptionResolver resolver);
+
+    /**
+     * Set the parameters used to resolve the multipart request.
+     *
+     * @param multipart {@link Multipart}.
+     */
+    void setMultipart(Multipart multipart);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 YanZhenjie.
+ * Copyright © 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- * Created by YanZhenjie on 2018/9/7.
+ * Created by Zhenjie Yan on 2018/9/7.
  */
 public class AssetsWebsite extends BasicWebsite implements Patterns {
 
@@ -60,8 +60,8 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
      *
      * @param rootPath website root directory.
      */
-    public AssetsWebsite(@NonNull String rootPath) {
-        this(rootPath, DEFAULT_INDEX);
+    public AssetsWebsite(@NonNull Context context, @NonNull String rootPath) {
+        this(context, rootPath, DEFAULT_INDEX);
     }
 
     /**
@@ -70,7 +70,7 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
      * @param rootPath website root directory.
      * @param indexFileName the default file name for each directory, e.g. index.html.
      */
-    public AssetsWebsite(@NonNull String rootPath, @NonNull String indexFileName) {
+    public AssetsWebsite(@NonNull Context context, @NonNull String rootPath, @NonNull String indexFileName) {
         super(indexFileName);
         Assert.isTrue(!StringUtils.isEmpty(rootPath), "The rootPath cannot be empty.");
         Assert.isTrue(!StringUtils.isEmpty(indexFileName), "The indexFileName cannot be empty.");
@@ -80,7 +80,6 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
             throw new IllegalArgumentException(message);
         }
 
-        Context context = AndServer.getContext();
         this.mReader = new AssetsReader(context.getAssets());
         this.mRootPath = trimStartSlash(rootPath);
         this.mPatternMap = new HashMap<>();

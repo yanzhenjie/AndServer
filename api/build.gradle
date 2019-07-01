@@ -17,7 +17,7 @@ android {
 }
 
 dependencies {
-    api rootProject.ext.dependencies.andserverAnnotation
+    api project(':annotation')
 
     implementation rootProject.ext.dependencies.httpcore
     implementation rootProject.ext.dependencies.fileupload

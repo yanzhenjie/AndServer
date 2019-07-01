@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Zhenjie Yan.
+ * Copyright © 2019 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,39 +21,28 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by Zhenjie Yan on 2018/6/4.
+ * Created by Zhenjie Yan on 2018/9/9.
+ * <pre>
+ * <code>@Config</code>
+ * public class AppConfig implements WebConfig {
+ *
+ *     <code>@Override</code>
+ *     public void onConfig(Context context, Delegate delegate) {
+ *         Website website = ...;
+ *         delegate.addWebsite(website);
+ *
+ *         Multipart multipart = Multipart.newBuilder()...build();
+ *         delegate.setMultipart(multipart);
+ *     }
+ * }
+ * </pre>
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.SOURCE)
-public @interface PostMapping {
+public @interface Config {
 
     /**
-     * Alias for {@link RequestMapping#value()}.
+     * Group name.
      */
-    String[] value() default {};
-
-    /**
-     * Alias for {@link RequestMapping#path()}.
-     */
-    String[] path() default {};
-
-    /**
-     * Alias for {@link RequestMapping#params()}.
-     */
-    String[] params() default {};
-
-    /**
-     * Alias for {@link RequestMapping#headers()}.
-     */
-    String[] headers() default {};
-
-    /**
-     * Alias for {@link RequestMapping#consumes()}.
-     */
-    String[] consumes() default {};
-
-    /**
-     * Alias for {@link RequestMapping#produces()}.
-     */
-    String[] produces() default {};
+    String value() default "default";
 }

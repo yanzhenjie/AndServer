@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie
+ * Copyright 2018 Zhenjie Yan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import dalvik.system.DexFile;
 /**
  * <p> Load all the components in the dex file. </p>
  *
- * Created by YanZhenjie on 2018/9/23.
+ * Created by Zhenjie Yan on 2018/9/23.
  */
 public class ComponentRegister {
 
@@ -102,7 +102,7 @@ public class ComponentRegister {
                 if (obj instanceof OnRegister) {
                     Log.i(AndServer.TAG, String.format("Loading %s.", className));
                     OnRegister onRegister = (OnRegister)obj;
-                    onRegister.onRegister(group, register);
+                    onRegister.onRegister(mContext, group, register);
                 }
                 break;
             }
@@ -141,7 +141,7 @@ public class ComponentRegister {
             }
         }
 
-        if (AndServer.isDebug()) {
+        if (isDebug(context)) {
             sourcePaths.addAll(loadInstantRunDexFile(appInfo));
         }
         return sourcePaths;
@@ -206,5 +206,10 @@ public class ComponentRegister {
         }
 
         return instantRunDexPaths;
+    }
+
+    private static boolean isDebug(Context context) {
+        ApplicationInfo appInfo = context.getApplicationInfo();
+        return (appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
     }
 }

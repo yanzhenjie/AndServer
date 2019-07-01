@@ -3,3 +3,4 @@ com.yanzhenjie.andserver.processor.ConverterProcessor
 com.yanzhenjie.andserver.processor.InterceptorProcessor
 com.yanzhenjie.andserver.processor.ResolverProcessor
 com.yanzhenjie.andserver.processor.WebsiteProcessor
+com.yanzhenjie.andserver.processor.ConfigProcessor

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 YanZhenjie.
+ * Copyright © 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package com.yanzhenjie.andserver;
 
-import androidx.annotation.NonNull;
+import android.content.Context;
 
 import com.yanzhenjie.andserver.util.Executors;
 
@@ -34,19 +34,18 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLServerSocket;
 
+import androidx.annotation.NonNull;
+
 /**
- * Created by YanZhenjie on 2018/9/10.
+ * Created by Zhenjie Yan on 2018/9/10.
  */
 public class Server {
 
-    public static Builder newBuilder() {
-        return newBuilder("default");
+    public static Builder newBuilder(Context context, @NonNull String group) {
+        return new Builder(context, group);
     }
 
-    public static Builder newBuilder(@NonNull String group) {
-        return new Builder(group);
-    }
-
+    private final Context mContext;
     private final String mGroup;
     private final InetAddress mInetAddress;
     private final int mPort;
@@ -59,6 +58,7 @@ public class Server {
     private boolean isRunning;
 
     private Server(Builder builder) {
+        this.mContext = builder.context;
         this.mGroup = builder.group;
         this.mInetAddress = builder.inetAddress;
         this.mPort = builder.port;
@@ -86,8 +86,8 @@ public class Server {
         Executors.getInstance().execute(new Runnable() {
             @Override
             public void run() {
-                DispatcherHandler handler = new DispatcherHandler(AndServer.getContext());
-                ComponentRegister register = new ComponentRegister(AndServer.getContext());
+                DispatcherHandler handler = new DispatcherHandler(mContext);
+                ComponentRegister register = new ComponentRegister(mContext);
                 register.register(handler, mGroup);
 
                 mHttpServer = ServerBootstrap.bootstrap()
@@ -183,6 +183,7 @@ public class Server {
 
     public static class Builder {
 
+        private Context context;
         private String group;
         private InetAddress inetAddress;
         private int port;
@@ -191,7 +192,8 @@ public class Server {
         private SSLInitializer sslInitializer;
         private ServerListener listener;
 
-        private Builder(String group) {
+        private Builder(Context context, String group) {
+            this.context = context;
             this.group = group;
         }
 

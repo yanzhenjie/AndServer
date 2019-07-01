@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,50 @@
  */
 package com.yanzhenjie.andserver.http.multipart;
 
-import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.error.MultipartException;
+import com.yanzhenjie.andserver.http.HttpRequest;
+
+import org.apache.commons.fileupload.FileUpload;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+
+import java.io.File;
 
 /**
- * Created by YanZhenjie on 2018/8/8.
+ * Created by Zhenjie Yan on 2018/8/8.
  */
 public interface MultipartResolver {
+
+    /**
+     * Set the maximum size (in bytes) allowed for uploading. -1 indicates no limit (the default).
+     *
+     * @param allFileMaxSize the maximum upload size allowed.
+     *
+     * @see FileUpload#setSizeMax(long)
+     */
+    void setAllFileMaxSize(long allFileMaxSize);
+
+    /**
+     * Set the maximum size (in bytes) allowed for each individual file. -1 indicates no limit (the default).
+     *
+     * @param fileMaxSize the maximum upload size per file.
+     *
+     * @see FileUpload#setFileSizeMax(long)
+     */
+    void setFileMaxSize(long fileMaxSize);
+
+    /**
+     * Set the maximum allowed size (in bytes) before uploads are written to disk, default is 10240.
+     *
+     * @param maxInMemorySize the maximum in memory size allowed.
+     *
+     * @see DiskFileItemFactory#setSizeThreshold(int)
+     */
+    void setMaxInMemorySize(int maxInMemorySize);
+
+    /**
+     * Set the temporary directory where uploaded files get stored.
+     */
+    void setUploadTempDir(File uploadTempDir);
 
     /**
      * Determine if the given request contains multipart content, will typically check for content type

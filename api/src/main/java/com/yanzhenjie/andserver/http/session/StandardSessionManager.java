@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by YanZhenjie on 2018/7/26.
+ * Created by Zhenjie Yan on 2018/7/26.
  */
 public class StandardSessionManager implements SessionManager {
 
@@ -33,7 +33,7 @@ public class StandardSessionManager implements SessionManager {
     public StandardSessionManager(Context context) {
         this.mIdGenerator = new StandardIdGenerator();
 
-        File sessionDir = new File(context.getCacheDir(), "andserver_session");
+        File sessionDir = new File(context.getCacheDir(), "_andserver_session_");
         this.mStore = new StandardStore(sessionDir);
     }
 

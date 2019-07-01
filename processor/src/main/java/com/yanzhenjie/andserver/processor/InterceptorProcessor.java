@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 
 /**
- * Created by YanZhenjie on 2018/9/11.
+ * Created by Zhenjie Yan on 2018/9/11.
  */
 @AutoService(Processor.class)
 public class InterceptorProcessor extends BaseProcessor {
@@ -59,10 +59,12 @@ public class InterceptorProcessor extends BaseProcessor {
     private Elements mElements;
     private Logger mLog;
 
+    private TypeName mContext;
     private TypeName mOnRegisterType;
     private TypeName mRegisterType;
 
     private TypeName mInterceptor;
+
     private TypeName mString;
 
     @Override
@@ -71,10 +73,12 @@ public class InterceptorProcessor extends BaseProcessor {
         mElements = processingEnv.getElementUtils();
         mLog = new Logger(processingEnv.getMessager());
 
+        mContext = TypeName.get(mElements.getTypeElement(Constants.CONTEXT_TYPE).asType());
         mOnRegisterType = TypeName.get(mElements.getTypeElement(Constants.ON_REGISTER_TYPE).asType());
         mRegisterType = TypeName.get(mElements.getTypeElement(Constants.REGISTER_TYPE).asType());
 
         mInterceptor = TypeName.get(mElements.getTypeElement(Constants.INTERCEPTOR_TYPE).asType());
+
         mString = TypeName.get(String.class);
     }
 
@@ -101,8 +105,7 @@ public class InterceptorProcessor extends BaseProcessor {
 
                 List<? extends TypeMirror> interfaces = typeElement.getInterfaces();
                 if (CollectionUtils.isEmpty(interfaces)) {
-                    mLog.w(String.format(
-                        "The annotation Interceptor must be used in a subclass of [HandlerInterceptor] on %s.",
+                    mLog.w(String.format("The annotation Interceptor must be used in a subclass of [HandlerInterceptor] on %s.",
                         typeElement.getQualifiedName()));
                     continue;
                 }
@@ -117,8 +120,7 @@ public class InterceptorProcessor extends BaseProcessor {
                         elementList.add(typeElement);
                         break;
                     } else {
-                        mLog.w(String.format(
-                            "The annotation Interceptor must be used in a subclass of [HandlerInterceptor] on %s.",
+                        mLog.w(String.format("The annotation Interceptor must be used in a subclass of [HandlerInterceptor] on %s.",
                             typeElement.getQualifiedName()));
                     }
                 }
@@ -156,6 +158,7 @@ public class InterceptorProcessor extends BaseProcessor {
         MethodSpec registerMethod = MethodSpec.methodBuilder("onRegister")
             .addAnnotation(Override.class)
             .addModifiers(Modifier.PUBLIC)
+            .addParameter(mContext, "context")
             .addParameter(mString, "group")
             .addParameter(mRegisterType, "register")
             .addStatement("List<$T> list = mMap.get(group)", mInterceptor)

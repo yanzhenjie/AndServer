@@ -6,7 +6,7 @@ compileJava {
 }
 
 dependencies {
-    implementation rootProject.ext.dependencies.andserverAnnotation
+    implementation project(':annotation')
 
     implementation rootProject.ext.dependencies.autoService
     implementation rootProject.ext.dependencies.javaPoet

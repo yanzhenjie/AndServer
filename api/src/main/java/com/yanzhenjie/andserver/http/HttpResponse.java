@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * Created by YanZhenjie on 2018/6/12.
+ * Created by Zhenjie Yan on 2018/6/12.
  */
 public interface HttpResponse extends StatusCode, HttpHeaders {
 

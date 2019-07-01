@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 package com.yanzhenjie.andserver;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.yanzhenjie.andserver.error.NotFoundException;
@@ -27,6 +25,7 @@ import com.yanzhenjie.andserver.framework.HandlerInterceptor;
 import com.yanzhenjie.andserver.framework.MessageConverter;
 import com.yanzhenjie.andserver.framework.ModifiedInterceptor;
 import com.yanzhenjie.andserver.framework.body.StringBody;
+import com.yanzhenjie.andserver.framework.config.Multipart;
 import com.yanzhenjie.andserver.framework.handler.HandlerAdapter;
 import com.yanzhenjie.andserver.framework.handler.RequestHandler;
 import com.yanzhenjie.andserver.framework.view.View;
@@ -52,27 +51,33 @@ import com.yanzhenjie.andserver.util.StatusCode;
 
 import org.apache.httpcore.protocol.HttpRequestHandler;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 /**
- * Created by YanZhenjie on 2018/8/8.
+ * Created by Zhenjie Yan on 2018/8/8.
  */
 public class DispatcherHandler implements HttpRequestHandler, Register {
 
+    private final Context mContext;
+
     private SessionManager mSessionManager;
-    private MultipartResolver mMultipartResolver;
     private MessageConverter mConverter;
     private ViewResolver mViewResolver;
     private ExceptionResolver mResolver;
+    private Multipart mMultipart;
 
     private List<HandlerAdapter> mAdapterList = new LinkedList<>();
     private List<HandlerInterceptor> mInterceptorList = new LinkedList<>();
 
     public DispatcherHandler(Context context) {
+        this.mContext = context;
         this.mSessionManager = new StandardSessionManager(context);
-        this.mMultipartResolver = new StandardMultipartResolver(context);
         this.mViewResolver = new ViewResolver();
         this.mResolver = ExceptionResolver.DEFAULT;
 
@@ -111,6 +116,11 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
     }
 
     @Override
+    public void setMultipart(Multipart multipart) {
+        this.mMultipart = multipart;
+    }
+
+    @Override
     public void handle(org.apache.httpcore.HttpRequest req, org.apache.httpcore.HttpResponse res,
         org.apache.httpcore.protocol.HttpContext con) {
         HttpRequest request = new StandardRequest(req, new StandardContext(con), this, mSessionManager);
@@ -119,9 +129,11 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
     }
 
     private void handle(HttpRequest request, HttpResponse response) {
+        MultipartResolver multipartResolver = new StandardMultipartResolver();
         try {
-            if (mMultipartResolver.isMultipart(request)) {
-                request = mMultipartResolver.resolveMultipart(request);
+            if (multipartResolver.isMultipart(request)) {
+                configMultipart(multipartResolver);
+                request = multipartResolver.resolveMultipart(request);
             }
 
             // Determine adapter for the current request.
@@ -136,6 +148,7 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
             if (preHandle(request, response, handler)) return;
 
             // Actually invoke the handler.
+            request.setAttribute(HttpContext.ANDROID_CONTEXT, mContext);
             request.setAttribute(HttpContext.HTTP_MESSAGE_CONVERTER, mConverter);
             View view = handler.handle(request, response);
             mViewResolver.resolve(view, request, response);
@@ -151,7 +164,31 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
             processSession(request, response);
         } finally {
             if (request instanceof MultipartRequest) {
-                mMultipartResolver.cleanupMultipart((MultipartRequest)request);
+                multipartResolver.cleanupMultipart((MultipartRequest)request);
+            }
+        }
+    }
+
+    private void configMultipart(MultipartResolver multipartResolver) {
+        if (mMultipart != null) {
+            long allFileMaxSize = mMultipart.getAllFileMaxSize();
+            if (allFileMaxSize == -1 || allFileMaxSize > 0) {
+                multipartResolver.setAllFileMaxSize(allFileMaxSize);
+            }
+
+            long fileMaxSize = mMultipart.getFileMaxSize();
+            if (fileMaxSize == -1 || fileMaxSize > 0) {
+                multipartResolver.setFileMaxSize(fileMaxSize);
+            }
+
+            int maxInMemorySize = mMultipart.getMaxInMemorySize();
+            if (maxInMemorySize > 0) {
+                multipartResolver.setMaxInMemorySize(maxInMemorySize);
+            }
+
+            File uploadTempDir = mMultipart.getUploadTempDir();
+            if (uploadTempDir != null) {
+                multipartResolver.setUploadTempDir(uploadTempDir);
             }
         }
     }
@@ -212,7 +249,7 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
 
     private void processSession(HttpRequest request, HttpResponse response) {
         Object objSession = request.getAttribute(HttpContext.REQUEST_CREATED_SESSION);
-        if (objSession != null && objSession instanceof Session) {
+        if (objSession instanceof Session) {
             Session session = (Session)objSession;
             try {
                 mSessionManager.add(session);

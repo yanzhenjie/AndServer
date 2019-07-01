@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,12 @@
 package com.yanzhenjie.andserver.processor;
 
 import com.google.auto.service.AutoService;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.*;
 import com.yanzhenjie.andserver.annotation.Website;
 import com.yanzhenjie.andserver.processor.util.Constants;
 import com.yanzhenjie.andserver.processor.util.Logger;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -49,10 +33,16 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.util.*;
 
 /**
- * Created by YanZhenjie on 2018/9/17.
+ * Created by Zhenjie Yan on 2018/9/17.
+ *
+ * @deprecated use {@link ConfigProcessor} instead.
  */
+@Deprecated
 @AutoService(Processor.class)
 public class WebsiteProcessor extends BaseProcessor {
 
@@ -61,11 +51,13 @@ public class WebsiteProcessor extends BaseProcessor {
     private Types mTypes;
     private Logger mLog;
 
+    private TypeName mContext;
     private TypeName mOnRegisterType;
     private TypeName mRegisterType;
 
-    private TypeMirror mWebstieMirror;
+    private TypeMirror mWebsiteMirror;
     private TypeName mWebsite;
+
     private TypeName mString;
 
     @Override
@@ -75,17 +67,46 @@ public class WebsiteProcessor extends BaseProcessor {
         mTypes = processingEnv.getTypeUtils();
         mLog = new Logger(processingEnv.getMessager());
 
+        mContext = TypeName.get(mElements.getTypeElement(Constants.CONTEXT_TYPE).asType());
         mOnRegisterType = TypeName.get(mElements.getTypeElement(Constants.ON_REGISTER_TYPE).asType());
         mRegisterType = TypeName.get(mElements.getTypeElement(Constants.REGISTER_TYPE).asType());
 
-        mWebstieMirror = mElements.getTypeElement(Constants.WEBSITE_TYPE).asType();
-        mWebsite = TypeName.get(mWebstieMirror);
+        mWebsiteMirror = mElements.getTypeElement(Constants.WEBSITE_TYPE).asType();
+        mWebsite = TypeName.get(mWebsiteMirror);
+
         mString = TypeName.get(String.class);
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnv) {
         if (CollectionUtils.isEmpty(set)) return false;
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("The annotation [@Website] has been deprecated, please use [@Config] instead.")
+            .append("\n")
+            .append("@Config")
+            .append("\n")
+            .append("public class AppConfig implements WebConfig")
+            .append("\n")
+            .append("\n")
+            .append("    @Override")
+            .append("\n")
+            .append("    public void onConfig(Context context, Delegate delegate) {")
+            .append("\n")
+            .append("        Website website = ...;")
+            .append("\n")
+            .append("        delegate.addWebsite(website);")
+            .append("\n")
+            .append("\n")
+            .append("        Multipart multipart = Multipart.newBuilder...build();")
+            .append("\n")
+            .append("        delegate.setMultipart(multipart);")
+            .append("\n")
+            .append("    }")
+            .append("\n")
+            .append("}");
+
+        mLog.w(builder.toString());
 
         Map<String, List<TypeElement>> websiteMap = findAnnotation(roundEnv);
         if (!websiteMap.isEmpty()) createRegister(websiteMap);
@@ -98,7 +119,7 @@ public class WebsiteProcessor extends BaseProcessor {
 
         for (Element element : set) {
             if (element instanceof TypeElement) {
-                TypeElement typeElement = (TypeElement)element;
+                TypeElement typeElement = (TypeElement) element;
 
                 Set<Modifier> modifiers = typeElement.getModifiers();
                 Validate.isTrue(modifiers.contains(Modifier.PUBLIC), "The modifier public is missing on %s.",
@@ -111,7 +132,7 @@ public class WebsiteProcessor extends BaseProcessor {
                     continue;
                 }
 
-                if (mTypes.isSubtype(superclass, mWebstieMirror)) {
+                if (mTypes.isSubtype(superclass, mWebsiteMirror)) {
                     String group = getGroup(typeElement);
                     List<TypeElement> elementList = websiteMap.get(group);
                     if (CollectionUtils.isEmpty(elementList)) {
@@ -129,9 +150,9 @@ public class WebsiteProcessor extends BaseProcessor {
     }
 
     private void createRegister(Map<String, List<TypeElement>> websiteMap) {
-        TypeName listTypeName = ParameterizedTypeName.get(ClassName.get(List.class), mWebsite);
-        TypeName typeName = ParameterizedTypeName.get(ClassName.get(Map.class), mString, listTypeName);
-        FieldSpec mapField = FieldSpec.builder(typeName, "mMap", Modifier.PRIVATE).build();
+        TypeName listType = ParameterizedTypeName.get(ClassName.get(List.class), mWebsite);
+        TypeName mapType = ParameterizedTypeName.get(ClassName.get(Map.class), mString, listType);
+        FieldSpec mapField = FieldSpec.builder(mapType, "mMap", Modifier.PRIVATE).build();
 
         CodeBlock.Builder rootCode = CodeBlock.builder().addStatement("this.mMap = new $T<>()", HashMap.class);
         for (Map.Entry<String, List<TypeElement>> entry : websiteMap.entrySet()) {
@@ -157,6 +178,7 @@ public class WebsiteProcessor extends BaseProcessor {
         MethodSpec registerMethod = MethodSpec.methodBuilder("onRegister")
             .addAnnotation(Override.class)
             .addModifiers(Modifier.PUBLIC)
+            .addParameter(mContext, "context")
             .addParameter(mString, "group")
             .addParameter(mRegisterType, "register")
             .addStatement("List<$T> list = mMap.get(group)", mWebsite)

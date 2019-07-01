@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Yan Zhenjie.
+ * Copyright 2018 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,61 +17,16 @@ package com.yanzhenjie.andserver.processor;
 
 import com.google.auto.common.MoreElements;
 import com.google.auto.service.AutoService;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
-import com.yanzhenjie.andserver.annotation.Addition;
-import com.yanzhenjie.andserver.annotation.Controller;
-import com.yanzhenjie.andserver.annotation.CookieValue;
-import com.yanzhenjie.andserver.annotation.DeleteMapping;
-import com.yanzhenjie.andserver.annotation.FormPart;
-import com.yanzhenjie.andserver.annotation.GetMapping;
-import com.yanzhenjie.andserver.annotation.PatchMapping;
-import com.yanzhenjie.andserver.annotation.PathVariable;
-import com.yanzhenjie.andserver.annotation.PostMapping;
-import com.yanzhenjie.andserver.annotation.PutMapping;
-import com.yanzhenjie.andserver.annotation.QueryParam;
-import com.yanzhenjie.andserver.annotation.RequestBody;
-import com.yanzhenjie.andserver.annotation.RequestHeader;
-import com.yanzhenjie.andserver.annotation.RequestMapping;
-import com.yanzhenjie.andserver.annotation.RequestParam;
-import com.yanzhenjie.andserver.annotation.ResponseBody;
-import com.yanzhenjie.andserver.annotation.RestController;
-import com.yanzhenjie.andserver.processor.mapping.Any;
-import com.yanzhenjie.andserver.processor.mapping.Delete;
-import com.yanzhenjie.andserver.processor.mapping.Get;
-import com.yanzhenjie.andserver.processor.mapping.Mapping;
-import com.yanzhenjie.andserver.processor.mapping.Merge;
-import com.yanzhenjie.andserver.processor.mapping.Null;
-import com.yanzhenjie.andserver.processor.mapping.Patch;
-import com.yanzhenjie.andserver.processor.mapping.Post;
-import com.yanzhenjie.andserver.processor.mapping.Put;
+import com.squareup.javapoet.*;
+import com.yanzhenjie.andserver.annotation.*;
+import com.yanzhenjie.andserver.processor.mapping.*;
 import com.yanzhenjie.andserver.processor.util.Constants;
 import com.yanzhenjie.andserver.processor.util.Logger;
 import com.yanzhenjie.andserver.processor.util.Patterns;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
@@ -79,17 +34,19 @@ import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.element.*;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
- * Created by YanZhenjie on 2018/6/8.
+ * Created by Zhenjie Yan on 2018/6/8.
  */
 @AutoService(Processor.class)
 public class ControllerProcessor extends BaseProcessor implements Patterns {
@@ -99,8 +56,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
     private Logger mLog;
 
     private TypeName mContext;
-    private TypeName mAndServer;
     private TypeName mStringUtils;
+    private TypeName mCollectionUtils;
     private ClassName mTypeWrapper;
     private TypeName mMediaType;
     private TypeName mOnRegisterType;
@@ -122,32 +79,32 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
     private TypeName mConverter;
 
     private TypeName mRequest;
-    private TypeName mRequestMultipart;
+    private TypeName mMultipartRequest;
     private TypeName mResponse;
     private TypeName mHttpMethod;
     private TypeName mSession;
     private TypeName mRequestBody;
-    private TypeName mMultipart;
+    private TypeName mMultipartFile;
+    private TypeName mMultipartFileArray;
+    private TypeName mMultipartFileList;
 
     private TypeName mAddition;
     private TypeName mMapping;
-    private TypeName mMappingUnmodifiable;
-    private TypeName mMimeType;
-    private TypeName mMimeTypeUnmodifiable;
-    private TypeName mMethod;
-    private TypeName mMethodUnmodifiable;
-    private TypeName mPair;
-    private TypeName mPairUnmodifiable;
-    private TypeName mPath;
-    private TypeName mPathUnmodifiable;
-    private TypeName mMappings;
+    private TypeName mMimeTypeMapping;
+    private TypeName mMethodMapping;
+    private TypeName mPairMapping;
+    private TypeName mPathMapping;
+    private TypeName mMappingList;
 
-    private TypeName mString;
-    private TypeName mInt;
-    private TypeName mLong;
-    private TypeName mFloat;
-    private TypeName mDouble;
-    private TypeName mBoolean;
+    private TypeName mString = TypeName.get(String.class);
+    private ArrayTypeName mStringArray = ArrayTypeName.of(String.class);
+    private ArrayTypeName mIntArray = ArrayTypeName.of(int.class);
+    private ArrayTypeName mLongArray = ArrayTypeName.of(long.class);
+    private ArrayTypeName mFloatArray = ArrayTypeName.of(float.class);
+    private ArrayTypeName mDoubleArray = ArrayTypeName.of(double.class);
+    private ArrayTypeName mBooleanArray = ArrayTypeName.of(boolean.class);
+
+    private TypeName mStringList = ParameterizedTypeName.get(ClassName.get(List.class), mString);
 
     private List<Integer> mHashCodes = new ArrayList<>();
 
@@ -159,8 +116,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         mLog = new Logger(processingEnv.getMessager());
 
         mContext = TypeName.get(mElements.getTypeElement(Constants.CONTEXT_TYPE).asType());
-        mAndServer = TypeName.get(mElements.getTypeElement(Constants.ANDSERVER_TYPE).asType());
         mStringUtils = TypeName.get(mElements.getTypeElement(Constants.STRING_UTIL_TYPE).asType());
+        mCollectionUtils = TypeName.get(mElements.getTypeElement(Constants.COLLECTION_UTIL_TYPE).asType());
         mTypeWrapper = ClassName.get(mElements.getTypeElement(Constants.TYPE_WRAPPER_TYPE));
         mMediaType = TypeName.get(mElements.getTypeElement(Constants.MEDIA_TYPE).asType());
         mOnRegisterType = TypeName.get(mElements.getTypeElement(Constants.ON_REGISTER_TYPE).asType());
@@ -182,32 +139,22 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         mViewObject = TypeName.get(mElements.getTypeElement(Constants.VIEW_TYPE_OBJECT).asType());
 
         mRequest = TypeName.get(mElements.getTypeElement(Constants.REQUEST_TYPE).asType());
-        mRequestMultipart = TypeName.get(mElements.getTypeElement(Constants.REQUEST_TYPE_MULTIPART).asType());
+        mMultipartRequest = TypeName.get(mElements.getTypeElement(Constants.MULTIPART_REQUEST_TYPE).asType());
         mResponse = TypeName.get(mElements.getTypeElement(Constants.RESPONSE_TYPE).asType());
         mHttpMethod = TypeName.get(mElements.getTypeElement(Constants.HTTP_METHOD_TYPE).asType());
         mSession = TypeName.get(mElements.getTypeElement(Constants.SESSION_TYPE).asType());
         mRequestBody = TypeName.get(mElements.getTypeElement(Constants.REQUEST_BODY_TYPE).asType());
-        mMultipart = TypeName.get(mElements.getTypeElement(Constants.MULTIPART_TYPE).asType());
+        mMultipartFile = TypeName.get(mElements.getTypeElement(Constants.MULTIPART_FILE_TYPE).asType());
+        mMultipartFileArray = ArrayTypeName.of(mMultipartFile);
+        mMultipartFileList = ParameterizedTypeName.get(ClassName.get(List.class), mMultipartFile);
 
         mAddition = TypeName.get(mElements.getTypeElement(Constants.ADDITION_TYPE).asType());
         mMapping = TypeName.get(mElements.getTypeElement(Constants.MAPPING_TYPE).asType());
-        mMappingUnmodifiable = TypeName.get(mElements.getTypeElement(Constants.MAPPING_TYPE_UNMODIFIABLE).asType());
-        mMimeType = TypeName.get(mElements.getTypeElement(Constants.MIME_TYPE).asType());
-        mMimeTypeUnmodifiable = TypeName.get(mElements.getTypeElement(Constants.MIME_TYPE_UNMODIFIABLE).asType());
-        mMethod = TypeName.get(mElements.getTypeElement(Constants.METHOD_TYPE).asType());
-        mMethodUnmodifiable = TypeName.get(mElements.getTypeElement(Constants.METHOD_TYPE_UNMODIFIABLE).asType());
-        mPair = TypeName.get(mElements.getTypeElement(Constants.PAIR_TYPE).asType());
-        mPairUnmodifiable = TypeName.get(mElements.getTypeElement(Constants.PAIR_TYPE_UNMODIFIABLE).asType());
-        mPath = TypeName.get(mElements.getTypeElement(Constants.PATH_TYPE).asType());
-        mPathUnmodifiable = TypeName.get(mElements.getTypeElement(Constants.PATH_TYPE_UNMODIFIABLE).asType());
-        mMappings = ParameterizedTypeName.get(ClassName.get(Map.class), mMapping, mHandler);
-
-        mString = TypeName.get(String.class);
-        mInt = TypeName.get(int.class);
-        mLong = TypeName.get(long.class);
-        mFloat = TypeName.get(float.class);
-        mDouble = TypeName.get(double.class);
-        mBoolean = TypeName.get(boolean.class);
+        mMimeTypeMapping = TypeName.get(mElements.getTypeElement(Constants.MIME_MAPPING_TYPE).asType());
+        mMethodMapping = TypeName.get(mElements.getTypeElement(Constants.METHOD_MAPPING_TYPE).asType());
+        mPairMapping = TypeName.get(mElements.getTypeElement(Constants.PAIR_MAPPING_TYPE).asType());
+        mPathMapping = TypeName.get(mElements.getTypeElement(Constants.PATH_MAPPING_TYPE).asType());
+        mMappingList = ParameterizedTypeName.get(ClassName.get(Map.class), mMapping, mHandler);
     }
 
     @Override
@@ -229,24 +176,22 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
     private void findMapping(Set<? extends Element> set, Map<TypeElement, List<ExecutableElement>> controllerMap) {
         for (Element element : set) {
             if (element instanceof ExecutableElement) {
-                ExecutableElement execute = (ExecutableElement)element;
+                ExecutableElement execute = (ExecutableElement) element;
                 Element enclosing = element.getEnclosingElement();
                 if (!(enclosing instanceof TypeElement)) continue;
 
-                TypeElement type = (TypeElement)enclosing;
+                TypeElement type = (TypeElement) enclosing;
                 Annotation restController = type.getAnnotation(RestController.class);
                 Annotation controller = type.getAnnotation(Controller.class);
                 if (restController == null && controller == null) {
-                    mLog.w(String.format("Controller/RestController annotations may be missing on %s.",
-                        type.getQualifiedName()));
+                    mLog.w(String.format("Controller/RestController annotations may be missing on %s.", type.getQualifiedName()));
                     continue;
                 }
 
                 String host = type.getQualifiedName() + "#" + execute.getSimpleName() + "()";
 
                 Set<Modifier> modifiers = execute.getModifiers();
-                Validate.isTrue(!modifiers.contains(Modifier.PRIVATE), "The modifier private is redundant on %s.",
-                    host);
+                Validate.isTrue(!modifiers.contains(Modifier.PRIVATE), "The modifier private is redundant on %s.", host);
 
                 if (modifiers.contains(Modifier.STATIC)) {
                     mLog.w(String.format("The modifier static is redundant on %s.", host));
@@ -279,7 +224,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
             TypeName controllerType = TypeName.get(type.asType());
             FieldSpec hostField = FieldSpec.builder(controllerType, "mHost", Modifier.PRIVATE).build();
-            FieldSpec mappingField = FieldSpec.builder(mMappings, "mMappingMap", Modifier.PRIVATE).build();
+            FieldSpec mappingField = FieldSpec.builder(mMappingList, "mMappingMap", Modifier.PRIVATE).build();
 
             CodeBlock.Builder rootCode = CodeBlock.builder()
                 .addStatement("this.mHost = new $T()", type)
@@ -291,7 +236,6 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                 mapping = new Merge(typeMapping, mapping);
                 rootCode.beginControlFlow("\n").addStatement("$T mapping = new $T()", mMapping, mMapping);
                 addMapping(rootCode, mapping);
-                rootCode.addStatement("mapping = new $T(mapping)", mMappingUnmodifiable);
 
                 Addition addition = execute.getAnnotation(Addition.class);
                 rootCode.add("\n").addStatement("$T addition = new $T()", mAddition, mAddition);
@@ -309,7 +253,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             MethodSpec mappingMethod = MethodSpec.methodBuilder("getMappingMap")
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PROTECTED)
-                .returns(mMappings)
+                .returns(mMappingList)
                 .addStatement("return mMappingMap")
                 .build();
 
@@ -485,53 +429,53 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
     private void addMapping(CodeBlock.Builder builder, Mapping mapping) {
         String[] pathArray = mapping.path();
-        builder.add("\n").addStatement("$T path = new $T()", mPath, mPath);
+        builder.add("\n").addStatement("$T path = new $T()", mPathMapping, mPathMapping);
         for (String path : pathArray) {
             builder.addStatement("path.addRule($S)", path);
         }
-        builder.addStatement("mapping.setPath(new $T(path))", mPathUnmodifiable);
+        builder.addStatement("mapping.setPath(path)");
 
         String[] methodArray = mapping.method();
-        builder.add("\n").addStatement("$T method = new $T()", mMethod, mMethod);
+        builder.add("\n").addStatement("$T method = new $T()", mMethodMapping, mMethodMapping);
         for (String method : methodArray) {
             builder.addStatement("method.addRule($S)", method);
         }
-        builder.addStatement("mapping.setMethod(new $T(method))", mMethodUnmodifiable);
+        builder.addStatement("mapping.setMethod(method)");
 
         String[] paramArray = mapping.params();
         if (ArrayUtils.isNotEmpty(paramArray)) {
-            builder.add("\n").addStatement("$T param = new $T()", mPair, mPair);
+            builder.add("\n").addStatement("$T param = new $T()", mPairMapping, mPairMapping);
             for (String param : paramArray) {
                 builder.addStatement("param.addRule($S)", param);
             }
-            builder.addStatement("mapping.setParam(new $T(param))", mPairUnmodifiable);
+            builder.addStatement("mapping.setParam(param)");
         }
 
         String[] headerArray = mapping.headers();
         if (ArrayUtils.isNotEmpty(headerArray)) {
-            builder.add("\n").addStatement("$T header = new $T()", mPair, mPair);
+            builder.add("\n").addStatement("$T header = new $T()", mPairMapping, mPairMapping);
             for (String header : headerArray) {
                 builder.addStatement("header.addRule($S)", header);
             }
-            builder.addStatement("mapping.setHeader(new $T(header))", mPairUnmodifiable);
+            builder.addStatement("mapping.setHeader(header)");
         }
 
         String[] consumeArray = mapping.consumes();
         if (ArrayUtils.isNotEmpty(consumeArray)) {
-            builder.add("\n").addStatement("$T consume = new $T()", mMimeType, mMimeType);
+            builder.add("\n").addStatement("$T consume = new $T()", mMimeTypeMapping, mMimeTypeMapping);
             for (String consume : consumeArray) {
                 builder.addStatement("consume.addRule($S)", consume);
             }
-            builder.addStatement("mapping.setConsume(new $T(consume))", mMimeTypeUnmodifiable);
+            builder.addStatement("mapping.setConsume(consume)");
         }
 
         String[] produceArray = mapping.produces();
         if (ArrayUtils.isNotEmpty(produceArray)) {
-            builder.add("\n").addStatement("$T produce = new $T()", mMimeType, mMimeType);
+            builder.add("\n").addStatement("$T produce = new $T()", mMimeTypeMapping, mMimeTypeMapping);
             for (String produce : produceArray) {
                 builder.addStatement("produce.addRule($S)", produce);
             }
-            builder.addStatement("mapping.setProduce(new $T(produce))", mMimeTypeUnmodifiable);
+            builder.addStatement("mapping.setProduce(produce)");
         }
     }
 
@@ -669,7 +613,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             .build();
 
         CodeBlock.Builder handleCode = CodeBlock.builder()
-            .addStatement("$T context = $T.getContext()", mContext, mAndServer)
+            .addStatement("$T context = ($T)request.getAttribute($T.ANDROID_CONTEXT)", mContext, mContext, mRequest)
             .addStatement("String httpPath = request.getPath()")
             .addStatement("$T httpMethod = request.getMethod()", mHttpMethod)
             .add("\n")
@@ -679,9 +623,9 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             .addStatement("converter = ($T)converterObj", mConverter)
             .endControlFlow()
             .add("\n")
-            .addStatement("$T multiRequest = null", mRequestMultipart)
-            .beginControlFlow("if (request instanceof $T)", mRequestMultipart)
-            .addStatement("multiRequest = ($T) request", mRequestMultipart)
+            .addStatement("$T multiRequest = null", mMultipartRequest)
+            .beginControlFlow("if (request instanceof $T)", mMultipartRequest)
+            .addStatement("multiRequest = ($T) request", mMultipartRequest)
             .endControlFlow()
             .add("\n")
             .addStatement("$T requestBody = null", mRequestBody)
@@ -735,9 +679,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
                 RequestHeader requestHeader = parameter.getAnnotation(RequestHeader.class);
                 if (requestHeader != null) {
-                    Validate.isTrue(isBasicType(typeName),
-                        "The RequestHeader annotation only supports [String, int, long, float, double, boolean] on %s.",
-                        host);
+                    Validate.isTrue(isBasicType(typeName), "The RequestHeader annotation only supports [String, int, long, float, double, boolean] on %s.", host);
 
                     String name = requestHeader.name();
                     if (StringUtils.isEmpty(name)) name = requestHeader.value();
@@ -754,8 +696,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                             .endControlFlow();
                     }
 
-                    createParameter(handleCode, typeName, "header", i);
-                    assignmentParameter(handleCode, typeName, "header", i, "header", i);
+                    createBasicParameter(handleCode, typeName, "header", i);
+                    assignmentBasicParameter(handleCode, typeName, "header", i);
 
                     if (paramBuild.length() > 0) paramBuild.append(", ");
                     paramBuild.append(String.format(Locale.getDefault(), "header%d", i));
@@ -764,8 +706,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
                 CookieValue cookieValue = parameter.getAnnotation(CookieValue.class);
                 if (cookieValue != null) {
-                    Validate.isTrue(mString.equals(typeName), "CookieValue can only be used with [String] on %s.",
-                        host);
+                    Validate.isTrue(mString.equals(typeName), "CookieValue can only be used with [String] on %s.", host);
 
                     String name = cookieValue.name();
                     if (StringUtils.isEmpty(name)) name = cookieValue.value();
@@ -785,9 +726,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
                 PathVariable pathVariable = parameter.getAnnotation(PathVariable.class);
                 if (pathVariable != null) {
-                    Validate.isTrue(isBasicType(typeName),
-                        "The PathVariable annotation only supports [String, int, long, float, double, boolean] on %s.",
-                        host);
+                    Validate.isTrue(isBasicType(typeName), "The PathVariable annotation only supports " +
+                        "[String, int, long, float, double, boolean] on %s.", host);
 
                     String name = pathVariable.name();
                     if (StringUtils.isEmpty(name)) name = pathVariable.value();
@@ -799,9 +739,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                             isBlurred = true;
                         }
                     }
-                    Validate.isTrue(isBlurred,
-                        "The PathVariable annotation must have a blurred path, for example [/project/{name}]. The " +
-                            "error occurred on %s.", host);
+                    Validate.isTrue(isBlurred, "The PathVariable annotation must have a blurred path, " +
+                        "for example [/project/{name}]. The error occurred on %s.", host);
 
                     handleCode.add("\n").addStatement("String path$LStr = pathMap.get($S)", i, name);
 
@@ -815,8 +754,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                             .endControlFlow();
                     }
 
-                    createParameter(handleCode, typeName, "path", i);
-                    assignmentParameter(handleCode, typeName, "path", i, "path", i);
+                    createBasicParameter(handleCode, typeName, "path", i);
+                    assignmentBasicParameter(handleCode, typeName, "path", i);
 
                     if (paramBuild.length() > 0) paramBuild.append(", ");
                     paramBuild.append(String.format(Locale.getDefault(), "path%d", i));
@@ -825,27 +764,48 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
                 QueryParam queryParam = parameter.getAnnotation(QueryParam.class);
                 if (queryParam != null) {
-                    Validate.isTrue(isBasicType(typeName),
-                        "The QueryParam annotation only supports [String, int, long, float, double, " +
-                            "boolean] on %s.", host);
+                    boolean isBasicType = isBasicType(typeName);
+                    boolean isBasicArrayType = isBasicArrayType(typeName);
+                    Validate.isTrue(isBasicType || isBasicArrayType, "The QueryParam annotation " +
+                        "only supports [String, int, long, float, double, boolean] on %s.", host);
 
                     String name = queryParam.name();
                     if (StringUtils.isEmpty(name)) name = queryParam.value();
                     Validate.isTrue(!StringUtils.isEmpty(name), "The name of param is null on %s.", host);
 
-                    handleCode.add("\n").addStatement("String param$LStr = request.getQuery($S)", i, name);
-                    if (queryParam.required()) {
-                        handleCode.beginControlFlow("if ($T.isEmpty(param$LStr))", mStringUtils, i)
-                            .addStatement("throw new $T($S)", mParamMissing, name)
-                            .endControlFlow();
-                    } else {
-                        handleCode.beginControlFlow("if ($T.isEmpty(param$LStr))", mStringUtils, i)
-                            .addStatement("param$LStr = $S", i, queryParam.defaultValue())
-                            .endControlFlow();
-                    }
+                    if (isBasicType) {
+                        handleCode.add("\n").addStatement("String param$LStr = request.getQuery($S)", i, name);
+                        if (queryParam.required()) {
+                            handleCode.beginControlFlow("if ($T.isEmpty(param$LStr))", mStringUtils, i)
+                                .addStatement("throw new $T($S)", mParamMissing, name)
+                                .endControlFlow();
+                        } else {
+                            handleCode.beginControlFlow("if ($T.isEmpty(param$LStr))", mStringUtils, i)
+                                .addStatement("param$LStr = $S", i, queryParam.defaultValue())
+                                .endControlFlow();
+                        }
 
-                    createParameter(handleCode, typeName, "param", i);
-                    assignmentParameter(handleCode, typeName, "param", i, "param", i);
+                        createBasicParameter(handleCode, typeName, "param", i);
+                        assignmentBasicParameter(handleCode, typeName, "param", i);
+                    } else {
+                        handleCode.add("\n").addStatement("$T param$LList = request.getQueries($S)", mStringList, i, name);
+                        if (queryParam.required()) {
+                            handleCode.beginControlFlow("if ($T.isEmpty(param$LList))", mCollectionUtils, i)
+                                .addStatement("throw new $T($S)", mParamMissing, name)
+                                .endControlFlow();
+                        } else {
+                            String defaultValue = queryParam.defaultValue();
+                            if (StringUtils.isNotEmpty(defaultValue)) {
+                                handleCode.beginControlFlow("if ($T.isEmpty(param$LList))", mCollectionUtils, i)
+                                    .addStatement("param$LList = new $T<>()", i, TypeName.get(ArrayList.class))
+                                    .addStatement("param$LList.add($S)", i, defaultValue)
+                                    .endControlFlow();
+                            }
+                        }
+
+                        createBasicArrayParameter(handleCode, typeName, i);
+                        assignmentBasicArrayParameter(handleCode, typeName, i);
+                    }
 
                     if (paramBuild.length() > 0) paramBuild.append(", ");
                     paramBuild.append(String.format(Locale.getDefault(), "param%d", i));
@@ -854,27 +814,48 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
                 RequestParam requestParam = parameter.getAnnotation(RequestParam.class);
                 if (requestParam != null) {
-                    boolean valid = mMultipart.equals(typeName) || isBasicType(typeName);
-                    Validate.isTrue(valid,
-                        "The RequestParam annotation only supports [MultipartFile, String, int, long, float, double, " +
-                            "boolean] on %s.", host);
+                    boolean isFile = mMultipartFile.equals(typeName) || mMultipartFileArray.equals(typeName);
+                    boolean isBasicType = isBasicType(typeName);
+                    boolean isBasicArrayType = isBasicArrayType(typeName);
+
+                    boolean valid = isFile || isBasicType || isBasicArrayType;
+                    Validate.isTrue(valid, "The RequestParam annotation only supports " +
+                        "[MultipartFile, String, int, long, float, double, boolean] on %s.", host);
 
                     String name = requestParam.name();
                     if (StringUtils.isEmpty(name)) name = requestParam.value();
                     Validate.isTrue(!StringUtils.isEmpty(name), "The name of param is null on %s.", host);
 
                     handleCode.add("\n");
-                    if (mMultipart.equals(typeName)) {
-                        handleCode.addStatement("$T param$L = null", mMultipart, i)
-                            .beginControlFlow("if (multiRequest != null)")
-                            .addStatement("param$L = multiRequest.getFile($S)", i, name)
-                            .endControlFlow();
-                        if (requestParam.required()) {
-                            handleCode.beginControlFlow("if (param$L == null)", i)
-                                .addStatement("throw new $T($S)", mParamMissing, name)
+                    if (isFile) {
+                        if (mMultipartFile.equals(typeName)) {
+                            handleCode.addStatement("$T param$L = null", mMultipartFile, i)
+                                .beginControlFlow("if (multiRequest != null)")
+                                .addStatement("param$L = multiRequest.getFile($S)", i, name)
+                                .endControlFlow();
+                            if (requestParam.required()) {
+                                handleCode.beginControlFlow("if (param$L == null)", i)
+                                    .addStatement("throw new $T($S)", mParamMissing, name)
+                                    .endControlFlow();
+                            }
+                        } else {
+                            handleCode.addStatement("$T param$LList = null", mMultipartFileList, i)
+                                .beginControlFlow("if (multiRequest != null)")
+                                .addStatement("param$LList = multiRequest.getFiles($S)", i, name)
+                                .endControlFlow();
+                            if (requestParam.required()) {
+                                handleCode.beginControlFlow("if ($T.isEmpty(param$LList))", mCollectionUtils, i)
+                                    .addStatement("throw new $T($S)", mParamMissing, name)
+                                    .endControlFlow();
+                            }
+
+                            handleCode.addStatement("int param$LListSize = param$LList.size()", i, i)
+                                .addStatement("$T[] param$L = new $T[param$LListSize]", mMultipartFile, i, mMultipartFile, i)
+                                .beginControlFlow("if(param$LListSize > 0)", i)
+                                .addStatement("param$LList.toArray(param$L)", i, i)
                                 .endControlFlow();
                         }
-                    } else {
+                    } else if (isBasicType) {
                         handleCode.addStatement("String param$LStr = request.getParameter($S)", i, name);
 
                         if (requestParam.required()) {
@@ -887,8 +868,26 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                                 .endControlFlow();
                         }
 
-                        createParameter(handleCode, typeName, "param", i);
-                        assignmentParameter(handleCode, typeName, "param", i, "param", i);
+                        createBasicParameter(handleCode, typeName, "param", i);
+                        assignmentBasicParameter(handleCode, typeName, "param", i);
+                    } else {
+                        handleCode.addStatement("$T param$LList = request.getParameters($S)", mStringList, i, name);
+                        if (requestParam.required()) {
+                            handleCode.beginControlFlow("if ($T.isEmpty(param$LList))", mCollectionUtils, i)
+                                .addStatement("throw new $T($S)", mParamMissing, name)
+                                .endControlFlow();
+                        } else {
+                            String defaultValue = requestParam.defaultValue();
+                            if (StringUtils.isNotEmpty(defaultValue)) {
+                                handleCode.beginControlFlow("if ($T.isEmpty(param$LList))", mCollectionUtils, i)
+                                    .addStatement("param$LList = new $T<>()", i, TypeName.get(ArrayList.class))
+                                    .addStatement("param$LList.add($S)", i, defaultValue)
+                                    .endControlFlow();
+                            }
+                        }
+
+                        createBasicArrayParameter(handleCode, typeName, i);
+                        assignmentBasicArrayParameter(handleCode, typeName, i);
                     }
 
                     if (paramBuild.length() > 0) paramBuild.append(", ");
@@ -903,8 +902,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                     Validate.isTrue(!StringUtils.isEmpty(name), "The name of param is null on %s.", host);
 
                     handleCode.add("\n");
-                    if (mMultipart.equals(typeName)) {
-                        handleCode.addStatement("$T param$L = null", mMultipart, i)
+                    if (mMultipartFile.equals(typeName)) {
+                        handleCode.addStatement("$T param$L = null", mMultipartFile, i)
                             .beginControlFlow("if (multiRequest != null)")
                             .addStatement("param$L = multiRequest.getFile($S)", i, name)
                             .endControlFlow();
@@ -913,12 +912,28 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                                 .addStatement("throw new $T($S)", mParamMissing, name)
                                 .endControlFlow();
                         }
+                    } else if (mMultipartFileArray.equals(typeName)) {
+                        handleCode.addStatement("$T param$LList = null", mMultipartFileList, i)
+                            .beginControlFlow("if (multiRequest != null)")
+                            .addStatement("param$LList = multiRequest.getFiles($S)", i, name)
+                            .endControlFlow();
+                        if (formPart.required()) {
+                            handleCode.beginControlFlow("if ($T.isEmpty(param$LList))", mCollectionUtils, i)
+                                .addStatement("throw new $T($S)", mParamMissing, name)
+                                .endControlFlow();
+                        }
+
+                        handleCode.addStatement("int param$LListSize = param$LList.size()", i, i)
+                            .addStatement("$T[] param$L = new $T[param$LListSize]", mMultipartFile, i, mMultipartFile, i)
+                            .beginControlFlow("if(param$LListSize > 0)", i)
+                            .addStatement("param$LList.toArray(param$L)", i, i)
+                            .endControlFlow();
                     } else {
                         TypeName wrapperType = ParameterizedTypeName.get(mTypeWrapper, typeName);
                         handleCode.addStatement("$T param$L = null", typeName, i)
                             .addStatement("$T param$LType = new $T(){}.getType()", Type.class, i, wrapperType)
                             .beginControlFlow("if (converter != null && multiRequest != null)")
-                            .addStatement("$T param$LFile = multiRequest.getFile($S)", mMultipart, i, name)
+                            .addStatement("$T param$LFile = multiRequest.getFile($S)", mMultipartFile, i, name)
                             .beginControlFlow("if (param$LFile != null)", i)
                             .addStatement("$T stream = param$LFile.getStream()", InputStream.class, i)
                             .addStatement("$T mimeType = param$LFile.getContentType()", mMediaType, i)
@@ -927,8 +942,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                             .beginControlFlow("if (param$L == null)", i)
                             .addStatement("String param$LStr = multiRequest.getParameter($S)", i, name)
                             .beginControlFlow("if (!$T.isEmpty(param$LStr))", mStringUtils, i)
-                            .addStatement("$T stream = new $T(param$LStr.getBytes())", InputStream.class,
-                                ByteArrayInputStream.class, i)
+                            .addStatement("$T stream = new $T(param$LStr.getBytes())", InputStream.class, ByteArrayInputStream.class, i)
                             .addStatement("$T mimeType = $T.TEXT_PLAIN", mMediaType, mMediaType)
                             .addStatement("param$L = converter.convert(stream, mimeType, param$LType)", i, i)
                             .endControlFlow()
@@ -974,8 +988,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                     continue;
                 }
 
-                throw new IllegalStateException(
-                    String.format("The parameter type [%s] is not supported on %s.", typeName, host));
+                throw new IllegalStateException(String.format("The parameter type [%s] is not supported on %s.", typeName, host));
             }
         }
 
@@ -1030,45 +1043,39 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
     }
 
     private boolean isBasicType(TypeName typeName) {
-        return mString.equals(typeName) || mInt.equals(typeName) || mLong.equals(typeName) || mFloat.equals(typeName) ||
-            mDouble.equals(typeName) || mBoolean.equals(typeName);
+        return mString.equals(typeName) || TypeName.INT.equals(typeName) || TypeName.LONG.equals(typeName) ||
+            TypeName.FLOAT.equals(typeName) || TypeName.DOUBLE.equals(typeName) || TypeName.BOOLEAN.equals(typeName);
     }
 
-    private void createParameter(CodeBlock.Builder builder, TypeName type, Object... obj) {
-        if (mString.equals(type)) {
-            builder.addStatement("String $L$L = null", obj);
-        } else if (mInt.equals(type)) {
-            builder.addStatement("int $L$L = 0", obj);
-        } else if (mLong.equals(type)) {
-            builder.addStatement("long $L$L = 0L", obj);
-        } else if (mFloat.equals(type)) {
-            builder.addStatement("float $L$L = 0F", obj);
-        } else if (mDouble.equals(type)) {
-            builder.addStatement("double $L$L = 0D", obj);
-        } else if (mBoolean.equals(type)) {
-            builder.addStatement("boolean $L$L = false", obj);
-        }
+    private void createBasicParameter(CodeBlock.Builder builder, TypeName type, String name, int index) {
+        builder.addStatement("$T $L$L = null", type, name, index);
     }
 
-    private void assignmentParameter(CodeBlock.Builder builder, TypeName type, Object... obj) {
+    private void assignmentBasicParameter(CodeBlock.Builder builder, TypeName type, String name, int index) {
         builder.beginControlFlow("try");
-        if (mString.equals(type)) {
-            builder.addStatement("$L$L = $L$LStr", obj);
-        } else if (mInt.equals(type)) {
-            builder.addStatement("$L$L = Integer.parseInt($L$LStr)", obj);
-        } else if (mLong.equals(type)) {
-            builder.addStatement("$L$L = Long.parseLong($L$LStr)", obj);
-        } else if (mFloat.equals(type)) {
-            builder.addStatement("$L$L = Float.parseFloat($L$LStr)", obj);
-        } else if (mDouble.equals(type)) {
-            builder.addStatement("$L$L = Double.parseDouble($L$LStr)", obj);
-        } else if (mBoolean.equals(type)) {
-            builder.addStatement("$L$L = Boolean.parseBoolean($L$LStr)", obj);
-        }
-        builder.endControlFlow()
-            .beginControlFlow("catch (Throwable e)")
-            .addStatement("throw new $T(e)", mParamError)
+        TypeName box = type.isBoxedPrimitive() ? type.box() : type;
+        builder.addStatement("$L$L = $T.valueOf($L$LStr)", name, index, box, name, index);
+        builder.nextControlFlow("catch (Throwable e)").addStatement("throw new $T(e)", mParamError).endControlFlow();
+    }
+
+    private boolean isBasicArrayType(TypeName typeName) {
+        return mStringArray.equals(typeName) || mIntArray.equals(typeName) || mLongArray.equals(typeName) ||
+            mFloatArray.equals(typeName) || mDoubleArray.equals(typeName) || mBooleanArray.equals(typeName);
+    }
+
+    private void createBasicArrayParameter(CodeBlock.Builder builder, TypeName type, int index) {
+        TypeName component = ((ArrayTypeName) type).componentType;
+        builder.addStatement("$T[] param$L = new $T[param$LList.size()]", component, index, component, index);
+    }
+
+    private void assignmentBasicArrayParameter(CodeBlock.Builder builder, TypeName type, int index) {
+        builder.beginControlFlow("try");
+        TypeName component = ((ArrayTypeName) type).componentType;
+        TypeName box = component.isBoxedPrimitive() ? component : component.box();
+        builder.beginControlFlow("for(int i = 0; i < param$LList.size(); i++)", index)
+            .addStatement("param$L[i] = $T.valueOf(param$LList.get(i))", index, box, index)
             .endControlFlow();
+        builder.nextControlFlow("catch (Throwable e)").addStatement("throw new $T(e)", mParamError).endControlFlow();
     }
 
     private void createRegister(Map<String, List<String>> adapterMap) {
@@ -1099,6 +1106,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         MethodSpec registerMethod = MethodSpec.methodBuilder("onRegister")
             .addAnnotation(Override.class)
             .addModifiers(Modifier.PUBLIC)
+            .addParameter(mContext, "context")
             .addParameter(mString, "group")
             .addParameter(mRegisterType, "register")
             .addStatement("List<$T> list = mMap.get(group)", mAdapter)
