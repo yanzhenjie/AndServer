@@ -15,11 +15,9 @@
  */
 package com.yanzhenjie.andserver.framework.handler;
 
-import com.yanzhenjie.andserver.error.ContentNotAcceptableException;
-import com.yanzhenjie.andserver.error.ContentNotSupportedException;
-import com.yanzhenjie.andserver.error.HeaderValidateException;
-import com.yanzhenjie.andserver.error.MethodNotSupportException;
-import com.yanzhenjie.andserver.error.ParamValidateException;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.yanzhenjie.andserver.error.*;
 import com.yanzhenjie.andserver.http.HttpContext;
 import com.yanzhenjie.andserver.http.HttpMethod;
 import com.yanzhenjie.andserver.http.HttpRequest;
@@ -31,11 +29,9 @@ import com.yanzhenjie.andserver.util.MediaType;
 import com.yanzhenjie.andserver.util.Patterns;
 import com.yanzhenjie.andserver.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Created by Zhenjie Yan on 2018/9/8.
@@ -44,15 +40,21 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
 
     @Override
     public boolean intercept(@NonNull HttpRequest request) {
-        List<Path.Segment> httpSegments = Path.pathToList(request.getPath());
-        Mapping mapping = getExactMapping(httpSegments);
-        if (mapping == null) {
-            mapping = getBlurredMapping(httpSegments);
-        }
-        if (mapping == null) return false;
+        List<Path.Segment> pathSegments = Path.pathToList(request.getPath());
 
-        HttpMethod httpMethod = request.getMethod();
-        validateMethod(mapping, httpMethod);
+        List<Mapping> mappings = getExactMappings(pathSegments);
+        if (mappings.isEmpty()) mappings = getBlurredMappings(pathSegments);
+        if (mappings.isEmpty()) return false;
+
+        Mapping mapping = null;
+        HttpMethod method = request.getMethod();
+        for (Mapping child : mappings) {
+            if (child.getMethod().getRuleList().contains(method)) {
+                mapping = child;
+                break;
+            }
+        }
+        if (mapping == null) throw new MethodNotSupportException(method);
 
         Pair param = mapping.getParam();
         if (param != null) validateParams(param, request);
@@ -72,9 +74,20 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
     @Nullable
     @Override
     public RequestHandler getHandler(@NonNull HttpRequest request) {
-        List<Path.Segment> httpSegments = Path.pathToList(request.getPath());
-        Mapping mapping = getExactMapping(httpSegments);
-        if (mapping == null) mapping = getBlurredMapping(httpSegments);
+        List<Path.Segment> pathSegments = Path.pathToList(request.getPath());
+
+        List<Mapping> mappings = getExactMappings(pathSegments);
+        if (mappings.isEmpty()) mappings = getBlurredMappings(pathSegments);
+
+        Mapping mapping = null;
+        HttpMethod method = request.getMethod();
+        for (Mapping child : mappings) {
+            if (child.getMethod().getRuleList().contains(method)) {
+                mapping = child;
+                break;
+            }
+        }
+
         if (mapping == null) return null;
 
         Mime mime = mapping.getProduce();
@@ -94,18 +107,20 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
         return getMappingMap().get(mapping);
     }
 
-    private Mapping getExactMapping(List<Path.Segment> httpSegments) {
-        Map<Mapping, RequestHandler> mappings = getMappingMap();
-        for (Mapping mapping : mappings.keySet()) {
+    private List<Mapping> getExactMappings(List<Path.Segment> httpSegments) {
+        List<Mapping> mappings = new ArrayList<>();
+
+        Map<Mapping, RequestHandler> mappingMap = getMappingMap();
+        for (Mapping mapping : mappingMap.keySet()) {
             Path path = mapping.getPath();
             List<Path.Rule> rules = path.getRuleList();
             for (Path.Rule rule : rules) {
                 if (matchExactPath(rule.getSegments(), httpSegments)) {
-                    return mapping;
+                    mappings.add(mapping);
                 }
             }
         }
-        return null;
+        return mappings;
     }
 
     private boolean matchExactPath(List<Path.Segment> segments, List<Path.Segment> httpSegments) {
@@ -117,18 +132,20 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
         return false;
     }
 
-    private Mapping getBlurredMapping(List<Path.Segment> httpSegments) {
-        Map<Mapping, RequestHandler> mappings = getMappingMap();
-        for (Mapping mapping : mappings.keySet()) {
+    private List<Mapping> getBlurredMappings(List<Path.Segment> httpSegments) {
+        List<Mapping> mappings = new ArrayList<>();
+
+        Map<Mapping, RequestHandler> mappingMap = getMappingMap();
+        for (Mapping mapping : mappingMap.keySet()) {
             Path path = mapping.getPath();
             List<Path.Rule> rules = path.getRuleList();
             for (Path.Rule rule : rules) {
                 if (matchBlurredPath(rule.getSegments(), httpSegments)) {
-                    return mapping;
+                    mappings.add(mapping);
                 }
             }
         }
-        return null;
+        return mappings;
     }
 
     private boolean matchBlurredPath(List<Path.Segment> segments, List<Path.Segment> httpSegments) {
@@ -141,13 +158,6 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
             }
         }
         return true;
-    }
-
-    private void validateMethod(Mapping mapping, HttpMethod httpMethod) {
-        List<HttpMethod> mappingMethods = mapping.getMethod().getRuleList();
-        if (!mappingMethods.contains(httpMethod)) {
-            throw new MethodNotSupportException(httpMethod);
-        }
     }
 
     private void validateParams(Pair param, HttpRequest request) {
