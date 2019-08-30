@@ -44,8 +44,8 @@ class TestController {
     }
 
     @PutMapping(path = "/get/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    String modify(@PathVariable("userId") String userId, @RequestParam(name = "sex") String sex) {
-        return String.format("The userId is %1$s, and the sex is %2$s.", userId, sex);
+    String modify(@PathVariable("userId") String userId, @RequestParam(name = "sex") String sex, @RequestParam(name = "age") int age) {
+        return String.format("The userId is %1$s, and the sex is %2$s, and the age is %3$s.", userId, sex, age);
     }
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
