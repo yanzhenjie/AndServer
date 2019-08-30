@@ -1048,12 +1048,13 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
     }
 
     private void createBasicParameter(CodeBlock.Builder builder, TypeName type, String name, int index) {
-        builder.addStatement("$T $L$L = null", type, name, index);
+        TypeName box = type.isBoxedPrimitive() ? type : type.box();
+        builder.addStatement("$T $L$L = null", box, name, index);
     }
 
     private void assignmentBasicParameter(CodeBlock.Builder builder, TypeName type, String name, int index) {
         builder.beginControlFlow("try");
-        TypeName box = type.isBoxedPrimitive() ? type.box() : type;
+        TypeName box = type.isBoxedPrimitive() ? type : type.box();
         builder.addStatement("$L$L = $T.valueOf($L$LStr)", name, index, box, name, index);
         builder.nextControlFlow("catch (Throwable e)").addStatement("throw new $T(e)", mParamError).endControlFlow();
     }
