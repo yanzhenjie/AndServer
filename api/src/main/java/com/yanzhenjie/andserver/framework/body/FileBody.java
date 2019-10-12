@@ -25,6 +25,7 @@ import com.yanzhenjie.andserver.util.MediaType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -54,6 +55,8 @@ public class FileBody implements ResponseBody {
 
     @Override
     public void writeTo(@NonNull OutputStream output) throws IOException {
-        IOUtils.write(new FileInputStream(mBody), output);
+        InputStream is = new FileInputStream(mBody);
+        IOUtils.write(is, output);
+        IOUtils.closeQuietly(is);
     }
 }

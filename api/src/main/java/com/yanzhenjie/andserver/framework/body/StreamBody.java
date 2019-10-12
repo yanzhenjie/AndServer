@@ -67,5 +67,6 @@ public class StreamBody implements ResponseBody {
     @Override
     public void writeTo(@NonNull OutputStream output) throws IOException {
         IOUtils.write(mStream, output);
+        IOUtils.closeQuietly(mStream);
     }
 }
