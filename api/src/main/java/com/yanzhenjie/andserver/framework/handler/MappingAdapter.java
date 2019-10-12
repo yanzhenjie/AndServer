@@ -17,7 +17,12 @@ package com.yanzhenjie.andserver.framework.handler;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.yanzhenjie.andserver.error.*;
+
+import com.yanzhenjie.andserver.error.ContentNotAcceptableException;
+import com.yanzhenjie.andserver.error.ContentNotSupportedException;
+import com.yanzhenjie.andserver.error.HeaderValidateException;
+import com.yanzhenjie.andserver.error.MethodNotSupportException;
+import com.yanzhenjie.andserver.error.ParamValidateException;
 import com.yanzhenjie.andserver.http.HttpContext;
 import com.yanzhenjie.andserver.http.HttpMethod;
 import com.yanzhenjie.andserver.http.HttpRequest;
@@ -43,8 +48,12 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
         List<Path.Segment> pathSegments = Path.pathToList(request.getPath());
 
         List<Mapping> mappings = getExactMappings(pathSegments);
-        if (mappings.isEmpty()) mappings = getBlurredMappings(pathSegments);
-        if (mappings.isEmpty()) return false;
+        if (mappings.isEmpty()) {
+            mappings = getBlurredMappings(pathSegments);
+        }
+        if (mappings.isEmpty()) {
+            return false;
+        }
 
         Mapping mapping = null;
         HttpMethod method = request.getMethod();
@@ -54,19 +63,29 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
                 break;
             }
         }
-        if (mapping == null) throw new MethodNotSupportException(method);
+        if (mapping == null) {
+            throw new MethodNotSupportException(method);
+        }
 
         Pair param = mapping.getParam();
-        if (param != null) validateParams(param, request);
+        if (param != null) {
+            validateParams(param, request);
+        }
 
         Pair header = mapping.getHeader();
-        if (header != null) validateHeaders(header, request);
+        if (header != null) {
+            validateHeaders(header, request);
+        }
 
         Mime consume = mapping.getConsume();
-        if (consume != null) validateConsume(consume, request);
+        if (consume != null) {
+            validateConsume(consume, request);
+        }
 
         Mime produce = mapping.getProduce();
-        if (produce != null) validateProduce(produce, request);
+        if (produce != null) {
+            validateProduce(produce, request);
+        }
 
         return true;
     }
@@ -77,7 +96,9 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
         List<Path.Segment> pathSegments = Path.pathToList(request.getPath());
 
         List<Mapping> mappings = getExactMappings(pathSegments);
-        if (mappings.isEmpty()) mappings = getBlurredMappings(pathSegments);
+        if (mappings.isEmpty()) {
+            mappings = getBlurredMappings(pathSegments);
+        }
 
         Mapping mapping = null;
         HttpMethod method = request.getMethod();
@@ -88,7 +109,9 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
             }
         }
 
-        if (mapping == null) return null;
+        if (mapping == null) {
+            return null;
+        }
 
         Mime mime = mapping.getProduce();
         if (mime != null) {
@@ -124,7 +147,9 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
     }
 
     private boolean matchExactPath(List<Path.Segment> segments, List<Path.Segment> httpSegments) {
-        if (httpSegments.size() != segments.size()) return false;
+        if (httpSegments.size() != segments.size()) {
+            return false;
+        }
 
         if (Path.listToPath(segments).equals(Path.listToPath(httpSegments))) {
             return true;
@@ -149,7 +174,9 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
     }
 
     private boolean matchBlurredPath(List<Path.Segment> segments, List<Path.Segment> httpSegments) {
-        if (httpSegments.size() != segments.size()) return false;
+        if (httpSegments.size() != segments.size()) {
+            return false;
+        }
 
         for (int i = 0; i < segments.size(); i++) {
             Path.Segment segment = segments.get(i);
@@ -219,6 +246,8 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
     private void validateConsume(Mime mime, HttpRequest request) {
         List<Mime.Rule> rules = mime.getRuleList();
         MediaType contentType = request.getContentType();
+
+        List<MediaType> includeType = new ArrayList<>();
         for (Mime.Rule rule : rules) {
             String type = rule.getType();
             boolean nonContent = type.startsWith("!");
@@ -232,10 +261,19 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
                     throw new ContentNotSupportedException(contentType);
                 }
             } else {
-                if (contentType == null || !contentType.includes(consume)) {
-                    throw new ContentNotSupportedException(contentType);
-                }
+                includeType.add(consume);
             }
+        }
+
+        boolean included = false;
+        for (MediaType mediaType : includeType) {
+            if (mediaType.includes(contentType)) {
+                included = true;
+                break;
+            }
+        }
+        if (!included) {
+            throw new ContentNotSupportedException(contentType);
         }
     }
 
