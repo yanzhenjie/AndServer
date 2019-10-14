@@ -52,7 +52,7 @@ public abstract class MappingHandler implements MethodHandler {
     public String getETag(@NonNull HttpRequest request) throws IOException {
         Object o = getHost();
         if (o instanceof ETag) {
-            return ((ETag)o).getETag(request);
+            return ((ETag) o).getETag(request);
         }
         return null;
     }
@@ -61,7 +61,7 @@ public abstract class MappingHandler implements MethodHandler {
     public long getLastModified(@NonNull HttpRequest request) throws IOException {
         Object o = getHost();
         if (o instanceof LastModified) {
-            return ((LastModified)o).getLastModified(request);
+            return ((LastModified) o).getLastModified(request);
         }
         return -1;
     }
@@ -101,10 +101,14 @@ public abstract class MappingHandler implements MethodHandler {
         List<Path.Rule> ruleList = mMapping.getPath().getRuleList();
         for (Path.Rule rule : ruleList) {
             List<Path.Segment> segments = rule.getSegments();
-            if (httpSegments.size() != segments.size()) continue;
+            if (httpSegments.size() != segments.size()) {
+                continue;
+            }
 
             String path = Path.listToPath(segments);
-            if (path.equals(httpPath)) return Collections.emptyMap();
+            if (path.equals(httpPath)) {
+                return Collections.emptyMap();
+            }
 
             boolean matches = true;
             boolean isBlurred = false;

@@ -42,10 +42,14 @@ public class AcceptLanguage {
     }
 
     public static List<AcceptLanguage> parse(String input) {
-        if (StringUtils.isEmpty(input)) return Collections.emptyList();
+        if (StringUtils.isEmpty(input)) {
+            return Collections.emptyList();
+        }
 
         String[] segments = input.split(",");
-        if (ObjectUtils.isEmpty(segments)) return Collections.emptyList();
+        if (ObjectUtils.isEmpty(segments)) {
+            return Collections.emptyList();
+        }
 
         List<AcceptLanguage> list = new ArrayList<>();
         for (String segment : segments) {

@@ -16,6 +16,7 @@
 package com.yanzhenjie.andserver.http.session;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -40,7 +41,7 @@ public class StandardSessionManager implements SessionManager {
     @Override
     public void add(@NonNull Session session) throws IOException {
         if (session instanceof StandardSession && session.isNew()) {
-            StandardSession standardSession = (StandardSession)session;
+            StandardSession standardSession = (StandardSession) session;
             standardSession.setNew(false);
             mStore.replace(standardSession);
         }
@@ -49,7 +50,7 @@ public class StandardSessionManager implements SessionManager {
     @Override
     public void changeSessionId(@NonNull Session session) {
         if (session instanceof StandardSession) {
-            StandardSession standardSession = (StandardSession)session;
+            StandardSession standardSession = (StandardSession) session;
             standardSession.setId(mIdGenerator.generateId());
         }
     }
@@ -66,14 +67,16 @@ public class StandardSessionManager implements SessionManager {
     @Override
     public Session findSession(@NonNull String id) throws IOException, ClassNotFoundException {
         StandardSession session = mStore.getSession(id);
-        if (session != null) session.setLastAccessedTime(System.currentTimeMillis());
+        if (session != null) {
+            session.setLastAccessedTime(System.currentTimeMillis());
+        }
         return session;
     }
 
     @Override
     public void remove(@NonNull Session session) {
         if (session instanceof StandardSession) {
-            mStore.remove((StandardSession)session);
+            mStore.remove((StandardSession) session);
         }
     }
 

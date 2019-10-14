@@ -87,7 +87,9 @@ public final class HttpDateFormat {
             }
         }
 
-        if (date == null) return -1L;
+        if (date == null) {
+            return -1L;
+        }
         return date.getTime();
     }
 }

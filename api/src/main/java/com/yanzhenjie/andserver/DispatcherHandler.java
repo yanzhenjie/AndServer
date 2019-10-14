@@ -18,6 +18,9 @@ package com.yanzhenjie.andserver;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.yanzhenjie.andserver.error.NotFoundException;
 import com.yanzhenjie.andserver.error.ServerInternalException;
 import com.yanzhenjie.andserver.framework.ExceptionResolver;
@@ -55,9 +58,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Created by Zhenjie Yan on 2018/8/8.
@@ -138,14 +138,20 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
 
             // Determine adapter for the current request.
             HandlerAdapter ha = getHandlerAdapter(request);
-            if (ha == null) throw new NotFoundException(request.getPath());
+            if (ha == null) {
+                throw new NotFoundException(request.getPath());
+            }
 
             // Determine handler for the current request.
             RequestHandler handler = ha.getHandler(request);
-            if (handler == null) throw new NotFoundException(request.getPath());
+            if (handler == null) {
+                throw new NotFoundException(request.getPath());
+            }
 
             // Pre processor, e.g. interceptor.
-            if (preHandle(request, response, handler)) return;
+            if (preHandle(request, response, handler)) {
+                return;
+            }
 
             // Actually invoke the handler.
             request.setAttribute(HttpContext.ANDROID_CONTEXT, mContext);
@@ -164,7 +170,7 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
             processSession(request, response);
         } finally {
             if (request instanceof MultipartRequest) {
-                multipartResolver.cleanupMultipart((MultipartRequest)request);
+                multipartResolver.cleanupMultipart((MultipartRequest) request);
             }
         }
     }
@@ -202,7 +208,9 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
      */
     private HandlerAdapter getHandlerAdapter(HttpRequest request) {
         for (HandlerAdapter ha : mAdapterList) {
-            if (ha.intercept(request)) return ha;
+            if (ha.intercept(request)) {
+                return ha;
+            }
         }
         return null;
     }
@@ -218,7 +226,9 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
      */
     private boolean preHandle(HttpRequest request, HttpResponse response, RequestHandler handler) throws Exception {
         for (HandlerInterceptor interceptor : mInterceptorList) {
-            if (interceptor.onIntercept(request, response, handler)) return true;
+            if (interceptor.onIntercept(request, response, handler)) {
+                return true;
+            }
         }
         return false;
     }
@@ -227,11 +237,11 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
     public RequestDispatcher getRequestDispatcher(final HttpRequest request, final String path) {
         HttpRequest copyRequest = request;
         while (copyRequest instanceof RequestWrapper) {
-            RequestWrapper wrapper = (RequestWrapper)request;
+            RequestWrapper wrapper = (RequestWrapper) request;
             copyRequest = wrapper.getRequest();
         }
 
-        StandardRequest newRequest = (StandardRequest)copyRequest;
+        StandardRequest newRequest = (StandardRequest) copyRequest;
         newRequest.setPath(path);
 
         HandlerAdapter ha = getHandlerAdapter(copyRequest);
@@ -250,7 +260,7 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
     private void processSession(HttpRequest request, HttpResponse response) {
         Object objSession = request.getAttribute(HttpContext.REQUEST_CREATED_SESSION);
         if (objSession instanceof Session) {
-            Session session = (Session)objSession;
+            Session session = (Session) objSession;
             try {
                 mSessionManager.add(session);
             } catch (IOException e) {

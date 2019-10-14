@@ -15,7 +15,17 @@
  */
 package com.yanzhenjie.andserver.sample.controller;
 
-import com.yanzhenjie.andserver.annotation.*;
+import com.yanzhenjie.andserver.annotation.Addition;
+import com.yanzhenjie.andserver.annotation.CookieValue;
+import com.yanzhenjie.andserver.annotation.FormPart;
+import com.yanzhenjie.andserver.annotation.GetMapping;
+import com.yanzhenjie.andserver.annotation.PathVariable;
+import com.yanzhenjie.andserver.annotation.PostMapping;
+import com.yanzhenjie.andserver.annotation.PutMapping;
+import com.yanzhenjie.andserver.annotation.RequestBody;
+import com.yanzhenjie.andserver.annotation.RequestMapping;
+import com.yanzhenjie.andserver.annotation.RequestParam;
+import com.yanzhenjie.andserver.annotation.RestController;
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
 import com.yanzhenjie.andserver.http.cookie.Cookie;
@@ -30,6 +40,7 @@ import com.yanzhenjie.andserver.util.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Zhenjie Yan on 2018/6/9.
@@ -44,13 +55,15 @@ class TestController {
     }
 
     @PutMapping(path = "/get/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    String modify(@PathVariable("userId") String userId, @RequestParam(name = "sex") String sex, @RequestParam(name = "age") int age) {
-        return String.format("The userId is %1$s, and the sex is %2$s, and the age is %3$s.", userId, sex, age);
+    String modify(@PathVariable("userId") String userId, @RequestParam(name = "sex") String sex,
+        @RequestParam(name = "age") int age) {
+        return String.format(Locale.US, "The userId is %1$s, and the sex is %2$s, and the age is %3$d.", userId, sex,
+            age);
     }
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     String login(HttpRequest request, HttpResponse response, @RequestParam(name = "account") String account,
-                 @RequestParam(name = "password") String password) {
+        @RequestParam(name = "password") String password) {
         Session session = request.getValidSession();
         session.setAttribute(LoginInterceptor.LOGIN_ATTRIBUTE, true);
 

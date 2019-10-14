@@ -71,7 +71,9 @@ public class StandardCookieProcessor implements CookieProcessor {
     @NonNull
     @Override
     public List<Cookie> parseCookieHeader(@Nullable Header[] headers) {
-        if (ObjectUtils.isEmpty(headers)) return Collections.emptyList();
+        if (ObjectUtils.isEmpty(headers)) {
+            return Collections.emptyList();
+        }
 
         List<Cookie> cookieList = new ArrayList<>();
         for (Header header : headers) {

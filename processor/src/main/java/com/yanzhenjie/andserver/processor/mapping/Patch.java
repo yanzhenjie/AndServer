@@ -43,7 +43,7 @@ public class Patch implements Mapping {
 
     @Override
     public String[] method() {
-        return new String[] {RequestMethod.PATCH.value()};
+        return new String[]{RequestMethod.PATCH.value()};
     }
 
     @Override

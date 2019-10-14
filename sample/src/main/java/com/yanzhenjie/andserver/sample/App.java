@@ -19,12 +19,12 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 
+import androidx.annotation.NonNull;
+
 import com.yanzhenjie.andserver.sample.util.FileUtils;
 import com.yanzhenjie.andserver.util.IOUtils;
 
 import java.io.File;
-
-import androidx.annotation.NonNull;
 
 /**
  * Created by Zhenjie Yan on 2018/6/9.
@@ -56,7 +56,9 @@ public class App extends Application {
     }
 
     private void initRootPath(Context context) {
-        if (mRootDir != null) return;
+        if (mRootDir != null) {
+            return;
+        }
 
         if (FileUtils.storageAvailable()) {
             mRootDir = Environment.getExternalStorageDirectory();

@@ -43,7 +43,7 @@ public class Get implements Mapping {
 
     @Override
     public String[] method() {
-        return new String[] {RequestMethod.GET.value()};
+        return new String[]{RequestMethod.GET.value()};
     }
 
     @Override

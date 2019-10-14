@@ -84,10 +84,14 @@ public class InterceptorProcessor extends BaseProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnv) {
-        if (CollectionUtils.isEmpty(set)) return false;
+        if (CollectionUtils.isEmpty(set)) {
+            return false;
+        }
 
         Map<String, List<TypeElement>> interceptorMap = findAnnotation(roundEnv);
-        if (!interceptorMap.isEmpty()) createRegister(interceptorMap);
+        if (!interceptorMap.isEmpty()) {
+            createRegister(interceptorMap);
+        }
         return true;
     }
 
@@ -97,7 +101,7 @@ public class InterceptorProcessor extends BaseProcessor {
 
         for (Element element : set) {
             if (element instanceof TypeElement) {
-                TypeElement typeElement = (TypeElement)element;
+                TypeElement typeElement = (TypeElement) element;
 
                 Set<Modifier> modifiers = typeElement.getModifiers();
                 Validate.isTrue(modifiers.contains(Modifier.PUBLIC), "The modifier public is missing on %s.",
@@ -105,7 +109,8 @@ public class InterceptorProcessor extends BaseProcessor {
 
                 List<? extends TypeMirror> interfaces = typeElement.getInterfaces();
                 if (CollectionUtils.isEmpty(interfaces)) {
-                    mLog.w(String.format("The annotation Interceptor must be used in a subclass of [HandlerInterceptor] on %s.",
+                    mLog.w(String.format(
+                        "The annotation Interceptor must be used in a subclass of [HandlerInterceptor] on %s.",
                         typeElement.getQualifiedName()));
                     continue;
                 }
@@ -120,7 +125,8 @@ public class InterceptorProcessor extends BaseProcessor {
                         elementList.add(typeElement);
                         break;
                     } else {
-                        mLog.w(String.format("The annotation Interceptor must be used in a subclass of [HandlerInterceptor] on %s.",
+                        mLog.w(String.format(
+                            "The annotation Interceptor must be used in a subclass of [HandlerInterceptor] on %s.",
                             typeElement.getQualifiedName()));
                     }
                 }

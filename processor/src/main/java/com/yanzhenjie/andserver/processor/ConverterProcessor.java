@@ -82,10 +82,14 @@ public class ConverterProcessor extends BaseProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnv) {
-        if (CollectionUtils.isEmpty(set)) return false;
+        if (CollectionUtils.isEmpty(set)) {
+            return false;
+        }
 
         Map<String, TypeElement> converterMap = findAnnotation(roundEnv);
-        if (!converterMap.isEmpty()) createRegister(converterMap);
+        if (!converterMap.isEmpty()) {
+            createRegister(converterMap);
+        }
         return true;
     }
 
@@ -95,14 +99,15 @@ public class ConverterProcessor extends BaseProcessor {
 
         for (Element element : set) {
             if (element instanceof TypeElement) {
-                TypeElement typeElement = (TypeElement)element;
+                TypeElement typeElement = (TypeElement) element;
                 Set<Modifier> modifiers = typeElement.getModifiers();
                 Validate.isTrue(modifiers.contains(Modifier.PUBLIC), "The modifier public is missing on %s.",
                     typeElement.getQualifiedName());
 
                 List<? extends TypeMirror> interfaces = typeElement.getInterfaces();
                 if (CollectionUtils.isEmpty(interfaces)) {
-                    mLog.w(String.format("The annotation Converter must be used in a subclass of [MessageConverter] on %s.",
+                    mLog.w(String.format(
+                        "The annotation Converter must be used in a subclass of [MessageConverter] on %s.",
                         typeElement.getQualifiedName()));
                     continue;
                 }
@@ -111,7 +116,8 @@ public class ConverterProcessor extends BaseProcessor {
                         converterMap.put(getGroup(typeElement), typeElement);
                         break;
                     } else {
-                        mLog.w(String.format("The annotation Converter must be used in a subclass of [MessageConverter] on %s.",
+                        mLog.w(String.format(
+                            "The annotation Converter must be used in a subclass of [MessageConverter] on %s.",
                             typeElement.getQualifiedName()));
                     }
                 }

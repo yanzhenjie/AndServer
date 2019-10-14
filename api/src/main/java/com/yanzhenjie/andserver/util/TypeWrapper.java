@@ -27,7 +27,7 @@ public abstract class TypeWrapper<T> {
 
     public TypeWrapper() {
         Type superClass = getClass().getGenericSuperclass();
-        mType = ((ParameterizedType)superClass).getActualTypeArguments()[0];
+        mType = ((ParameterizedType) superClass).getActualTypeArguments()[0];
     }
 
     public Type getType() {

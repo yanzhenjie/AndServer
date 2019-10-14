@@ -98,14 +98,16 @@ public interface StatusCode {
     int SC_NOT_MODIFIED = 304;
 
     /**
-     * Status code (305) indicating that the requested resource <em>MUST</em> be accessed through the proxy given by the
+     * Status code (305) indicating that the requested resource <em>MUST</em> be accessed through the proxy given by
+     * the
      * <code><em>Location</em></code> field.
      */
     int SC_USE_PROXY = 305;
 
     /**
      * Status code (307) indicating that the requested resource resides temporarily under a different URI. The temporary
-     * URI <em>SHOULD</em> be given by the <code><em>Location</em></code> field in the response.
+     * URI
+     * <em>SHOULD</em> be given by the <code><em>Location</em></code> field in the response.
      */
     int SC_TEMPORARY_REDIRECT = 307;
 

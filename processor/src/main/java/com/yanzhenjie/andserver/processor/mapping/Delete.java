@@ -43,7 +43,7 @@ public class Delete implements Mapping {
 
     @Override
     public String[] method() {
-        return new String[] {RequestMethod.DELETE.value()};
+        return new String[]{RequestMethod.DELETE.value()};
     }
 
     @Override

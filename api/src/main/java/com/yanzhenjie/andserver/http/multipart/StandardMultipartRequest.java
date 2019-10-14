@@ -95,7 +95,9 @@ public class StandardMultipartRequest extends RequestWrapper implements Multipar
     @NonNull
     @Override
     public List<String> getParameterNames() {
-        if (mMultipartParameters.isEmpty()) return mRequest.getParameterNames();
+        if (mMultipartParameters.isEmpty()) {
+            return mRequest.getParameterNames();
+        }
 
         List<String> paramNames = new LinkedList<>();
         List<String> names = mRequest.getParameterNames();

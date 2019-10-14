@@ -16,7 +16,9 @@
 package com.yanzhenjie.andserver.framework;
 
 import android.util.Log;
+
 import androidx.annotation.NonNull;
+
 import com.yanzhenjie.andserver.AndServer;
 import com.yanzhenjie.andserver.framework.handler.RequestHandler;
 import com.yanzhenjie.andserver.http.HttpMethod;
@@ -33,7 +35,7 @@ public class ModifiedInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean onIntercept(@NonNull HttpRequest request, @NonNull HttpResponse response,
-                               @NonNull RequestHandler handler) {
+        @NonNull RequestHandler handler) {
         // Process cache header, if supported by the handler.
         HttpMethod method = request.getMethod();
         if (method == HttpMethod.GET || method == HttpMethod.HEAD) {

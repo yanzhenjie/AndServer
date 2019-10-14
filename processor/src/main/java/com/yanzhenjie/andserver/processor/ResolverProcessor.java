@@ -83,10 +83,14 @@ public class ResolverProcessor extends BaseProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnv) {
-        if (CollectionUtils.isEmpty(set)) return false;
+        if (CollectionUtils.isEmpty(set)) {
+            return false;
+        }
 
         Map<String, TypeElement> resolverMap = findAnnotation(roundEnv);
-        if (!resolverMap.isEmpty()) createRegister(resolverMap);
+        if (!resolverMap.isEmpty()) {
+            createRegister(resolverMap);
+        }
         return true;
     }
 
@@ -96,7 +100,7 @@ public class ResolverProcessor extends BaseProcessor {
 
         for (Element element : set) {
             if (element instanceof TypeElement) {
-                TypeElement typeElement = (TypeElement)element;
+                TypeElement typeElement = (TypeElement) element;
 
                 Set<Modifier> modifiers = typeElement.getModifiers();
                 Validate.isTrue(modifiers.contains(Modifier.PUBLIC), "The modifier public is missing on %s.",
@@ -104,7 +108,8 @@ public class ResolverProcessor extends BaseProcessor {
 
                 List<? extends TypeMirror> interfaces = typeElement.getInterfaces();
                 if (CollectionUtils.isEmpty(interfaces)) {
-                    mLog.w(String.format("The annotation Resolver must be used in a subclass of [ExceptionResolver] on %s.",
+                    mLog.w(String.format(
+                        "The annotation Resolver must be used in a subclass of [ExceptionResolver] on %s.",
                         typeElement.getQualifiedName()));
                     continue;
                 }
@@ -113,7 +118,8 @@ public class ResolverProcessor extends BaseProcessor {
                         resolverMap.put(getGroup(typeElement), typeElement);
                         break;
                     } else {
-                        mLog.w(String.format("The annotation Resolver must be used in a subclass of [ExceptionResolver] on %s.",
+                        mLog.w(String.format(
+                            "The annotation Resolver must be used in a subclass of [ExceptionResolver] on %s.",
                             typeElement.getQualifiedName()));
                     }
                 }

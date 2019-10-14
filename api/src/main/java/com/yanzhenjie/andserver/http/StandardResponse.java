@@ -105,7 +105,9 @@ public class StandardResponse implements HttpResponse {
     @Override
     public List<String> getHeaders(@NonNull String name) {
         Header[] headers = mResponse.getHeaders(name);
-        if (ObjectUtils.isEmpty(headers)) return Collections.emptyList();
+        if (ObjectUtils.isEmpty(headers)) {
+            return Collections.emptyList();
+        }
 
         List<String> list = new ArrayList<>();
         for (Header header : headers) {
@@ -118,7 +120,9 @@ public class StandardResponse implements HttpResponse {
     @Override
     public List<String> getHeaderNames() {
         Header[] headers = mResponse.getAllHeaders();
-        if (ObjectUtils.isEmpty(headers)) return Collections.emptyList();
+        if (ObjectUtils.isEmpty(headers)) {
+            return Collections.emptyList();
+        }
 
         List<String> list = new ArrayList<>();
         for (Header header : headers) {
@@ -169,7 +173,9 @@ public class StandardResponse implements HttpResponse {
         @Override
         public Header getContentType() {
             MediaType mimeType = mBody.contentType();
-            if (mimeType == null) return null;
+            if (mimeType == null) {
+                return null;
+            }
             return new BasicHeader(CONTENT_TYPE, mimeType.toString());
         }
 

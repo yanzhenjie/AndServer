@@ -17,9 +17,9 @@ package com.yanzhenjie.andserver.framework.config;
 
 import android.content.Context;
 
-import com.yanzhenjie.andserver.framework.website.Website;
-
 import androidx.annotation.WorkerThread;
+
+import com.yanzhenjie.andserver.framework.website.Website;
 
 /**
  * Created by Zhenjie Yan on 2019-06-28.
@@ -47,13 +47,11 @@ public interface WebConfig {
 
         /**
          *
-         * @param multipart
          */
         void setMultipart(Multipart multipart);
 
         /**
          *
-         * @param website
          */
         void addWebsite(Website website);
     }

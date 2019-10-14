@@ -93,7 +93,9 @@ public class ComponentRegister {
 
     private void registerClass(Register register, String group, String className) throws Exception {
         Class clazz = Class.forName(className);
-        if (clazz.isInterface()) return;
+        if (clazz.isInterface()) {
+            return;
+        }
 
         Class<?>[] interfaces = clazz.getInterfaces();
         for (Class<?> anInterface : interfaces) {
@@ -101,7 +103,7 @@ public class ComponentRegister {
                 Object obj = clazz.newInstance();
                 if (obj instanceof OnRegister) {
                     Log.i(AndServer.TAG, String.format("Loading %s.", className));
-                    OnRegister onRegister = (OnRegister)obj;
+                    OnRegister onRegister = (OnRegister) obj;
                     onRegister.onRegister(mContext, group, register);
                 }
                 break;
@@ -185,7 +187,7 @@ public class ComponentRegister {
                 // Reflect instant run sdk to find where is the dex file.
                 Class pathsByInstantRun = Class.forName("com.android.tools.fd.runtime.Paths");
                 Method getDexFileDirectory = pathsByInstantRun.getMethod("getDexFileDirectory", String.class);
-                String dexDirectory = (String)getDexFileDirectory.invoke(null, appInfo.packageName);
+                String dexDirectory = (String) getDexFileDirectory.invoke(null, appInfo.packageName);
 
                 File dexFolder = new File(dexDirectory);
                 if (dexFolder.exists() && dexFolder.isDirectory()) {

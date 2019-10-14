@@ -50,7 +50,7 @@ public class BodyContext implements UploadContext {
     @Override
     public int getContentLength() {
         long contentLength = contentLength();
-        return contentLength > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int)contentLength;
+        return contentLength > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) contentLength;
     }
 
     @Override

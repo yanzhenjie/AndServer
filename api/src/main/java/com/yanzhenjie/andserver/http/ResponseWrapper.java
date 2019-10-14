@@ -15,12 +15,12 @@
  */
 package com.yanzhenjie.andserver.http;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.yanzhenjie.andserver.http.cookie.Cookie;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Created by Zhenjie Yan on 2018/9/6.

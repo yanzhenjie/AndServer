@@ -81,9 +81,11 @@ public class Path implements Patterns {
 
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof Segment)) return false;
+            if (!(obj instanceof Segment)) {
+                return false;
+            }
 
-            return value.equals(((Segment)obj).value);
+            return value.equals(((Segment) obj).value);
         }
 
         @Override
@@ -96,8 +98,10 @@ public class Path implements Patterns {
     public static List<Segment> pathToList(@NonNull String path) {
         List<Segment> segmentList = new LinkedList<>();
         if (!StringUtils.isEmpty(path)) {
-            while (path.startsWith("/")) path = path.substring(1);
-            while (path.endsWith("/")) path = path.substring(0, path.length() - 1);
+            while (path.startsWith("/"))
+                path = path.substring(1);
+            while (path.endsWith("/"))
+                path = path.substring(0, path.length() - 1);
             String[] pathArray = path.split("/");
             for (String segmentText : pathArray) {
                 Segment segment = new Segment(segmentText, segmentText.contains("{"));
@@ -120,12 +124,16 @@ public class Path implements Patterns {
     }
 
     public static boolean matches(@NonNull String path1, @NonNull String path2) {
-        if (path1.equals(path2)) return true;
+        if (path1.equals(path2)) {
+            return true;
+        }
 
         List<Segment> segments1 = pathToList(path1);
         List<Segment> segments2 = pathToList(path2);
 
-        if (segments1.size() != segments2.size()) return false;
+        if (segments1.size() != segments2.size()) {
+            return false;
+        }
 
         boolean matches = true;
         for (int i = 0; i < segments1.size(); i++) {

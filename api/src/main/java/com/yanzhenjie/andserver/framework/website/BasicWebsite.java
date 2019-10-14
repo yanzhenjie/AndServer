@@ -75,7 +75,9 @@ public abstract class BasicWebsite extends Website {
      * @return rule result.
      */
     protected String addStartSlash(@NonNull String target) {
-        if (!target.startsWith(File.separator)) target = File.separator + target;
+        if (!target.startsWith(File.separator)) {
+            target = File.separator + target;
+        }
         return target;
     }
 
@@ -87,7 +89,9 @@ public abstract class BasicWebsite extends Website {
      * @return rule result.
      */
     protected String addEndSlash(@NonNull String target) {
-        if (!target.endsWith(File.separator)) target = target + File.separator;
+        if (!target.endsWith(File.separator)) {
+            target = target + File.separator;
+        }
         return target;
     }
 
@@ -99,7 +103,8 @@ public abstract class BasicWebsite extends Website {
      * @return rule result.
      */
     protected String trimStartSlash(@NonNull String target) {
-        while (target.startsWith(File.separator)) target = target.substring(1);
+        while (target.startsWith(File.separator))
+            target = target.substring(1);
         return target;
     }
 
@@ -111,7 +116,8 @@ public abstract class BasicWebsite extends Website {
      * @return rule result.
      */
     protected String trimEndSlash(@NonNull String target) {
-        while (target.endsWith(File.separator)) target = target.substring(0, target.length() - 1);
+        while (target.endsWith(File.separator))
+            target = target.substring(0, target.length() - 1);
         return target;
     }
 

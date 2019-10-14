@@ -17,6 +17,8 @@ package com.yanzhenjie.andserver;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.yanzhenjie.andserver.util.Executors;
 
 import org.apache.commons.io.Charsets;
@@ -33,8 +35,6 @@ import java.util.concurrent.TimeUnit;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLServerSocket;
-
-import androidx.annotation.NonNull;
 
 /**
  * Created by Zhenjie Yan on 2018/9/10.
@@ -81,7 +81,9 @@ public class Server {
      * Start the server.
      */
     public void startup() {
-        if (isRunning) return;
+        if (isRunning) {
+            return;
+        }
 
         Executors.getInstance().execute(new Runnable() {
             @Override
@@ -103,7 +105,7 @@ public class Server {
                     .setListenerPort(mPort)
                     .setSslContext(mSSLContext)
                     .setSslSetupHandler(new SSLInitializerWrapper(mSSLInitializer))
-                    .setServerInfo("AndServer/2.0.0")
+                    .setServerInfo(String.format("AndServer/%1$s", BuildConfig.VERSION_NAME))
                     .registerHandler("*", handler)
                     .setExceptionLogger(ExceptionLogger.NO_OP)
                     .create();
@@ -114,7 +116,9 @@ public class Server {
                     Executors.getInstance().post(new Runnable() {
                         @Override
                         public void run() {
-                            if (mListener != null) mListener.onStarted();
+                            if (mListener != null) {
+                                mListener.onStarted();
+                            }
                         }
                     });
                     Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -127,7 +131,9 @@ public class Server {
                     Executors.getInstance().post(new Runnable() {
                         @Override
                         public void run() {
-                            if (mListener != null) mListener.onException(e);
+                            if (mListener != null) {
+                                mListener.onException(e);
+                            }
                         }
                     });
                 }
@@ -139,7 +145,9 @@ public class Server {
      * Quit the server.
      */
     public void shutdown() {
-        if (!isRunning) return;
+        if (!isRunning) {
+            return;
+        }
 
         Executors.getInstance().execute(new Runnable() {
             @Override
@@ -150,7 +158,9 @@ public class Server {
                     Executors.getInstance().post(new Runnable() {
                         @Override
                         public void run() {
-                            if (mListener != null) mListener.onStopped();
+                            if (mListener != null) {
+                                mListener.onStopped();
+                            }
                         }
                     });
                 }
@@ -177,7 +187,9 @@ public class Server {
      * @throws IllegalStateException if the server is not started, an IllegalStateException is thrown.
      */
     public InetAddress getInetAddress() {
-        if (isRunning) return mHttpServer.getInetAddress();
+        if (isRunning) {
+            return mHttpServer.getInetAddress();
+        }
         throw new IllegalStateException("The server has not been started yet.");
     }
 
@@ -218,7 +230,7 @@ public class Server {
          */
         public Builder timeout(int timeout, TimeUnit timeUnit) {
             long timeoutMs = timeUnit.toMillis(timeout);
-            this.timeout = (int)Math.min(timeoutMs, Integer.MAX_VALUE);
+            this.timeout = (int) Math.min(timeoutMs, Integer.MAX_VALUE);
             return this;
         }
 

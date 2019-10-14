@@ -52,7 +52,9 @@ public class StringBody implements ResponseBody {
         }
 
         Charset charset = mMediaType.getCharset();
-        if (charset == null) charset = Charsets.UTF_8;
+        if (charset == null) {
+            charset = Charsets.UTF_8;
+        }
         this.mBody = body.getBytes(charset);
     }
 

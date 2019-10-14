@@ -52,7 +52,9 @@ public class Merge implements Mapping {
 
     @Override
     public String[] path() {
-        if (mPaths != null) return mPaths;
+        if (mPaths != null) {
+            return mPaths;
+        }
 
         String[] pPaths = mParent.path();
         if (ArrayUtils.isEmpty(pPaths)) {
@@ -82,20 +84,24 @@ public class Merge implements Mapping {
 
     @Override
     public String[] method() {
-        if (mMethods != null) return mMethods;
+        if (mMethods != null) {
+            return mMethods;
+        }
 
         String[] pMethods = mParent.method();
         String[] cMethods = mChild.method();
         mMethods = mergeRepeat(pMethods, cMethods, true);
         if (ArrayUtils.isEmpty(mMethods)) {
-            mMethods = new String[] {RequestMethod.GET.value()};
+            mMethods = new String[]{RequestMethod.GET.value()};
         }
         return mMethods;
     }
 
     @Override
     public String[] params() {
-        if (mParams != null) return mParams;
+        if (mParams != null) {
+            return mParams;
+        }
 
         String[] pParams = mParent.params();
         String[] cParams = mChild.params();
@@ -105,7 +111,9 @@ public class Merge implements Mapping {
 
     @Override
     public String[] headers() {
-        if (mHeaders != null) return mHeaders;
+        if (mHeaders != null) {
+            return mHeaders;
+        }
 
         String[] pHeaders = mParent.headers();
         String[] cHeaders = mChild.headers();
@@ -115,7 +123,9 @@ public class Merge implements Mapping {
 
     @Override
     public String[] consumes() {
-        if (mConsumes != null) return mConsumes;
+        if (mConsumes != null) {
+            return mConsumes;
+        }
 
         String[] pConsumes = mParent.consumes();
         String[] cConsumes = mChild.consumes();
@@ -125,7 +135,9 @@ public class Merge implements Mapping {
 
     @Override
     public String[] produces() {
-        if (mProduces != null) return mProduces;
+        if (mProduces != null) {
+            return mProduces;
+        }
 
         String[] pProduces = mParent.produces();
         String[] cProduces = mChild.produces();

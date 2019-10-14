@@ -527,10 +527,13 @@ public class MediaType extends MimeType implements Serializable {
      * {@linkplain #getType() types}, then they are considered equal and remain their current order.</li> <li>if either
      * media type has a {@linkplain #isWildcardSubtype() wildcard subtype}, then the media type without the wildcard is
      * sorted before the other.</li> <li>if the two media types have different {@linkplain #getSubtype() subtypes}, then
-     * they are considered equal and remain their current order.</li> <li>if the two media types have different
-     * {@linkplain #getQualityValue() quality value}, then the media type with the highest quality value is ordered
-     * before the other.</li> <li>if the two media types have a different amount of {@linkplain #getParameter(String)
-     * parameters}, then the media type with the most parameters is ordered before the other.</li> </ol> <p>For example:
+     * they are considered equal and remain their current order.</li>
+     * <li>if the two media types have different {@linkplain #getQualityValue() quality value}, then the media type
+     * with
+     * the highest quality value is ordered before the other.</li> <li>if the two media types have a different amount of
+     * {@linkplain #getParameter(String) parameters}, then the media type with the most parameters is ordered before the
+     * other.</li>
+     * </ol> <p>For example:
      * <blockquote>audio/basic &lt; audio/* &lt; *&#047;*</blockquote> <blockquote>audio/* &lt; audio/*;q=0.7;
      * audio/*;q=0.3</blockquote> <blockquote>audio/basic;level=1 &lt; audio/basic</blockquote> <blockquote>audio/basic
      * == text/html</blockquote> <blockquote>audio/basic == audio/wave</blockquote>
@@ -554,11 +557,13 @@ public class MediaType extends MimeType implements Serializable {
      * value}, then the media type with the highest quality value is ordered before the other.</li> <li>if either media
      * type has a {@linkplain #isWildcardType() wildcard type}, then the media type without the wildcard is ordered
      * before the other.</li> <li>if the two media types have different {@linkplain #getType() types}, then they are
-     * considered equal and remain their current order.</li> <li>if either media type has a {@linkplain
-     * #isWildcardSubtype() wildcard subtype}, then the media type without the wildcard is sorted before the other.</li>
-     * <li>if the two media types have different {@linkplain #getSubtype() subtypes}, then they are considered equal and
-     * remain their current order.</li> <li>if the two media types have a different amount of {@linkplain
-     * #getParameter(String) parameters}, then the media type with the most parameters is ordered before the other.</li>
+     * considered equal and remain their current order.</li>
+     * <li>if either media type has a {@linkplain #isWildcardSubtype() wildcard subtype}, then the media type without
+     * the wildcard is sorted before the other.</li>
+     * <li>if the two media types have different {@linkplain #getSubtype() subtypes}, then they are considered equal
+     * and remain their current order.</li> <li>if the two media types have a different amount of {@linkplain
+     * #getParameter(String) parameters}, then the media type with the most parameters is ordered before the
+     * other.</li>
      * </ol>
      *
      * @param mediaTypes the list of media types to be sorted.

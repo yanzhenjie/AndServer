@@ -27,7 +27,7 @@ import java.io.OutputStream;
  * Created by Zhenjie Yan on 2018/8/3.
  */
 public interface ResponseBody {
-    
+
     /**
      * Get the content-length of the message body, if the length is unknown, return a negative value.
      *

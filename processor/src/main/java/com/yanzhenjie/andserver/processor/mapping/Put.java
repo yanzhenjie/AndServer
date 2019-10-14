@@ -43,7 +43,7 @@ public class Put implements Mapping {
 
     @Override
     public String[] method() {
-        return new String[] {RequestMethod.PUT.value()};
+        return new String[]{RequestMethod.PUT.value()};
     }
 
     @Override

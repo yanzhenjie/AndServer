@@ -20,7 +20,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 
-import com.yanzhenjie.andserver.AndServer;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.yanzhenjie.andserver.error.NotFoundException;
 import com.yanzhenjie.andserver.framework.body.StreamBody;
 import com.yanzhenjie.andserver.http.HttpRequest;
@@ -39,9 +41,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Created by Zhenjie Yan on 2018/9/7.
@@ -240,7 +239,9 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
                         pathList.add(realPath);
                     } else {
                         List<String> childList = scanFile(realPath);
-                        if (childList.size() > 0) pathList.addAll(childList);
+                        if (childList.size() > 0) {
+                            pathList.addAll(childList);
+                        }
                     }
                 }
             }

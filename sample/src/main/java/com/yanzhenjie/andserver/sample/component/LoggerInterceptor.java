@@ -15,6 +15,8 @@
  */
 package com.yanzhenjie.andserver.sample.component;
 
+import androidx.annotation.NonNull;
+
 import com.yanzhenjie.andserver.annotation.Interceptor;
 import com.yanzhenjie.andserver.framework.HandlerInterceptor;
 import com.yanzhenjie.andserver.framework.handler.RequestHandler;
@@ -24,8 +26,6 @@ import com.yanzhenjie.andserver.http.HttpResponse;
 import com.yanzhenjie.andserver.sample.util.JsonUtils;
 import com.yanzhenjie.andserver.sample.util.Logger;
 import com.yanzhenjie.andserver.util.MultiValueMap;
-
-import androidx.annotation.NonNull;
 
 /**
  * Created by Zhenjie Yan on 2018/9/11.

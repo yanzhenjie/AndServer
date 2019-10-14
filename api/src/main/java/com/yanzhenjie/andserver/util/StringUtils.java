@@ -161,7 +161,7 @@ public abstract class StringUtils {
      * @return true if the {@code String} is not empty and contains at least 1 whitespace character.
      */
     public static boolean containsWhitespace(String str) {
-        return containsWhitespace((CharSequence)str);
+        return containsWhitespace((CharSequence) str);
     }
 
     /**
@@ -448,7 +448,7 @@ public abstract class StringUtils {
      * @return the quoted {@code String} (e.g. "'myString'"), or the input object as-is if not a {@code String}.
      */
     public static Object quoteIfString(Object obj) {
-        return (obj instanceof String ? quote((String)obj) : obj);
+        return (obj instanceof String ? quote((String) obj) : obj);
     }
 
     /**
@@ -540,13 +540,19 @@ public abstract class StringUtils {
      * @return the extracted filename extension, or null if none.
      */
     public static String getFilenameExtension(String path) {
-        if (path == null) return null;
+        if (path == null) {
+            return null;
+        }
 
         int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
-        if (extIndex == -1) return null;
+        if (extIndex == -1) {
+            return null;
+        }
 
         int folderIndex = path.lastIndexOf(FOLDER_SEPARATOR);
-        if (folderIndex > extIndex) return null;
+        if (folderIndex > extIndex) {
+            return null;
+        }
 
         return path.substring(extIndex + 1);
     }
@@ -559,7 +565,9 @@ public abstract class StringUtils {
      * @return the path with stripped filename extension.
      */
     public static String stripFilenameExtension(String path) {
-        if (path == null) return null;
+        if (path == null) {
+            return null;
+        }
 
         int extIndex = path.lastIndexOf(EXTENSION_SEPARATOR);
         if (extIndex == -1) {
@@ -760,7 +768,7 @@ public abstract class StringUtils {
      */
     public static String[] addStringToArray(String[] array, String str) {
         if (ObjectUtils.isEmpty(array)) {
-            return new String[] {str};
+            return new String[]{str};
         }
 
         String[] newArr = new String[array.length + 1];
@@ -931,7 +939,7 @@ public abstract class StringUtils {
 
         String beforeDelimiter = toSplit.substring(0, offset);
         String afterDelimiter = toSplit.substring(offset + delimiter.length());
-        return new String[] {beforeDelimiter, afterDelimiter};
+        return new String[]{beforeDelimiter, afterDelimiter};
     }
 
     /**
@@ -988,9 +996,11 @@ public abstract class StringUtils {
 
     /**
      * Tokenize the given {@code String} into a {@code String} array via a {@link StringTokenizer}. <p>Trims tokens and
-     * omits empty tokens. <p>The given {@code delimiters} string can consist of any number of delimiter characters.
-     * Each of those characters can be used to separate tokens. StandardCookieProcessor delimiter is always a single
-     * character; for multi-character delimiters, consider using {@link #delimitedListToStringArray}.
+     * omits empty tokens.
+     * <p>The given {@code delimiters} string can consist of any number of delimiter characters. Each of those
+     * characters
+     * can be used to separate tokens. StandardCookieProcessor delimiter is always a single character; for
+     * multi-character delimiters, consider using {@link #delimitedListToStringArray}.
      *
      * @param str the {@code String} to tokenize.
      * @param delimiters the delimiter characters, assembled as a {@code String} (each of the characters is
@@ -1085,7 +1095,7 @@ public abstract class StringUtils {
             return new String[0];
         }
         if (delimiter == null) {
-            return new String[] {str};
+            return new String[]{str};
         }
 
         List<String> result = new ArrayList<String>();

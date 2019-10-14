@@ -16,12 +16,28 @@
 package com.yanzhenjie.andserver.processor;
 
 import com.google.auto.service.AutoService;
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
 import com.yanzhenjie.andserver.annotation.Website;
 import com.yanzhenjie.andserver.processor.util.Constants;
 import com.yanzhenjie.andserver.processor.util.Logger;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.Validate;
+
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -33,9 +49,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.*;
 
 /**
  * Created by Zhenjie Yan on 2018/9/17.
@@ -79,7 +92,9 @@ public class WebsiteProcessor extends BaseProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnv) {
-        if (CollectionUtils.isEmpty(set)) return false;
+        if (CollectionUtils.isEmpty(set)) {
+            return false;
+        }
 
         StringBuilder builder = new StringBuilder();
         builder.append("The annotation [@Website] has been deprecated, please use [@Config] instead.")
@@ -109,7 +124,9 @@ public class WebsiteProcessor extends BaseProcessor {
         mLog.w(builder.toString());
 
         Map<String, List<TypeElement>> websiteMap = findAnnotation(roundEnv);
-        if (!websiteMap.isEmpty()) createRegister(websiteMap);
+        if (!websiteMap.isEmpty()) {
+            createRegister(websiteMap);
+        }
         return true;
     }
 

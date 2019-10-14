@@ -48,9 +48,9 @@ public interface HttpResponse extends StatusCode, HttpHeaders {
     int getStatus();
 
     /**
-     * Sets a response header with the given name and value. If the header had already been set, the new value
-     * overwrites the previous one. The {@link #containsHeader(String)} method can be used to test for the presence of a
-     * header before setting its value.
+     * Sets a response header with the given name and value. If the header had already been set, the new value overwrites
+     * the previous one. The {@link #containsHeader(String)} method can be used to test for the presence of a header before
+     * setting its value.
      *
      * @see #containsHeader(String)
      * @see #addHeader(String, String)
@@ -58,8 +58,7 @@ public interface HttpResponse extends StatusCode, HttpHeaders {
     void setHeader(@NonNull String name, @NonNull String value);
 
     /**
-     * Adds a response header with the given name and value. This method allows response headers to have multiple
-     * values.
+     * Adds a response header with the given name and value. This method allows response headers to have multiple values.
      *
      * @see #setHeader(String, String)
      */
@@ -73,15 +72,15 @@ public interface HttpResponse extends StatusCode, HttpHeaders {
      *
      * @param name the name of the response header.
      *
-     * @return the value of the response header with the given name, or {@code null} if no header with the given name
-     *     has been set on this response.
+     * @return the value of the response header with the given name, or {@code null} if no header with the given name has
+     *     been set on this response.
      */
     @Nullable
     String getHeader(@NonNull String name);
 
     /**
-     * Sets a response header with the given name and date-value. The date is specified in terms of milliseconds since
-     * the epoch.
+     * Sets a response header with the given name and date-value. The date is specified in terms of milliseconds since the
+     * epoch.
      *
      * <p>If the header had already been set, the new value overwrites the previous one. The {@link
      * #containsHeader(String)} method can be used to test for the presence of a header before setting its value.
@@ -92,8 +91,8 @@ public interface HttpResponse extends StatusCode, HttpHeaders {
     void setDateHeader(@NonNull String name, long date);
 
     /**
-     * Adds a response header with the given name and date-value. The date is specified in terms of milliseconds since
-     * the epoch. This method allows response headers to have multiple values.
+     * Adds a response header with the given name and date-value. The date is specified in terms of milliseconds since the
+     * epoch. This method allows response headers to have multiple values.
      *
      * @see #setDateHeader(String, long)
      */
@@ -110,8 +109,8 @@ public interface HttpResponse extends StatusCode, HttpHeaders {
     void setIntHeader(@NonNull String name, int value);
 
     /**
-     * Adds a response header with the given name and integer value. This method allows response headers to have
-     * multiple values.
+     * Adds a response header with the given name and integer value. This method allows response headers to have multiple
+     * values.
      *
      * @see #setIntHeader(String, int)
      */
@@ -148,9 +147,9 @@ public interface HttpResponse extends StatusCode, HttpHeaders {
     void addCookie(@NonNull Cookie cookie);
 
     /**
-     * Sends a temporary redirect response to the client using the specified redirect location URL and clears the
-     * buffer. The buffer will be replaced with the data set by this method. Calling this method sets the status code to
-     * {@link StatusCode#SC_FOUND}.
+     * Sends a temporary redirect response to the client using the specified redirect location URL and clears the buffer.
+     * The buffer will be replaced with the data set by this method. Calling this method sets the status code to {@link
+     * StatusCode#SC_FOUND}.
      */
     void sendRedirect(@NonNull String location);
 

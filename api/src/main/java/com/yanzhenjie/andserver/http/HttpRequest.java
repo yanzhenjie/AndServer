@@ -42,8 +42,8 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
     HttpMethod getMethod();
 
     /**
-     * Returns the part of this request's URL from the protocol name up to the query string in the first line of the
-     * HTTP request. The web container does not decode this String.
+     * Returns the part of this request's URL from the protocol name up to the query string in the first line of the HTTP
+     * request. The web container does not decode this String.
      *
      * <p>E.g. <table> <tr><th>First line of HTTP request</th><th>Returned Value</th> <tr><td>POST /some/path.html
      * HTTP/1.1</td><td>/some/path.html</td></tr> <tr><td>GET http://foo.bar/a.html HTTP/1.0</td><td>/a.html<td></tr>
@@ -59,8 +59,8 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
     String getPath();
 
     /**
-     * Returns an {@link List} of {@code String} objects containing the names of the query parameters contained in url
-     * of this request,  or empty {@link List} if there are no query parameters.
+     * Returns an {@link List} of {@code String} objects containing the names of the query parameters contained in url of
+     * this request,  or empty {@link List} if there are no query parameters.
      *
      * @return an {@link List} of {@code String}.
      */
@@ -97,26 +97,25 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
     List<String> getQueries(@NonNull String name);
 
     /**
-     * Returns {@link MultiValueMap} of the query parameters of this request, or empty {@link MultiValueMap} if there
-     * are no query parameters.
+     * Returns {@link MultiValueMap} of the query parameters of this request, or empty {@link MultiValueMap} if there are no
+     * query parameters.
      *
-     * @return a {@link MultiValueMap} containing query parameter names as keys and query parameter values as map
-     *     values.
+     * @return a {@link MultiValueMap} containing query parameter names as keys and query parameter values as map values.
      */
     @NonNull
     MultiValueMap<String, String> getQuery();
 
     /**
-     * Returns an {@link List} of all the header names this request contains, or empty {@link List} if the request has
-     * no headers.
+     * Returns an {@link List} of all the header names this request contains, or empty {@link List} if the request has no
+     * headers.
      */
     @NonNull
     List<String> getHeaderNames();
 
     /**
-     * Returns the value of the specified request header as a {@code String}. If the request did not include a header of
-     * the specified name, this method returns {@code null}. If there are multiple headers with the same name, this
-     * method returns the first head in the request.
+     * Returns the value of the specified request header as a {@code String}. If the request did not include a header of the
+     * specified name, this method returns {@code null}. If there are multiple headers with the same name, this method
+     * returns the first head in the request.
      *
      * @param name a {@code String} specifying the header name.
      *
@@ -139,8 +138,8 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
     List<String> getHeaders(@NonNull String name);
 
     /**
-     * Returns the value of the specified request header as a {@code long} value that represents a {@link Date} object.
-     * Use this method with headers that contain dates, e.g. {@code If-Modified-Since}.
+     * Returns the value of the specified request header as a {@code long} value that represents a {@link Date} object. Use
+     * this method with headers that contain dates, e.g. {@code If-Modified-Since}.
      *
      * <p>The date is returned as the number of milliseconds since January 1, 1970 GMT. The header name is case
      * insensitive.
@@ -154,8 +153,8 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
 
     /**
      * Returns the value of the specified request header as an {@code int}. If the request does not have a header of the
-     * specified name, this method returns -1. If the header cannot be converted to an integer, this method throws a
-     * {@link IllegalStateException}.
+     * specified name, this method returns -1. If the header cannot be converted to an integer, this method throws a {@link
+     * IllegalStateException}.
      *
      * @param name a {@code String} specifying the name of a request header.
      */
@@ -188,10 +187,10 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
     Locale getAcceptLanguage();
 
     /**
-     * Returns a {@link List} of {@link Locale} objects indicating, in decreasing order starting with the preferred
-     * {@link Locale}, the locales that are acceptable to the client based on the {@code Accept-Language} header. If the
-     * client request doesn't provide an {@code Accept-Language} header, this method returns a {@link List} containing
-     * one {@link Locale}, the default locale for the server.
+     * Returns a {@link List} of {@link Locale} objects indicating, in decreasing order starting with the preferred {@link
+     * Locale}, the locales that are acceptable to the client based on the {@code Accept-Language} header. If the client
+     * request doesn't provide an {@code Accept-Language} header, this method returns a {@link List} containing one {@link
+     * Locale}, the default locale for the server.
      *
      * @return an {@link List} of preferred {@link Locale} objects for the client.
      */
@@ -219,15 +218,15 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
     Cookie getCookie(@NonNull String name);
 
     /**
-     * Returns an {@link List} containing all of the {@link Cookie} objects the client sent with this request. This
-     * method returns {@code null} if no cookies were sent.
+     * Returns an {@link List} containing all of the {@link Cookie} objects the client sent with this request. This method
+     * returns {@code null} if no cookies were sent.
      */
     @NonNull
     List<Cookie> getCookies();
 
     /**
-     * Returns the length, in bytes, of the request body and made available by the input stream, or -1 if the length is
-     * not known.
+     * Returns the length, in bytes, of the request body and made available by the input stream, or -1 if the length is not
+     * known.
      *
      * @return a long containing the length of the request body or -1L if the length is not known.
      */
@@ -242,8 +241,8 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
     MediaType getContentType();
 
     /**
-     * Returns an {@link List} of {@code String} containing the names of the parameters contained in this request. If
-     * the request has no parameters, the method returns an empty {@link List}.
+     * Returns an {@link List} of {@code String} containing the names of the parameters contained in this request. If the
+     * request has no parameters, the method returns an empty {@link List}.
      *
      * @return an {@link List} of {@code String} objects.
      */
@@ -266,8 +265,8 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
     String getParameter(@NonNull String name);
 
     /**
-     * Returns an array of {@code String} objects containing all of the values the given request parameter has, or
-     * {@code null} if the parameter does not exist.
+     * Returns an array of {@code String} objects containing all of the values the given request parameter has, or {@code
+     * null} if the parameter does not exist.
      *
      * @param name a {@code String} containing the name of the parameter whose value is requested.
      *
@@ -309,8 +308,7 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
     Session getValidSession();
 
     /**
-     * Returns the current session associated with this request, or if the request does not have a session, creates
-     * one.
+     * Returns the current session associated with this request, or if the request does not have a session, creates one.
      *
      * @see #getValidSession()
      */
@@ -318,8 +316,8 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
     Session getSession();
 
     /**
-     * Change the session id of the current session associated with this request and return the new session id, if there
-     * is no session associated with the request, an {@link IllegalStateException} is thrown.
+     * Change the session id of the current session associated with this request and return the new session id, if there is
+     * no session associated with the request, an {@link IllegalStateException} is thrown.
      *
      * @return the new session id.
      *

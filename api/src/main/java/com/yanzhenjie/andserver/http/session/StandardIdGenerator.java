@@ -45,17 +45,17 @@ public class StandardIdGenerator implements IdGenerator {
         while (resultLenBytes < ID_LENGTH) {
             mRandom.nextBytes(random);
             for (int j = 0; j < random.length && resultLenBytes < ID_LENGTH; j++) {
-                byte b1 = (byte)((random[j] & 0xf0) >> 4);
-                byte b2 = (byte)(random[j] & 0x0f);
+                byte b1 = (byte) ((random[j] & 0xf0) >> 4);
+                byte b2 = (byte) (random[j] & 0x0f);
                 if (b1 < 10) {
-                    buffer.append((char)('0' + b1));
+                    buffer.append((char) ('0' + b1));
                 } else {
-                    buffer.append((char)('A' + (b1 - 10)));
+                    buffer.append((char) ('A' + (b1 - 10)));
                 }
                 if (b2 < 10) {
-                    buffer.append((char)('0' + b2));
+                    buffer.append((char) ('0' + b2));
                 } else {
-                    buffer.append((char)('A' + (b2 - 10)));
+                    buffer.append((char) ('A' + (b2 - 10)));
                 }
                 resultLenBytes++;
             }

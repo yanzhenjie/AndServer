@@ -37,7 +37,9 @@ public class Executors {
     public static Executors getInstance() {
         if (instance == null) {
             synchronized (Executors.class) {
-                if (instance == null) instance = new Executors();
+                if (instance == null) {
+                    instance = new Executors();
+                }
             }
         }
         return instance;

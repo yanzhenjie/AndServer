@@ -50,7 +50,9 @@ public class StandardSession implements Session {
     }
 
     public void setId(@NonNull String id) {
-        if (StringUtils.isEmpty(id)) throw new IllegalArgumentException("The id can not be empty or null.");
+        if (StringUtils.isEmpty(id)) {
+            throw new IllegalArgumentException("The id can not be empty or null.");
+        }
         this.id = id;
     }
 
@@ -94,7 +96,9 @@ public class StandardSession implements Session {
     public Object getAttribute(@Nullable String name) {
         validate();
 
-        if (name == null) return null;
+        if (name == null) {
+            return null;
+        }
         return mAttributes.get(name);
     }
 
@@ -112,7 +116,9 @@ public class StandardSession implements Session {
 
         Assert.notNull(name, "The name cannot be null.");
 
-        if (value == null) return;
+        if (value == null) {
+            return;
+        }
         mAttributes.put(name, value);
     }
 
@@ -120,7 +126,9 @@ public class StandardSession implements Session {
     public void removeAttribute(@Nullable String name) {
         validate();
 
-        if (name == null) return;
+        if (name == null) {
+            return;
+        }
         mAttributes.remove(name);
     }
 
@@ -154,11 +162,13 @@ public class StandardSession implements Session {
 
     @Override
     public boolean isValid() {
-        if (!isValid) return false;
+        if (!isValid) {
+            return false;
+        }
 
         if (maxInactiveInterval > 0) {
             long inactiveInterval = System.currentTimeMillis() - lastAccessedTime;
-            int timeIdle = (int)(inactiveInterval / 1000L);
+            int timeIdle = (int) (inactiveInterval / 1000L);
             if (timeIdle >= maxInactiveInterval) {
                 isValid = false;
             }
@@ -203,7 +213,7 @@ public class StandardSession implements Session {
      * @throws IOException if the input error occurs while processing this request.
      */
     public void readObject(@NonNull ObjectInputStream stream) throws IOException, ClassNotFoundException {
-        id = (String)stream.readObject();
+        id = (String) stream.readObject();
         createdTime = stream.readLong();
         lastAccessedTime = stream.readLong();
         maxInactiveInterval = stream.readInt();
@@ -213,7 +223,7 @@ public class StandardSession implements Session {
         // Deserialize the attribute count and attribute values
         int size = stream.readInt();
         for (int i = 0; i < size; i++) {
-            String name = (String)stream.readObject();
+            String name = (String) stream.readObject();
             Object value = stream.readObject();
             mAttributes.put(name, value);
         }

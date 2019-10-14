@@ -164,7 +164,7 @@ public class StandardMultipartFile implements MultipartFile, Serializable {
         }
         // Check actual existence of temporary file.
         if (fileItem instanceof DiskFileItem) {
-            return ((DiskFileItem)fileItem).getStoreLocation().exists();
+            return ((DiskFileItem) fileItem).getStoreLocation().exists();
         }
         // Check whether current file size is different than original one.
         return (fileItem.getSize() == size);

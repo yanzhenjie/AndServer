@@ -18,9 +18,9 @@ package com.yanzhenjie.andserver.framework;
 import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.error.BasicException;
+import com.yanzhenjie.andserver.framework.body.StringBody;
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
-import com.yanzhenjie.andserver.framework.body.StringBody;
 import com.yanzhenjie.andserver.util.StatusCode;
 
 /**
@@ -32,7 +32,7 @@ public interface ExceptionResolver {
         @Override
         public void onResolve(@NonNull HttpRequest request, @NonNull HttpResponse response, @NonNull Throwable e) {
             if (e instanceof BasicException) {
-                BasicException ex = (BasicException)e;
+                BasicException ex = (BasicException) e;
                 response.setStatus(ex.getStatusCode());
             } else {
                 response.setStatus(StatusCode.SC_INTERNAL_SERVER_ERROR);

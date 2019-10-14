@@ -15,13 +15,13 @@
  */
 package com.yanzhenjie.andserver.register;
 
+import androidx.annotation.NonNull;
+
 import com.yanzhenjie.andserver.framework.ExceptionResolver;
 import com.yanzhenjie.andserver.framework.HandlerInterceptor;
 import com.yanzhenjie.andserver.framework.MessageConverter;
 import com.yanzhenjie.andserver.framework.config.Multipart;
 import com.yanzhenjie.andserver.framework.handler.HandlerAdapter;
-
-import androidx.annotation.NonNull;
 
 /**
  * Created by Zhenjie Yan on 2018/9/10.

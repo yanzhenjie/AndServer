@@ -237,7 +237,8 @@ public class MimeType implements Comparable<MimeType>, Serializable {
 
     /**
      * Indicates whether this media type is concrete, i.e. whether neither the type nor the subtype is a wildcard
-     * character <code>&#42;</code>.
+     * character
+     * <code>&#42;</code>.
      *
      * @return whether this media type is concrete.
      */
@@ -383,7 +384,7 @@ public class MimeType implements Comparable<MimeType>, Serializable {
         if (!equalsExcludeParameter(other)) {
             return false;
         }
-        MimeType otherType = (MimeType)other;
+        MimeType otherType = (MimeType) other;
         return parametersAreEqual(otherType);
     }
 
@@ -394,7 +395,7 @@ public class MimeType implements Comparable<MimeType>, Serializable {
         if (!(other instanceof MimeType)) {
             return false;
         }
-        MimeType otherType = (MimeType)other;
+        MimeType otherType = (MimeType) other;
         return (this.type.equalsIgnoreCase(otherType.type) && this.subtype.equalsIgnoreCase(otherType.subtype));
     }
 

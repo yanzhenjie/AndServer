@@ -39,7 +39,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
      * case.
      */
     public LinkedCaseInsensitiveMap() {
-        this((Locale)null);
+        this((Locale) null);
     }
 
     /**
@@ -91,8 +91,8 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
 
     @SuppressWarnings("unchecked")
     private LinkedCaseInsensitiveMap(LinkedCaseInsensitiveMap<V> other) {
-        this.mSource = (LinkedHashMap<String, V>)other.mSource.clone();
-        this.mCaseInsensitiveKeys = (HashMap<String, String>)other.mCaseInsensitiveKeys.clone();
+        this.mSource = (LinkedHashMap<String, V>) other.mSource.clone();
+        this.mCaseInsensitiveKeys = (HashMap<String, String>) other.mCaseInsensitiveKeys.clone();
         this.mLocale = other.mLocale; // No need to clone.
     }
 
@@ -109,7 +109,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
 
     @Override
     public boolean containsKey(Object key) {
-        return (key instanceof String && this.mCaseInsensitiveKeys.containsKey(convertKey((String)key)));
+        return (key instanceof String && this.mCaseInsensitiveKeys.containsKey(convertKey((String) key)));
     }
 
     @Override
@@ -120,7 +120,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
     @Override
     public V get(Object key) {
         if (key instanceof String) {
-            String caseInsensitiveKey = this.mCaseInsensitiveKeys.get(convertKey((String)key));
+            String caseInsensitiveKey = this.mCaseInsensitiveKeys.get(convertKey((String) key));
             if (caseInsensitiveKey != null) {
                 return this.mSource.get(caseInsensitiveKey);
             }
@@ -131,7 +131,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
     @Override
     public V getOrDefault(Object key, V defaultValue) {
         if (key instanceof String) {
-            String caseInsensitiveKey = this.mCaseInsensitiveKeys.get(convertKey((String)key));
+            String caseInsensitiveKey = this.mCaseInsensitiveKeys.get(convertKey((String) key));
             if (caseInsensitiveKey != null) {
                 return this.mSource.get(caseInsensitiveKey);
             }
@@ -162,7 +162,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
     @Override
     public V remove(Object key) {
         if (key instanceof String) {
-            String caseInsensitiveKey = this.mCaseInsensitiveKeys.remove(convertKey((String)key));
+            String caseInsensitiveKey = this.mCaseInsensitiveKeys.remove(convertKey((String) key));
             if (caseInsensitiveKey != null) {
                 return this.mSource.remove(caseInsensitiveKey);
             }

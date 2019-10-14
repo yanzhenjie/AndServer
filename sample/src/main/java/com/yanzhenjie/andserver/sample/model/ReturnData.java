@@ -48,7 +48,7 @@ public class ReturnData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte((byte)(isSuccess ? 1 : 0));
+        dest.writeByte((byte) (isSuccess ? 1 : 0));
         dest.writeInt(errorCode);
         dest.writeString(errorMsg);
     }

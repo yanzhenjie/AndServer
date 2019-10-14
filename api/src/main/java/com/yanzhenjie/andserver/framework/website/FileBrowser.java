@@ -91,7 +91,9 @@ public class FileBrowser extends BasicWebsite implements Patterns {
     public long getLastModified(@NonNull HttpRequest request) throws IOException {
         String httpPath = request.getPath();
         File resource = findPathResource(httpPath);
-        if (resource != null) return resource.lastModified();
+        if (resource != null) {
+            return resource.lastModified();
+        }
         return -1;
     }
 

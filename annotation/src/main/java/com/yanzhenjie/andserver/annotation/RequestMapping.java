@@ -46,8 +46,8 @@ public @interface RequestMapping {
      * TRACE.
      *
      * <p><b>Supported at the type level as well as at the method level.</b> When used at the type level, all
-     * method-level mappings inherit this HTTP method restriction (i.e. the type-level restriction gets checked before
-     * the handler method is even resolved).
+     * method-level mappings inherit this HTTP method restriction (i.e. the type-level restriction gets checked before the
+     * handler method is even resolved).
      */
     RequestMethod[] method() default {};
 
@@ -55,10 +55,10 @@ public @interface RequestMapping {
      * The parameters of the mapped request, narrowing the primary mapping.
      *
      * <p>A sequence of "myParam=myValue" style expressions, with a request only mapped if each such parameter is found
-     * to have the given value. Expressions can be negated by using the "!=" operator, as in "myParam!=myValue".
-     * "myParam" style expressions are also supported, with such parameters having to be present in the request (allowed
-     * to have any value). Finally, "!myParam" style expressions indicate that the specified parameter is not supposed
-     * to be present in the request.
+     * to have the given value. Expressions can be negated by using the "!=" operator, as in "myParam!=myValue". "myParam"
+     * style expressions are also supported, with such parameters having to be present in the request (allowed to have any
+     * value). Finally, "!myParam" style expressions indicate that the specified parameter is not supposed to be present in
+     * the request.
      *
      * <p><b>Supported at the type level as well as at the method level.</b> When used at the type level, all
      * method-level mappings inherit this parameter restriction (i.e. the type-level restriction gets checked before the
@@ -71,9 +71,9 @@ public @interface RequestMapping {
      *
      * <p>A sequence of "My-Header=myValue" style expressions, with a request only mapped if each such header is found
      * to have the given value. Expressions can be negated by using the "!=" operator, as in "My-Header!=myValue".
-     * "My-Header" style expressions are also supported, with such headers having to be present in the request (allowed
-     * to have any value). Finally, "!My-Header" style expressions indicate that the specified header is <i>not</i>
-     * supposed to be present in the request.
+     * "My-Header" style expressions are also supported, with such headers having to be present in the request (allowed to
+     * have any value). Finally, "!My-Header" style expressions indicate that the specified header is <i>not</i> supposed to
+     * be present in the request.
      *
      * <p>Also supports media type wildcards (*), for headers such as Accept and Content-Type. For instance,
      *
@@ -95,8 +95,8 @@ public @interface RequestMapping {
      *
      * <pre class="code"> consumes = "text/plain" consumes = {"text/plain", "application/*"} </pre>
      *
-     * Expressions can be negated by using the "!" operator, as in "!text/plain", which matches all requests with a
-     * {@code Content-Type} other than "text/plain".
+     * Expressions can be negated by using the "!" operator, as in "!text/plain", which matches all requests with a {@code
+     * Content-Type} other than "text/plain".
      *
      * <p><b>Supported at the type level as well as at the method level.</b> When used at the type level, all
      * method-level mappings override this consumes restriction.

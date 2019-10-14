@@ -17,6 +17,8 @@ package com.yanzhenjie.andserver.http.multipart;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.yanzhenjie.andserver.AndServer;
 import com.yanzhenjie.andserver.error.MaxUploadSizeExceededException;
 import com.yanzhenjie.andserver.error.MultipartException;
@@ -42,8 +44,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import androidx.annotation.NonNull;
 
 /**
  * Created by Zhenjie Yan on 2018/8/9.
@@ -84,7 +84,9 @@ public class StandardMultipartResolver implements MultipartResolver {
 
     @Override
     public boolean isMultipart(HttpRequest request) {
-        if (!request.getMethod().allowBody()) return false;
+        if (!request.getMethod().allowBody()) {
+            return false;
+        }
 
         RequestBody body = request.getBody();
         return body != null && FileUploadBase.isMultipartContent(new BodyContext(body));
@@ -92,7 +94,9 @@ public class StandardMultipartResolver implements MultipartResolver {
 
     @Override
     public MultipartRequest resolveMultipart(HttpRequest request) throws MultipartException {
-        if (request instanceof MultipartRequest) return (MultipartRequest)request;
+        if (request instanceof MultipartRequest) {
+            return (MultipartRequest) request;
+        }
 
         MultipartParsingResult result = parseRequest(request);
         return new StandardMultipartRequest(request, result.getMultipartFiles(), result.getMultipartParameters(),
@@ -107,7 +111,7 @@ public class StandardMultipartResolver implements MultipartResolver {
                 for (List<MultipartFile> files : multipartFiles.values()) {
                     for (MultipartFile file : files) {
                         if (file instanceof StandardMultipartFile) {
-                            StandardMultipartFile cmf = (StandardMultipartFile)file;
+                            StandardMultipartFile cmf = (StandardMultipartFile) file;
                             cmf.getFileItem().delete();
                         }
                     }
@@ -157,7 +161,9 @@ public class StandardMultipartResolver implements MultipartResolver {
     @NonNull
     private String determineEncoding(HttpRequest request) {
         MediaType mimeType = request.getContentType();
-        if (mimeType == null) return Charsets.UTF_8.name();
+        if (mimeType == null) {
+            return Charsets.UTF_8.name();
+        }
         Charset charset = mimeType.getCharset();
         return charset == null ? Charsets.UTF_8.name() : charset.name();
     }

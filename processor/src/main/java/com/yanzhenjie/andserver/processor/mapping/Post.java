@@ -43,7 +43,7 @@ public class Post implements Mapping {
 
     @Override
     public String[] method() {
-        return new String[] {RequestMethod.POST.value()};
+        return new String[]{RequestMethod.POST.value()};
     }
 
     @Override

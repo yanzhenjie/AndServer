@@ -21,7 +21,7 @@ import androidx.annotation.Nullable;
  * Created by Zhenjie Yan on 2018/8/29.
  */
 public interface View {
-    
+
     /**
      * Is it a rest style view?
      *

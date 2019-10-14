@@ -87,7 +87,7 @@ public abstract class CollectionUtils {
         }
         Object[] arr = ObjectUtils.toObjectArray(array);
         for (Object elem : arr) {
-            collection.add((E)elem);
+            collection.add((E) elem);
         }
     }
 
@@ -106,13 +106,13 @@ public abstract class CollectionUtils {
         }
         if (props != null) {
             for (Enumeration<?> en = props.propertyNames(); en.hasMoreElements(); ) {
-                String key = (String)en.nextElement();
+                String key = (String) en.nextElement();
                 Object value = props.get(key);
                 if (value == null) {
                     // Allow for defaults fallback or potentially overridden accessor...
                     value = props.getProperty(key);
                 }
-                map.put((K)key, (V)value);
+                map.put((K) key, (V) value);
             }
         }
     }
@@ -216,7 +216,7 @@ public abstract class CollectionUtils {
         }
         for (Object candidate : candidates) {
             if (source.contains(candidate)) {
-                return (E)candidate;
+                return (E) candidate;
             }
         }
         return null;
@@ -243,7 +243,7 @@ public abstract class CollectionUtils {
                     // More than one value found... no clear single value.
                     return null;
                 }
-                value = (T)element;
+                value = (T) element;
             }
         }
         return value;
@@ -369,7 +369,7 @@ public abstract class CollectionUtils {
         Map<K, List<V>> result = new LinkedHashMap<>(map.size());
         for (Map.Entry<? extends K, ? extends List<? extends V>> entry : map.entrySet()) {
             List<? extends V> values = Collections.unmodifiableList(entry.getValue());
-            result.put(entry.getKey(), (List<V>)values);
+            result.put(entry.getKey(), (List<V>) values);
         }
         Map<K, List<V>> unmodifiableMap = Collections.unmodifiableMap(result);
         return toMultiValueMap(unmodifiableMap);
