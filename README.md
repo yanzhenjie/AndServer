@@ -57,6 +57,7 @@ For documentation and additional information see [the website](https://www.yanzh
 dependencies {
     implementation 'com.yanzhenjie.andserver:api:2.0.5'
     annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.5'
+    implementation 'com.yanzhenjie.andserver:annotation:2.0.5'
 }
 ```
 
