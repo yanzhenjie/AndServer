@@ -7,18 +7,18 @@ ext {
                bintray       : 'com.jfrog.bintray']
 
     android = [applicationId          : 'com.yanzhenjie.andserver.sample',
-               compileSdkVersion      : 28,
-               buildToolsVersion      : '28.0.3',
+               compileSdkVersion      : 29,
+               buildToolsVersion      : '29.0.3',
 
                libraryMinSdkVersion   : 9,
-               libraryTargetSdkVersion: 28,
+               libraryTargetSdkVersion: 29,
                sampleMinSdkVersion    : 14,
                sampleTargetSdkVersion : 22,
 
-               versionCode            : 22,
-               versionName            : '2.0.5',]
+               versionCode            : 23,
+               versionName            : '2.0.6',]
 
-    bintray = [version       : '2.0.5',
+    bintray = [version       : '2.0.6',
                group         : 'com.yanzhenjie.andserver',
 
                siteUrl       : 'https://github.com/yanzhenjie/AndServer',
@@ -33,25 +33,25 @@ ext {
 
                developerId   : 'yanzhenjie',
                developerName : 'yanzhenjie',
-               developerEmail: 'smallajax@foxmail.com',
+               developerEmail: 'im.yanzhenjie@gmail.com',
 
                binrayLibrary : "",
                bintrayRepo   : "maven",
                bintrayUser   : 'yolanda',
                bintrayLicense: "Apache-2.0"]
 
-    dependencies = [autoService       : 'com.google.auto.service:auto-service:1.0-rc5',
-                    javaPoet          : 'com.squareup:javapoet:1.11.1',
+    dependencies = [autoService       : 'com.google.auto.service:auto-service:1.0-rc6',
+                    javaPoet          : 'com.squareup:javapoet:1.12.1',
                     activation        : 'javax.activation:activation:1.1.1',
-                    commonsLang       : 'org.apache.commons:commons-lang3:3.8',
-                    commonsCollections: 'org.apache.commons:commons-collections4:4.3',
-                    httpcore          : "com.yanzhenjie.apache:httpcore:4.4.11",
+                    commonsLang       : 'org.apache.commons:commons-lang3:3.9',
+                    commonsCollections: 'org.apache.commons:commons-collections4:4.4',
+                    httpcore          : "com.yanzhenjie.apache:httpcore:4.4.13",
                     fileupload        : "com.yanzhenjie.apache:fileupload:1.4",
 
-                    annotation        : 'androidx.annotation:annotation:1.0.2',
-                    appCompat         : 'androidx.appcompat:appcompat:1.0.2',
-                    design            : 'com.google.android.material:material:1.0.0',
+                    annotation        : 'androidx.annotation:annotation:1.1.0',
+                    appCompat         : 'androidx.appcompat:appcompat:1.1.0',
+                    design            : 'com.google.android.material:material:1.1.0',
 
                     loading           : 'com.yanzhenjie:loading:1.0.0',
-                    json              : 'com.alibaba:fastjson:1.1.70.android']
+                    json              : 'com.alibaba:fastjson:1.1.71.android']
 }
