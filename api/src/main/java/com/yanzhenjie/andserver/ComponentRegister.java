@@ -25,6 +25,7 @@ import com.yanzhenjie.andserver.register.OnRegister;
 import com.yanzhenjie.andserver.register.Register;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +45,13 @@ public class ComponentRegister {
 
     private static final String COMPONENT_PACKAGE_NAME = "com.yanzhenjie.andserver.register";
     private static final String COMPONENT_INTERFACE_NAME = OnRegister.class.getName();
+    private static final String[] COMPONENTS = {
+        COMPONENT_PACKAGE_NAME + ".ConfigRegister",
+        COMPONENT_PACKAGE_NAME + ".InterceptorRegister",
+        COMPONENT_PACKAGE_NAME + ".ResolverRegister",
+        COMPONENT_PACKAGE_NAME + ".ConverterRegister",
+        COMPONENT_PACKAGE_NAME + ".AdapterRegister"
+    };
 
     private static final String CODE_CACHE_SECONDARY_DIRECTORY = "code_cache/secondary-dexes";
     private static final String EXTRACTED_NAME_EXT = ".classes";
@@ -59,6 +67,24 @@ public class ComponentRegister {
     }
 
     public void register(Register register, String group) {
+        List<String> classList = new ArrayList<>();
+        registerFromArray(register, group, classList);
+        if (classList.size() < COMPONENTS.length) {
+            registerFromApk(register, group, classList);
+        }
+    }
+
+    public void registerFromArray(Register register, String group, List<String> classList) {
+        for (String component : COMPONENTS) {
+            try {
+                registerClass(register, group, component);
+                classList.add(component);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
+    public void registerFromApk(Register register, String group, List<String> classList) {
         List<String> paths = getDexFilePaths(mContext);
 
         for (final String path : paths) {
@@ -74,11 +100,14 @@ public class ComponentRegister {
                 Enumeration<String> dexEntries = dexfile.entries();
                 while (dexEntries.hasMoreElements()) {
                     String className = dexEntries.nextElement();
-                    if (className.startsWith(COMPONENT_PACKAGE_NAME)) {
-                        registerClass(register, group, className);
+                    if (className.startsWith(COMPONENT_PACKAGE_NAME) && !classList.contains(className)) {
+                        try {
+                            registerClass(register, group, className);
+                        } catch (Exception ignored) {
+                        }
                     }
                 }
-            } catch (Throwable e) {
+            } catch (IOException e) {
                 Log.w(AndServer.TAG, "An exception occurred while registering components.", e);
             } finally {
                 if (dexfile != null) {
@@ -91,7 +120,8 @@ public class ComponentRegister {
         }
     }
 
-    private void registerClass(Register register, String group, String className) throws Exception {
+    private void registerClass(Register register, String group, String className)
+        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         Class clazz = Class.forName(className);
         if (clazz.isInterface()) {
             return;
@@ -102,7 +132,6 @@ public class ComponentRegister {
             if (COMPONENT_INTERFACE_NAME.equals(anInterface.getName())) {
                 Object obj = clazz.newInstance();
                 if (obj instanceof OnRegister) {
-                    Log.i(AndServer.TAG, String.format("Loading %s.", className));
                     OnRegister onRegister = (OnRegister) obj;
                     onRegister.onRegister(mContext, group, register);
                 }
@@ -119,17 +148,17 @@ public class ComponentRegister {
     /**
      * Obtain all the dex path.
      *
-     * @see com.android.support.MultiDex#loadExistingExtractions(Context, String)
-     * @see com.android.support.MultiDex#clearOldDexDir(Context)
+     * @see MultiDexExtractor#loadExistingExtractions(Context, String)
+     * @see MultiDex#clearOldDexDir(Context)
      */
     public static List<String> getDexFilePaths(Context context) {
         ApplicationInfo appInfo = context.getApplicationInfo();
-        File sourceApk = new File(appInfo.sourceDir);
 
         List<String> sourcePaths = new ArrayList<>();
         sourcePaths.add(appInfo.sourceDir);
 
         if (!isVMMultidexCapable()) {
+            File sourceApk = new File(appInfo.sourceDir);
             String extractedFilePrefix = sourceApk.getName() + EXTRACTED_NAME_EXT;
             int totalDexNumber = getMultiDexPreferences(context).getInt(KEY_DEX_NUMBER, 1);
             File dexDir = new File(appInfo.dataDir, CODE_CACHE_SECONDARY_DIRECTORY);
@@ -154,7 +183,7 @@ public class ComponentRegister {
      *
      * @return true, otherwise is false.
      *
-     * @see android.support.multidex.MultiDexExtractor#isVMMultidexCapable(String)
+     * @see MultiDexExtractor#getMultiDexPreferences(Context)
      */
     private static boolean isVMMultidexCapable() {
         boolean isMultidexCapable = false;

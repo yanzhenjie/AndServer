@@ -153,7 +153,7 @@ public class Server {
             @Override
             public void run() {
                 if (mHttpServer != null) {
-                    mHttpServer.shutdown(3, TimeUnit.MINUTES);
+                    mHttpServer.shutdown(3, TimeUnit.SECONDS);
                     isRunning = false;
                     Executors.getInstance().post(new Runnable() {
                         @Override
