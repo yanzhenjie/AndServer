@@ -13,18 +13,16 @@ Web server and Web framework of Android platform. It provides annotations like S
 public class UserController {
 
     @PostMapping("/login")
-    public String login(
-        @RequestParam("account") String account,
-        @RequestParam("password") String password) {
+    public String login(@RequestParam("account") String account,
+                        @RequestParam("password") String password) {
 
         ...
         return "Successful.";
     }
 
     @GetMapping(path = "/{userId}")
-    public User info(
-        @PathVariable("userId") String userId,
-        @QueryParam("fields", required = false) String fields) {
+    public User info(@PathVariable("userId") String userId,
+                     @QueryParam("fields") String fields) {
 
         User user = findUserById(userId, fields);
         ...
@@ -33,9 +31,8 @@ public class UserController {
     }
 
     @PutMapping(path = "/{userId}")
-    public void modify(
-        @PathVariable("userId") String userId
-        @RequestParam("age") int age) {
+    public void modify(@PathVariable("userId") String userId
+                       @RequestParam("age") int age) {
         ...
     }
 }
@@ -55,8 +52,8 @@ For documentation and additional information see [the website](https://www.yanzh
 
 ```groovy
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.0.5'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.5'
+    implementation 'com.yanzhenjie.andserver:api:2.0.6'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.6'
 }
 ```
 
@@ -71,7 +68,7 @@ Before submitting pull requests, contributors must abide by the [agreement](./CO
 ## License
 
 ```text
-Copyright 2019 Zhenjie Yan
+Copyright 2020 Zhenjie Yan
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
