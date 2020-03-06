@@ -3,13 +3,14 @@ apply from: "config.gradle"
 buildscript {
 
     repositories {
-        google()
+        google { url 'https://maven.aliyun.com/repository/google' }
         jcenter { url 'https://maven.aliyun.com/repository/jcenter' }
+        google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.1'
+        classpath 'com.android.tools.build:gradle:3.6.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
     }
@@ -17,8 +18,9 @@ buildscript {
 
 allprojects {
     repositories {
-        google()
+        google { url 'https://maven.aliyun.com/repository/google' }
         jcenter { url 'https://maven.aliyun.com/repository/jcenter' }
+        google()
         jcenter()
     }
 }
