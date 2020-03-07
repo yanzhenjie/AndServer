@@ -25,6 +25,7 @@ import com.yanzhenjie.andserver.AndServer;
 import com.yanzhenjie.andserver.Server;
 import com.yanzhenjie.andserver.sample.util.NetUtils;
 
+import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -37,14 +38,13 @@ public class CoreService extends Service {
     @Override
     public void onCreate() {
         mServer = AndServer.serverBuilder(this)
-            .inetAddress(NetUtils.getLocalIPAddress())
             .port(8080)
             .timeout(10, TimeUnit.SECONDS)
             .listener(new Server.ServerListener() {
                 @Override
                 public void onStarted() {
-                    String hostAddress = mServer.getInetAddress().getHostAddress();
-                    ServerManager.onServerStart(CoreService.this, hostAddress);
+                    InetAddress address = NetUtils.getLocalIPAddress();
+                    ServerManager.onServerStart(CoreService.this, address.getHostAddress());
                 }
 
                 @Override
@@ -76,12 +76,7 @@ public class CoreService extends Service {
      * Start server.
      */
     private void startServer() {
-        if (mServer.isRunning()) {
-            String hostAddress = mServer.getInetAddress().getHostAddress();
-            ServerManager.onServerStart(CoreService.this, hostAddress);
-        } else {
-            mServer.startup();
-        }
+        mServer.startup();
     }
 
     /**
