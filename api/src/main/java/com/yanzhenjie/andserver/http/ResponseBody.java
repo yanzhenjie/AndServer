@@ -29,6 +29,13 @@ import java.io.OutputStream;
 public interface ResponseBody {
 
     /**
+     * Can it be reused?
+     *
+     * @return true, otherwise is false.
+     */
+    boolean isRepeatable();
+
+    /**
      * Get the content-length of the message body, if the length is unknown, return a negative value.
      *
      * @return message length.

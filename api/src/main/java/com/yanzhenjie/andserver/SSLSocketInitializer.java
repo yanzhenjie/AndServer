@@ -23,7 +23,7 @@ import javax.net.ssl.SSLServerSocket;
 /**
  * Created by Zhenjie Yan on 2018/9/10.
  */
-public interface SSLInitializer {
+public interface SSLSocketInitializer {
 
     void onCreated(@NonNull SSLServerSocket socket) throws SSLException;
 }

@@ -21,9 +21,9 @@ import androidx.annotation.Nullable;
 import com.yanzhenjie.andserver.framework.ETag;
 import com.yanzhenjie.andserver.framework.LastModified;
 import com.yanzhenjie.andserver.http.HttpRequest;
-import com.yanzhenjie.andserver.mapping.Addition;
-import com.yanzhenjie.andserver.mapping.Mapping;
-import com.yanzhenjie.andserver.mapping.Path;
+import com.yanzhenjie.andserver.framework.mapping.Addition;
+import com.yanzhenjie.andserver.framework.mapping.Mapping;
+import com.yanzhenjie.andserver.framework.mapping.Path;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -122,21 +122,19 @@ public abstract class MappingHandler implements MethodHandler {
                 }
             }
 
-            if (matches) {
-                if (isBlurred) {
-                    Map<String, String> map = new HashMap<>();
-                    for (int i = 0; i < segments.size(); i++) {
-                        Path.Segment segment = segments.get(i);
+            if (matches && isBlurred) {
+                Map<String, String> map = new HashMap<>();
+                for (int i = 0; i < segments.size(); i++) {
+                    Path.Segment segment = segments.get(i);
+                    if(segment.isBlurred()) {
                         Path.Segment httpSegment = httpSegments.get(i);
 
                         String key = segment.getValue();
                         key = key.substring(1, key.length() - 1);
                         map.put(key, httpSegment.getValue());
                     }
-                    return map;
                 }
-
-                return Collections.emptyMap();
+                return map;
             }
         }
 

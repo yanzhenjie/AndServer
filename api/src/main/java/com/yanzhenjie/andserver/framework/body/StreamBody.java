@@ -22,6 +22,7 @@ import com.yanzhenjie.andserver.http.ResponseBody;
 import com.yanzhenjie.andserver.util.IOUtils;
 import com.yanzhenjie.andserver.util.MediaType;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -54,7 +55,20 @@ public class StreamBody implements ResponseBody {
     }
 
     @Override
+    public boolean isRepeatable() {
+        return false;
+    }
+
+    @Override
     public long contentLength() {
+        if (mLength == 0 && mStream instanceof FileInputStream) {
+            try {
+                mLength = ((FileInputStream) mStream).getChannel().size();
+                return mLength;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return mLength;
     }
 

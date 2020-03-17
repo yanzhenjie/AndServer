@@ -19,32 +19,65 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.yanzhenjie.andserver.server.ProxyServer;
+import com.yanzhenjie.andserver.server.WebServer;
+
 /**
  * Created by Zhenjie Yan on 2018/6/9.
  */
 public class AndServer {
 
     public static final String TAG = "AndServer";
+    public static final String INFO = String.format("AndServer/%1$s", BuildConfig.VERSION_NAME);
 
     /**
-     * Create a Builder of Server.
+     * Create a builder for the web server.
      *
      * @return {@link Server.Builder}.
      */
     @NonNull
-    public static Server.Builder serverBuilder(@NonNull Context context) {
-        return Server.newBuilder(context, "default");
+    public static Server.Builder webServer(@NonNull Context context) {
+        return WebServer.newBuilder(context, "default");
     }
 
     /**
-     * Create a Builder of Server.
+     * Create a builder for the web server.
      *
      * @param group group name.
      *
      * @return {@link Server.Builder}.
      */
     @NonNull
+    public static Server.Builder webServer(@NonNull Context context,
+        @NonNull String group) {
+        return WebServer.newBuilder(context, group);
+    }
+
+    /**
+     * Create a builder for the reverse proxy server.
+     *
+     * @return {@link Server.ProxyBuilder}.
+     */
+    @NonNull
+    public static Server.ProxyBuilder proxyServer() {
+        return ProxyServer.newBuilder();
+    }
+
+    /**
+     * @deprecated use {@link #webServer(Context)} instead.
+     */
+    @NonNull
+    @Deprecated
+    public static Server.Builder serverBuilder(@NonNull Context context) {
+        return webServer(context);
+    }
+
+    /**
+     * @deprecated use {@link #webServer(Context, String)} instead.
+     */
+    @NonNull
+    @Deprecated
     public static Server.Builder serverBuilder(@NonNull Context context, @NonNull String group) {
-        return Server.newBuilder(context, group);
+        return webServer(context, group);
     }
 }

@@ -18,8 +18,8 @@ package com.yanzhenjie.andserver.framework.handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.yanzhenjie.andserver.mapping.Addition;
-import com.yanzhenjie.andserver.mapping.Mapping;
+import com.yanzhenjie.andserver.framework.mapping.Addition;
+import com.yanzhenjie.andserver.framework.mapping.Mapping;
 
 /**
  * Created by Zhenjie Yan on 2018/6/16.

@@ -13,41 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.mapping;
+package com.yanzhenjie.andserver.framework.mapping;
 
 import androidx.annotation.NonNull;
 
-import com.yanzhenjie.andserver.util.MediaType;
+import com.yanzhenjie.andserver.http.HttpMethod;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Zhenjie Yan on 2018/6/14.
  */
-public class Mime {
+public class Method {
 
-    private List<Rule> mRuleList = new LinkedList<>();
+    private List<HttpMethod> mRuleList = new LinkedList<>();
 
-    public Mime() {
+    public Method() {
     }
 
     @NonNull
-    public List<Rule> getRuleList() {
+    public List<HttpMethod> getRuleList() {
         return mRuleList;
     }
 
     public void addRule(@NonNull String ruleText) {
-        MediaType mimeType = MediaType.valueOf(ruleText);
-        Rule rule = new Rule(mimeType.getType(), mimeType.getSubtype(), mimeType.getParameters());
-        mRuleList.add(rule);
-    }
-
-    public static class Rule extends MediaType {
-
-        public Rule(String type, String subtype, Map<String, String> parameters) {
-            super(type, subtype, parameters);
-        }
+        mRuleList.add(HttpMethod.reverse(ruleText));
     }
 }

@@ -59,6 +59,11 @@ public class StringBody implements ResponseBody {
     }
 
     @Override
+    public boolean isRepeatable() {
+        return true;
+    }
+
+    @Override
     public long contentLength() {
         return mBody.length;
     }
