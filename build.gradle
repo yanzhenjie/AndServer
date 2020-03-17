@@ -1,12 +1,10 @@
 apply from: "config.gradle"
 
 buildscript {
-
     repositories {
-        google { url 'https://maven.aliyun.com/repository/google' }
-        jcenter { url 'https://maven.aliyun.com/repository/jcenter' }
         google()
-        jcenter()
+        jcenter { url 'https://maven.aliyun.com/repository/jcenter' }
+        mavenCentral { url 'https://maven.aliyun.com/repository/central' }
     }
 
     dependencies {
@@ -18,10 +16,9 @@ buildscript {
 
 allprojects {
     repositories {
-        google { url 'https://maven.aliyun.com/repository/google' }
-        jcenter { url 'https://maven.aliyun.com/repository/jcenter' }
         google()
-        jcenter()
+        jcenter { url 'https://maven.aliyun.com/repository/jcenter' }
+        mavenCentral { url 'https://maven.aliyun.com/repository/central' }
     }
 }
 
