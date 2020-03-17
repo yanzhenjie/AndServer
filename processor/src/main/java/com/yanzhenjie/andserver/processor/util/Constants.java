@@ -63,10 +63,10 @@ public interface Constants {
     String REQUEST_BODY_TYPE = PACKAGE_NAME + ".http.RequestBody";
     String MULTIPART_FILE_TYPE = PACKAGE_NAME + ".http.multipart.MultipartFile";
 
-    String ADDITION_TYPE = PACKAGE_NAME + ".mapping.Addition";
-    String MAPPING_TYPE = PACKAGE_NAME + ".mapping.Mapping";
-    String MIME_MAPPING_TYPE = PACKAGE_NAME + ".mapping.Mime";
-    String METHOD_MAPPING_TYPE = PACKAGE_NAME + ".mapping.Method";
-    String PAIR_MAPPING_TYPE = PACKAGE_NAME + ".mapping.Pair";
-    String PATH_MAPPING_TYPE = PACKAGE_NAME + ".mapping.Path";
+    String ADDITION_TYPE = PACKAGE_NAME + ".framework.mapping.Addition";
+    String MAPPING_TYPE = PACKAGE_NAME + ".framework.mapping.Mapping";
+    String MIME_MAPPING_TYPE = PACKAGE_NAME + ".framework.mapping.Mime";
+    String METHOD_MAPPING_TYPE = PACKAGE_NAME + ".framework.mapping.Method";
+    String PAIR_MAPPING_TYPE = PACKAGE_NAME + ".framework.mapping.Pair";
+    String PATH_MAPPING_TYPE = PACKAGE_NAME + ".framework.mapping.Path";
 }
