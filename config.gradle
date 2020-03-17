@@ -15,10 +15,10 @@ ext {
                sampleMinSdkVersion    : 14,
                sampleTargetSdkVersion : 22,
 
-               versionCode            : 23,
-               versionName            : '2.0.6',]
+               versionCode            : 24,
+               versionName            : '2.1.0',]
 
-    bintray = [version       : '2.0.6',
+    bintray = [version       : '2.1.0',
                group         : 'com.yanzhenjie.andserver',
 
                siteUrl       : 'https://github.com/yanzhenjie/AndServer',
@@ -45,7 +45,7 @@ ext {
                     activation        : 'javax.activation:activation:1.1.1',
                     commonsLang       : 'org.apache.commons:commons-lang3:3.9',
                     commonsCollections: 'org.apache.commons:commons-collections4:4.4',
-                    httpcore          : "com.yanzhenjie.apache:httpcore:4.4.13",
+                    httpcore          : "com.yanzhenjie.apache:httpcore:4.4.13.01",
                     fileupload        : "com.yanzhenjie.apache:fileupload:1.4",
 
                     annotation        : 'androidx.annotation:annotation:1.1.0',

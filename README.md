@@ -2,10 +2,34 @@
 
 ![Logo](./images/logo.svg)
 
+AndServer is an HTTP and reverse proxy server.
+
 Web server and Web framework of Android platform. It provides annotations like SpringMVC, and if you are familiar with SpringMVC, you can master it very quickly.
 
-- Static html website deployment
-- Dynamic http api deployment
+- Static html website deployment.
+- Dynamic http api deployment.
+- Reverse proxy server.
+
+## Web Server
+
+Deploy a web server:
+
+```java
+Server server = AndServer.webServer(context)
+    .port(8080)
+    .timeout(10, TimeUnit.SECONDS)
+    .build();
+
+// startup the server.
+server.startup();
+
+...
+
+// shutdown the server.
+server.shutdown();
+```
+
+It also has some features, such as `inetAddress(InetAddress)`, `serverSocketFactory(ServerSocketFactory)` and `sslContext(SSLContext)`, depending on what you want to achieve.
 
 ```java
 @RestController
@@ -48,12 +72,37 @@ PUT http://.../user/uid_001
 
 For documentation and additional information see [the website](https://www.yanzhenjie.com/AndServer).
 
+## Reverse Proxy Server
+
+Deploy a reverse proxy server:
+
+```java
+Server server = AndServer.proxyServer()
+    .addProxy("www.example1.com", "http://192.167.1.11:8080")
+    .addProxy("example2.com", "https://192.167.1.12:9090")
+    .addProxy("55.66.11.11", "http://www.google.com")
+    .addProxy("192.168.1.11", "https://github.com:6666")
+    .port(80)
+    .timeout(10, TimeUnit.SECONDS)
+    .build();
+
+// startup the server.
+server.startup();
+
+...
+
+// shutdown the server.
+server.shutdown();
+```
+
+**Note**: It is just a reverse proxy and does not have the ability to take care of loading balance.
+
 ## Download
 
 ```groovy
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.0.6'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.0.6'
+    implementation 'com.yanzhenjie.andserver:api:2.1.0'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.0'
 }
 ```
 
