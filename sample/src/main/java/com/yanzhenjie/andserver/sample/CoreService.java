@@ -37,7 +37,7 @@ public class CoreService extends Service {
 
     @Override
     public void onCreate() {
-        mServer = AndServer.serverBuilder(this)
+        mServer = AndServer.webServer(this)
             .port(8080)
             .timeout(10, TimeUnit.SECONDS)
             .listener(new Server.ServerListener() {

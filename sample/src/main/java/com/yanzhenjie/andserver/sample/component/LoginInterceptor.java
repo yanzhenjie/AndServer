@@ -22,10 +22,10 @@ import com.yanzhenjie.andserver.error.BasicException;
 import com.yanzhenjie.andserver.framework.HandlerInterceptor;
 import com.yanzhenjie.andserver.framework.handler.MethodHandler;
 import com.yanzhenjie.andserver.framework.handler.RequestHandler;
+import com.yanzhenjie.andserver.framework.mapping.Addition;
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
 import com.yanzhenjie.andserver.http.session.Session;
-import com.yanzhenjie.andserver.mapping.Addition;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -72,7 +72,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             Session session = request.getSession();
             if (session != null) {
                 Object o = session.getAttribute(LOGIN_ATTRIBUTE);
-                return o != null && (o instanceof Boolean) && ((boolean) o);
+                return o instanceof Boolean && (boolean) o;
             }
             return false;
         }
