@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
+  <info organisation="AndServer" module="plugin" revision="2.1.1" status="integration" publication="20200412182459"/>
+  <configurations>
+    <conf name="annotationProcessor" visibility="private"/>
+    <conf name="api" visibility="private" extends="compile"/>
+    <conf name="apiElements" visibility="private" extends="api,runtime"/>
+    <conf name="archives" visibility="public"/>
+    <conf name="compile" visibility="private"/>
+    <conf name="compileClasspath" visibility="private" extends="compileOnly,implementation"/>
+    <conf name="compileOnly" visibility="private"/>
+    <conf name="default" visibility="public" extends="runtimeElements"/>
+    <conf name="implementation" visibility="private" extends="api,compile"/>
+    <conf name="runtime" visibility="private" extends="compile"/>
+    <conf name="runtimeClasspath" visibility="private" extends="implementation,runtime,runtimeOnly"/>
+    <conf name="runtimeElements" visibility="private" extends="implementation,runtime,runtimeOnly"/>
+    <conf name="runtimeOnly" visibility="private"/>
+    <conf name="signatures" visibility="public"/>
+    <conf name="testAnnotationProcessor" visibility="private"/>
+    <conf name="testCompile" visibility="private" extends="compile"/>
+    <conf name="testCompileClasspath" visibility="private" extends="testCompileOnly,testImplementation"/>
+    <conf name="testCompileOnly" visibility="private"/>
+    <conf name="testImplementation" visibility="private" extends="implementation,testCompile"/>
+    <conf name="testRuntime" visibility="private" extends="runtime,testCompile"/>
+    <conf name="testRuntimeClasspath" visibility="private" extends="testImplementation,testRuntime,testRuntimeOnly"/>
+    <conf name="testRuntimeOnly" visibility="private" extends="runtimeOnly"/>
+  </configurations>
+  <publications>
+    <artifact name="plugin" type="jar" ext="jar" conf="apiElements,archives,runtime,runtimeElements"/>
+    <artifact name="plugin" type="jar.asc" ext="asc" conf="archives,signatures"/>
+    <artifact name="plugin" type="jar.asc" ext="asc" conf="archives,signatures" m:classifier="javadoc"/>
+    <artifact name="plugin" type="jar.asc" ext="asc" conf="archives,signatures" m:classifier="sources"/>
+    <artifact name="plugin" type="jar" ext="jar" conf="archives" m:classifier="javadoc"/>
+    <artifact name="plugin" type="jar" ext="jar" conf="archives" m:classifier="sources"/>
+  </publications>
+  <dependencies>
+    <dependency org="com.yanzhenjie.andserver" name="annotation" rev="2.1.1" conf="implementation-&gt;default"/>
+    <dependency org="com.android.tools.build" name="gradle" rev="3.6.2" conf="implementation-&gt;default"/>
+    <dependency org="com.squareup" name="javapoet" rev="1.12.1" conf="implementation-&gt;default"/>
+  </dependencies>
+</ivy-module>
