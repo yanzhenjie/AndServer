@@ -99,16 +99,40 @@ server.shutdown();
 
 ## Download
 
-```groovy
+```gradle
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.1.0'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.0'
+    implementation 'com.yanzhenjie.andserver:api:2.1.1'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.1'
+    ...
 }
 ```
 
 If you are using Kotlin, replace `annotationProcessor` with `kapt`.
 
-AndServer requires at minimum Android 2.3(Api level 9).
+### Library Modules
+
+If you use AndServer in the library module, we recommend that you use the AndServer plugin, but this is not necessary. This is to avoid conflicts with the application module when using AndServer.
+
+Add the plugin to your project build script :
+
+```gradle
+buildscript {
+    ...
+
+    dependencies {
+        ...
+        classpath 'com.yanzhenjie.andserver:plugin:2.1.1'
+    }
+}
+
+...
+```
+
+And then apply it in your module:
+
+```gradle
+apply plugin: 'com.yanzhenjie.andserver'
+```
 
 ## Contributing
 
