@@ -25,7 +25,6 @@ public interface Constants {
     String CONTEXT_TYPE = "android.content.Context";
     String LOG_TYPE = "android.util.Log";
     String PACKAGE_NAME = "com.yanzhenjie.andserver";
-    String REGISTER_PACKAGE = PACKAGE_NAME + ".register";
     String ANDSERVER_TYPE = PACKAGE_NAME + ".AndServer";
     String STRING_UTIL_TYPE = PACKAGE_NAME + ".util.StringUtils";
     String COLLECTION_UTIL_TYPE = PACKAGE_NAME + ".util.CollectionUtils";

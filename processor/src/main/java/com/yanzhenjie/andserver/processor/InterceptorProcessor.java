@@ -15,7 +15,6 @@
  */
 package com.yanzhenjie.andserver.processor;
 
-import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -24,6 +23,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.yanzhenjie.andserver.annotation.AppInfo;
 import com.yanzhenjie.andserver.annotation.Interceptor;
 import com.yanzhenjie.andserver.processor.util.Constants;
 import com.yanzhenjie.andserver.processor.util.Logger;
@@ -38,10 +38,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
@@ -52,7 +53,6 @@ import javax.lang.model.util.Elements;
 /**
  * Created by Zhenjie Yan on 2018/9/11.
  */
-@AutoService(Processor.class)
 public class InterceptorProcessor extends BaseProcessor {
 
     private Filer mFiler;
@@ -88,9 +88,12 @@ public class InterceptorProcessor extends BaseProcessor {
             return false;
         }
 
+        Set<? extends Element> appSet = roundEnv.getElementsAnnotatedWith(AppInfo.class);
+        String registerPackageName = getRegisterPackageName(appSet);
+
         Map<String, List<TypeElement>> interceptorMap = findAnnotation(roundEnv);
         if (!interceptorMap.isEmpty()) {
-            createRegister(interceptorMap);
+            createRegister(registerPackageName, interceptorMap);
         }
         return true;
     }
@@ -135,7 +138,7 @@ public class InterceptorProcessor extends BaseProcessor {
         return interceptorMap;
     }
 
-    private void createRegister(Map<String, List<TypeElement>> interceptorMap) {
+    private void createRegister(String registerPackageName, Map<String, List<TypeElement>> interceptorMap) {
         TypeName listTypeName = ParameterizedTypeName.get(ClassName.get(List.class), mInterceptor);
         TypeName typeName = ParameterizedTypeName.get(ClassName.get(Map.class), mString, listTypeName);
         FieldSpec mapField = FieldSpec.builder(typeName, "mMap", Modifier.PRIVATE).build();
@@ -175,7 +178,6 @@ public class InterceptorProcessor extends BaseProcessor {
             .endControlFlow()
             .build();
 
-        String packageName = Constants.REGISTER_PACKAGE;
         TypeSpec adapterClass = TypeSpec.classBuilder("InterceptorRegister")
             .addJavadoc(Constants.DOC_EDIT_WARN)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -185,7 +187,7 @@ public class InterceptorProcessor extends BaseProcessor {
             .addMethod(registerMethod)
             .build();
 
-        JavaFile javaFile = JavaFile.builder(packageName, adapterClass).build();
+        JavaFile javaFile = JavaFile.builder(registerPackageName, adapterClass).build();
         try {
             javaFile.writeTo(mFiler);
         } catch (IOException e) {
@@ -201,8 +203,23 @@ public class InterceptorProcessor extends BaseProcessor {
         throw new IllegalStateException(String.format("The type is not a Interceptor: %1$s.", type));
     }
 
+    private String getRegisterPackageName(Set<? extends Element> appSet) {
+        List<String> list = appSet.stream()
+            .map((Function<Element, String>) element -> {
+                AppInfo appInfo = element.getAnnotation(AppInfo.class);
+                return appInfo == null ? null : appInfo.value();
+            })
+            .collect(Collectors.toList());
+        String rootPackage = Constants.PACKAGE_NAME;
+        if (list.size() > 0) {
+            rootPackage = list.get(0);
+        }
+        return String.format("%s.%s", rootPackage, "andserver.processor.generator");
+    }
+
     @Override
     protected void addAnnotation(Set<Class<? extends Annotation>> classSet) {
         classSet.add(Interceptor.class);
+        classSet.add(AppInfo.class);
     }
 }

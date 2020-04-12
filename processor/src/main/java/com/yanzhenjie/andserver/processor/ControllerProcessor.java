@@ -15,8 +15,6 @@
  */
 package com.yanzhenjie.andserver.processor;
 
-import com.google.auto.common.MoreElements;
-import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -27,6 +25,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.yanzhenjie.andserver.annotation.Addition;
+import com.yanzhenjie.andserver.annotation.AppInfo;
 import com.yanzhenjie.andserver.annotation.Controller;
 import com.yanzhenjie.andserver.annotation.CookieValue;
 import com.yanzhenjie.andserver.annotation.DeleteMapping;
@@ -73,16 +72,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeKind;
@@ -92,7 +94,6 @@ import javax.lang.model.util.Elements;
 /**
  * Created by Zhenjie Yan on 2018/6/8.
  */
-@AutoService(Processor.class)
 public class ControllerProcessor extends BaseProcessor implements Patterns {
 
     private Filer mFiler;
@@ -207,6 +208,9 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             return false;
         }
 
+        Set<? extends Element> appSet = roundEnv.getElementsAnnotatedWith(AppInfo.class);
+        String registerPackageName = getRegisterPackageName(appSet);
+
         Map<TypeElement, List<ExecutableElement>> controllers = new HashMap<>();
         findMapping(roundEnv.getElementsAnnotatedWith(RequestMapping.class), controllers);
         findMapping(roundEnv.getElementsAnnotatedWith(GetMapping.class), controllers);
@@ -216,7 +220,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         findMapping(roundEnv.getElementsAnnotatedWith(DeleteMapping.class), controllers);
 
         if (!controllers.isEmpty()) {
-            createHandlerAdapter(controllers);
+            createHandlerAdapter(registerPackageName, controllers);
         }
         return true;
     }
@@ -259,7 +263,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         }
     }
 
-    private void createHandlerAdapter(Map<TypeElement, List<ExecutableElement>> controllers) {
+    private void createHandlerAdapter(String registerPackageName,
+        Map<TypeElement, List<ExecutableElement>> controllers) {
         Map<String, List<String>> adapterMap = new HashMap<>();
         for (Map.Entry<TypeElement, List<ExecutableElement>> entry : controllers.entrySet()) {
             TypeElement type = entry.getKey();
@@ -268,11 +273,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
             String typeName = type.getQualifiedName().toString();
             Mapping typeMapping = getTypeMapping(type);
-            if (typeMapping != null) {
-                validateMapping(typeMapping, typeName);
-            } else {
-                typeMapping = new Null();
-            }
+            validateMapping(typeMapping, typeName);
 
             TypeName controllerType = TypeName.get(type.asType());
             FieldSpec hostField = FieldSpec.builder(controllerType, "mHost", Modifier.PRIVATE).build();
@@ -316,7 +317,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                 .addStatement("return mHost")
                 .build();
 
-            String packageName = MoreElements.getPackage(type).getQualifiedName().toString();
+            String adapterPackageName = getPackageName(type).getQualifiedName().toString();
             String className = String.format("%sAdapter", type.getSimpleName());
             TypeSpec adapterClass = TypeSpec.classBuilder(className)
                 .addJavadoc(Constants.DOC_EDIT_WARN)
@@ -329,7 +330,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                 .addMethod(hostMethod)
                 .build();
 
-            JavaFile javaFile = JavaFile.builder(packageName, adapterClass).build();
+            JavaFile javaFile = JavaFile.builder(adapterPackageName, adapterClass).build();
             try {
                 javaFile.writeTo(mFiler);
             } catch (IOException e) {
@@ -342,11 +343,11 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                 adapterList = new ArrayList<>();
                 adapterMap.put(group, adapterList);
             }
-            adapterList.add(packageName + "." + className);
+            adapterList.add(adapterPackageName + "." + className);
         }
 
         if (!adapterMap.isEmpty()) {
-            createRegister(adapterMap);
+            createRegister(registerPackageName, adapterMap);
         }
     }
 
@@ -1157,7 +1158,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             .build();
 
 
-        String packageName = MoreElements.getPackage(type).getQualifiedName().toString();
+        String packageName = getPackageName(type).getQualifiedName().toString();
         executeName = StringUtils.capitalize(executeName);
         String className = String.format("%s%sHandler%s", type.getSimpleName(), executeName, "");
         int i = 0;
@@ -1222,7 +1223,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         builder.nextControlFlow("catch (Throwable e)").addStatement("throw new $T(e)", mParamError).endControlFlow();
     }
 
-    private void createRegister(Map<String, List<String>> adapterMap) {
+    private void createRegister(String packageName, Map<String, List<String>> adapterMap) {
         TypeName listTypeName = ParameterizedTypeName.get(ClassName.get(List.class), mAdapter);
         TypeName typeName = ParameterizedTypeName.get(ClassName.get(Map.class), mString, listTypeName);
         FieldSpec mapField = FieldSpec.builder(typeName, "mMap", Modifier.PRIVATE).build();
@@ -1261,7 +1262,6 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             .endControlFlow()
             .build();
 
-        String packageName = Constants.REGISTER_PACKAGE;
         String className = "AdapterRegister";
         TypeSpec handlerClass = TypeSpec.classBuilder(className)
             .addJavadoc(Constants.DOC_EDIT_WARN)
@@ -1292,6 +1292,27 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         throw new IllegalStateException(String.format("The type is not a Controller: %1$s.", type));
     }
 
+    private PackageElement getPackageName(Element element) {
+        while (element.getKind() != ElementKind.PACKAGE) {
+            element = element.getEnclosingElement();
+        }
+        return (PackageElement) element;
+    }
+
+    private String getRegisterPackageName(Set<? extends Element> appSet) {
+        List<String> list = appSet.stream()
+            .map((Function<Element, String>) element -> {
+                AppInfo appInfo = element.getAnnotation(AppInfo.class);
+                return appInfo == null ? null : appInfo.value();
+            })
+            .collect(Collectors.toList());
+        String rootPackage = Constants.PACKAGE_NAME;
+        if (list.size() > 0) {
+            rootPackage = list.get(0);
+        }
+        return String.format("%s.%s", rootPackage, "andserver.processor.generator");
+    }
+
     @Override
     protected void addAnnotation(Set<Class<? extends Annotation>> classSet) {
         classSet.add(RequestMapping.class);
@@ -1300,5 +1321,6 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         classSet.add(PutMapping.class);
         classSet.add(PatchMapping.class);
         classSet.add(DeleteMapping.class);
+        classSet.add(AppInfo.class);
     }
 }

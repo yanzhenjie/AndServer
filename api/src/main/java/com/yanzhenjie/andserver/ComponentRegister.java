@@ -43,15 +43,7 @@ import dalvik.system.DexFile;
  */
 public class ComponentRegister {
 
-    private static final String COMPONENT_PACKAGE_NAME = "com.yanzhenjie.andserver.register";
-    private static final String COMPONENT_INTERFACE_NAME = OnRegister.class.getName();
-    private static final String[] COMPONENTS = {
-        COMPONENT_PACKAGE_NAME + ".ConfigRegister",
-        COMPONENT_PACKAGE_NAME + ".InterceptorRegister",
-        COMPONENT_PACKAGE_NAME + ".ResolverRegister",
-        COMPONENT_PACKAGE_NAME + ".ConverterRegister",
-        COMPONENT_PACKAGE_NAME + ".AdapterRegister"
-    };
+    private static final String PROCESSOR_PACKAGE = ".andserver.processor.generator.";
 
     private static final String CODE_CACHE_SECONDARY_DIRECTORY = "code_cache/secondary-dexes";
     private static final String EXTRACTED_NAME_EXT = ".classes";
@@ -67,24 +59,6 @@ public class ComponentRegister {
     }
 
     public void register(Register register, String group) {
-        List<String> classList = new ArrayList<>();
-        registerFromArray(register, group, classList);
-        if (classList.size() < COMPONENTS.length) {
-            registerFromApk(register, group, classList);
-        }
-    }
-
-    public void registerFromArray(Register register, String group, List<String> classList) {
-        for (String component : COMPONENTS) {
-            try {
-                registerClass(register, group, component);
-                classList.add(component);
-            } catch (Exception ignored) {
-            }
-        }
-    }
-
-    public void registerFromApk(Register register, String group, List<String> classList) {
         List<String> paths = getDexFilePaths(mContext);
 
         for (final String path : paths) {
@@ -100,7 +74,7 @@ public class ComponentRegister {
                 Enumeration<String> dexEntries = dexfile.entries();
                 while (dexEntries.hasMoreElements()) {
                     String className = dexEntries.nextElement();
-                    if (className.startsWith(COMPONENT_PACKAGE_NAME) && !classList.contains(className)) {
+                    if (className.contains(PROCESSOR_PACKAGE)) {
                         try {
                             registerClass(register, group, className);
                         } catch (Exception ignored) {
@@ -120,8 +94,7 @@ public class ComponentRegister {
         }
     }
 
-    private void registerClass(Register register, String group, String className)
-        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void registerClass(Register register, String group, String className) throws Exception {
         Class clazz = Class.forName(className);
         if (clazz.isInterface()) {
             return;
@@ -129,12 +102,9 @@ public class ComponentRegister {
 
         Class<?>[] interfaces = clazz.getInterfaces();
         for (Class<?> anInterface : interfaces) {
-            if (COMPONENT_INTERFACE_NAME.equals(anInterface.getName())) {
-                Object obj = clazz.newInstance();
-                if (obj instanceof OnRegister) {
-                    OnRegister onRegister = (OnRegister) obj;
-                    onRegister.onRegister(mContext, group, register);
-                }
+            if (anInterface.isAssignableFrom(OnRegister.class)) {
+                OnRegister load = (OnRegister) clazz.newInstance();
+                load.onRegister(mContext, group, register);
                 break;
             }
         }

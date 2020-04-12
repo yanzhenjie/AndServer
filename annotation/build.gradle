@@ -1,6 +1,18 @@
-apply plugin: rootProject.ext.plugins.javaLibrary
+apply plugin: plugin.javaLibrary
+apply from: '../publish.gradle'
 
 compileJava {
-    sourceCompatibility = JavaVersion.VERSION_1_7
-    targetCompatibility = JavaVersion.VERSION_1_7
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+version = bintray.version
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.groupId = bintray.group
+            pom.artifactId = 'annotation'
+        }
+    }
 }

@@ -2,21 +2,24 @@ apply from: "config.gradle"
 
 buildscript {
     repositories {
-        google()
+        mavenLocal()
+        google { url 'https://maven.aliyun.com/repository/google' }
         jcenter { url 'https://maven.aliyun.com/repository/jcenter' }
         mavenCentral { url 'https://maven.aliyun.com/repository/central' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.1'
+        classpath 'com.android.tools.build:gradle:3.6.2'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
+        classpath 'com.yanzhenjie.andserver:plugin:2.1.1'
     }
 }
 
 allprojects {
     repositories {
-        google()
+        mavenLocal()
+        google { url 'https://maven.aliyun.com/repository/google' }
         jcenter { url 'https://maven.aliyun.com/repository/jcenter' }
         mavenCentral { url 'https://maven.aliyun.com/repository/central' }
     }

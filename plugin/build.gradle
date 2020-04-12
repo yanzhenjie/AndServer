@@ -1,4 +1,5 @@
 apply plugin: plugin.javaLibrary
+apply plugin: plugin.javaPlugin
 apply from: '../publish.gradle'
 
 compileJava {
@@ -12,14 +13,16 @@ uploadArchives {
     repositories {
         mavenDeployer {
             pom.groupId = bintray.group
-            pom.artifactId = 'processor'
+            pom.artifactId = 'plugin'
         }
     }
 }
 
 dependencies {
-    implementation deps.poet
-    implementation deps.apache.lang
-    implementation deps.apache.collections
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    compileOnly gradleApi()
     implementation deps.project.annotation
+    implementation deps.android.plugin
+    implementation deps.poet
 }

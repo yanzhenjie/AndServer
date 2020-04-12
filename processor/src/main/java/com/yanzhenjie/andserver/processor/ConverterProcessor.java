@@ -15,7 +15,6 @@
  */
 package com.yanzhenjie.andserver.processor;
 
-import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -24,6 +23,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.yanzhenjie.andserver.annotation.AppInfo;
 import com.yanzhenjie.andserver.annotation.Converter;
 import com.yanzhenjie.andserver.processor.util.Constants;
 import com.yanzhenjie.andserver.processor.util.Logger;
@@ -37,10 +37,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
@@ -51,7 +52,6 @@ import javax.lang.model.util.Elements;
 /**
  * Created by Zhenjie Yan on 2018/9/11.
  */
-@AutoService(Processor.class)
 public class ConverterProcessor extends BaseProcessor {
 
     private Filer mFiler;
@@ -86,9 +86,12 @@ public class ConverterProcessor extends BaseProcessor {
             return false;
         }
 
+        Set<? extends Element> appSet = roundEnv.getElementsAnnotatedWith(AppInfo.class);
+        String registerPackageName = getRegisterPackageName(appSet);
+
         Map<String, TypeElement> converterMap = findAnnotation(roundEnv);
         if (!converterMap.isEmpty()) {
-            createRegister(converterMap);
+            createRegister(registerPackageName, converterMap);
         }
         return true;
     }
@@ -126,7 +129,7 @@ public class ConverterProcessor extends BaseProcessor {
         return converterMap;
     }
 
-    private void createRegister(Map<String, TypeElement> converterMap) {
+    private void createRegister(String registerPackageName, Map<String, TypeElement> converterMap) {
         TypeName typeName = ParameterizedTypeName.get(ClassName.get(Map.class), mString, mConverter);
         FieldSpec mapField = FieldSpec.builder(typeName, "mMap", Modifier.PRIVATE).build();
 
@@ -154,7 +157,6 @@ public class ConverterProcessor extends BaseProcessor {
             .endControlFlow()
             .build();
 
-        String packageName = Constants.REGISTER_PACKAGE;
         TypeSpec adapterClass = TypeSpec.classBuilder("ConverterRegister")
             .addJavadoc(Constants.DOC_EDIT_WARN)
             .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -164,7 +166,7 @@ public class ConverterProcessor extends BaseProcessor {
             .addMethod(registerMethod)
             .build();
 
-        JavaFile javaFile = JavaFile.builder(packageName, adapterClass).build();
+        JavaFile javaFile = JavaFile.builder(registerPackageName, adapterClass).build();
         try {
             javaFile.writeTo(mFiler);
         } catch (IOException e) {
@@ -180,8 +182,23 @@ public class ConverterProcessor extends BaseProcessor {
         throw new IllegalStateException(String.format("The type is not a Converter: %1$s.", type));
     }
 
+    private String getRegisterPackageName(Set<? extends Element> appSet) {
+        List<String> list = appSet.stream()
+            .map((Function<Element, String>) element -> {
+                AppInfo appInfo = element.getAnnotation(AppInfo.class);
+                return appInfo == null ? null : appInfo.value();
+            })
+            .collect(Collectors.toList());
+        String rootPackage = Constants.PACKAGE_NAME;
+        if (list.size() > 0) {
+            rootPackage = list.get(0);
+        }
+        return String.format("%s.%s", rootPackage, "andserver.processor.generator");
+    }
+
     @Override
     protected void addAnnotation(Set<Class<? extends Annotation>> classSet) {
         classSet.add(Converter.class);
+        classSet.add(AppInfo.class);
     }
 }

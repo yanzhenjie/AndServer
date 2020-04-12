@@ -1,15 +1,16 @@
-apply plugin: rootProject.ext.plugins.android
+apply plugin: plugin.android
+apply plugin: plugin.andServer
 
 android {
-    compileSdkVersion rootProject.ext.android.compileSdkVersion
-    buildToolsVersion rootProject.ext.android.buildToolsVersion
+    compileSdkVersion androidBuild.compileSdkVersion
+    buildToolsVersion androidBuild.buildToolsVersion
 
     defaultConfig {
-        applicationId rootProject.ext.android.applicationId
-        minSdkVersion rootProject.ext.android.sampleMinSdkVersion
-        targetSdkVersion rootProject.ext.android.sampleTargetSdkVersion
-        versionCode rootProject.ext.android.versionCode
-        versionName rootProject.ext.android.versionName
+        applicationId androidBuild.applicationId
+        minSdkVersion androidBuild.sampleMinSdkVersion
+        targetSdkVersion androidBuild.sampleTargetSdkVersion
+        versionCode androidBuild.versionCode
+        versionName androidBuild.versionName
     }
 
     compileOptions {
@@ -37,14 +38,15 @@ android {
 }
 
 dependencies {
-    implementation project(':api')
-    annotationProcessor project(':processor')
+    implementation deps.project.api
+    annotationProcessor deps.project.processor
 
-    implementation rootProject.ext.dependencies.design
-    implementation rootProject.ext.dependencies.appCompat
-    implementation rootProject.ext.dependencies.loading
+    implementation deps.android.material
+    implementation deps.android.compat
 
-    implementation rootProject.ext.dependencies.json
-    implementation rootProject.ext.dependencies.commonsLang
-    implementation rootProject.ext.dependencies.commonsCollections
+    implementation deps.apache.lang
+    implementation deps.apache.collections
+
+    implementation deps.loading
+    implementation deps.json
 }
