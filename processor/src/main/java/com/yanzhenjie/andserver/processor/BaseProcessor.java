@@ -15,12 +15,20 @@
  */
 package com.yanzhenjie.andserver.processor;
 
+import com.squareup.javapoet.TypeName;
+
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * Created by Zhenjie Yan on 2018/6/8.
@@ -45,4 +53,45 @@ public abstract class BaseProcessor extends AbstractProcessor {
     }
 
     protected abstract void addAnnotation(Set<Class<? extends Annotation>> classSet);
+
+    protected boolean isAcceptType(TypeElement element, TypeName type) {
+        TypeMirror mirror = element.getSuperclass();
+        if (mirror == null || mirror.getKind() != TypeKind.DECLARED) {
+            return false;
+        }
+        if (type.equals(TypeName.get(mirror))) {
+            return true;
+        }
+
+        if (mirror instanceof DeclaredType) {
+            Element parent = ((DeclaredType) mirror).asElement();
+            if (parent instanceof TypeElement) {
+                return isAcceptType((TypeElement) parent, type);
+            }
+        }
+        return false;
+    }
+
+    protected boolean isAcceptInterface(TypeElement element, TypeName type) {
+        List<? extends TypeMirror> mirrors = element.getInterfaces();
+
+        for (TypeMirror mirror : mirrors) {
+            if (type.equals(TypeName.get(mirror))) {
+                return true;
+            }
+        }
+
+        TypeMirror mirror = element.getSuperclass();
+        if (mirror == null || mirror.getKind() != TypeKind.DECLARED) {
+            return false;
+        }
+
+        if (mirror instanceof DeclaredType) {
+            Element parent = ((DeclaredType) mirror).asElement();
+            if (parent instanceof TypeElement) {
+                return isAcceptInterface((TypeElement) parent, type);
+            }
+        }
+        return false;
+    }
 }
