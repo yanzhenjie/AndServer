@@ -108,13 +108,13 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
                 if (!isScanned) {
                     List<String> fileList = mReader.scanFile(mRootPath);
                     for (String filePath : fileList) {
-                        String httpPath = filePath.substring(mRootPath.length(), filePath.length());
+                        String httpPath = filePath.substring(mRootPath.length());
                         httpPath = addStartSlash(httpPath);
                         mPatternMap.put(httpPath, filePath);
 
                         String indexFileName = getIndexFileName();
-                        if (filePath.endsWith(indexFileName)) {
-                            httpPath = filePath.substring(0, filePath.indexOf(indexFileName) - 1);
+                        if (httpPath.endsWith(indexFileName)) {
+                            httpPath = httpPath.substring(0, httpPath.indexOf(indexFileName) - 1);
                             httpPath = addStartSlash(httpPath);
                             mPatternMap.put(httpPath, filePath);
                             mPatternMap.put(addEndSlash(httpPath), filePath);
