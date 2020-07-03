@@ -101,8 +101,8 @@ server.shutdown();
 
 ```gradle
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.1.1'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.1'
+    implementation 'com.yanzhenjie.andserver:api:2.1.2'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.2'
     ...
 }
 ```
@@ -117,14 +117,16 @@ Add the plugin to your project build script :
 
 ```gradle
 buildscript {
-    ...
+    repositories {
+        mavenCentral()
+        google()
+    }
 
     dependencies {
+        classpath 'com.yanzhenjie.andserver:plugin:2.1.2'
         ...
-        classpath 'com.yanzhenjie.andserver:plugin:2.1.1'
     }
 }
-
 ...
 ```
 
