@@ -38,8 +38,8 @@ android {
 }
 
 dependencies {
-    implementation deps.project.api
-    annotationProcessor deps.project.processor
+    implementation project(':api')
+    annotationProcessor project(':processor')
 
     implementation deps.android.material
     implementation deps.android.compat

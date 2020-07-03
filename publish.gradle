@@ -1,61 +1,132 @@
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-configurations.all {
-    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
+group = PROJECT_GROUP
+version = PROJECT_VERSION
 
 def toRemote = project.hasProperty('toRemote') ? Boolean.valueOf("${toRemote}") : false
-println("toRemote：${toRemote}")
+println("publish to remote repository：${toRemote}")
+
+def getUsername() {
+    return hasProperty('USERNAME') ? USERNAME : ""
+}
+
+def getPassword() {
+    return hasProperty('PASSWORD') ? PASSWORD : ""
+}
+
+def configurePom(pom) {
+    pom.groupId = PROJECT_GROUP
+    pom.artifactId = POM_ARTIFACT_ID
+    pom.version = PROJECT_VERSION
+
+    pom.project {
+        name POM_NAME
+        packaging POM_PACKAGING
+        description POM_DESCRIPTION
+        url POM_URL
+
+        scm {
+            url POM_SCM_URL
+            connection POM_SCM_CONNECTION
+            developerConnection POM_SCM_DEV_CONNECTION
+        }
+
+        licenses {
+            license {
+                name POM_LICENCE_NAME
+                url POM_LICENCE_URL
+                distribution POM_LICENCE_DIST
+            }
+        }
+
+        developers {
+            developer {
+                id POM_DEVELOPER_ID
+                name POM_DEVELOPER_NAME
+            }
+        }
+    }
+}
 
 afterEvaluate { project ->
     uploadArchives {
         repositories {
             mavenDeployer {
                 beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-                pom.version = version
-                repository(url: mavenLocal().getUrl())
+
+                if (toRemote) {
+                    repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                        authentication(userName: getUsername(), password: getPassword())
+                    }
+                    snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                        authentication(userName: getUsername(), password: getPassword())
+                    }
+                } else {
+                    repository(url: mavenLocal().getUrl())
+                }
+
+                configurePom(pom)
+            }
+        }
+    }
+
+    signing {
+        required { !version.concat('SNAPSHOT') && gradle.taskGraph.hasTask("uploadArchives") }
+        sign configurations.archives
+    }
+
+    if (project.getPlugins().hasPlugin('com.android.library')) {
+        task install(type: Upload, dependsOn: assemble) {
+            repositories.mavenInstaller {
+                configuration = configurations.archives
+                configurePom(pom)
             }
         }
 
-        signing {
-            required { toRemote && gradle.taskGraph.hasTask("uploadArchives") }
-            sign configurations.archives
+        task javadoc(type: Javadoc) {
+            source = android.sourceSets.main.java.source
+            classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+            failOnError false
         }
 
-        if (project.getPlugins().hasPlugin("com.android.application")
-            || project.getPlugins().hasPlugin("com.android.library")) {
+        task javadocJar(type: Jar, dependsOn: javadoc) {
+            classifier = 'javadoc'
+            from javadoc.destinationDir
+        }
 
-            task javadoc(type: Javadoc) {
-                source = android.sourceSets.main.java.source
-                classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-                failOnError false
-            }
-
-            task javadocJar(type: Jar, dependsOn: javadoc) {
-                classifier = 'javadoc'
-                from javadoc.destinationDir
-            }
-
-            task sourcesJar(type: Jar) {
-                classifier = 'sources'
-                from android.sourceSets.main.java.source
-            }
-        } else {
-            task javadocJar(type: Jar, dependsOn: javadoc) {
-                classifier = 'javadoc'
-                from javadoc.destinationDir
-            }
-            task sourcesJar(type: Jar, dependsOn: classes) {
-                classifier = 'sources'
-                from sourceSets.main.allSource
+        task sourcesJar(type: Jar) {
+            classifier = 'sources'
+            from android.sourceSets.main.java.source
+        }
+    } else {
+        install {
+            repositories.mavenInstaller {
+                configurePom(pom)
             }
         }
 
-        artifacts {
-            archives javadocJar
-            archives sourcesJar
+        task javadocJar(type: Jar, dependsOn: javadoc) {
+            classifier = 'javadoc'
+            from javadoc.destinationDir
         }
+
+        task sourcesJar(type: Jar, dependsOn: classes) {
+            classifier = 'sources'
+            from sourceSets.main.allSource
+        }
+    }
+
+    if (JavaVersion.current().isJava8Compatible()) {
+        allprojects {
+            tasks.withType(Javadoc) {
+                options.addStringOption('Xdoclint:none', '-quiet')
+            }
+        }
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
     }
 }

@@ -21,46 +21,22 @@ ext {
         sampleTargetSdkVersion : 22,
 
         versionCode            : 25,
-        versionName            : '2.1.1'
-    ]
-
-    bintray = [
-        version       : '2.1.1',
-        group         : 'com.yanzhenjie.andserver',
-
-        siteUrl       : 'https://github.com/yanzhenjie/AndServer',
-        gitUrl        : 'git@github.com:yanzhenjie/AndServer.git',
-
-        packaging     : 'aar',
-        name          : 'AndServer',
-        description   : 'Android web server',
-
-        licenseName   : 'The Apache Software License, Version 2.0',
-        licenseUrl    : 'http://www.apache.org/licenses/LICENSE-2.0.txt',
-
-        developerId   : 'yanzhenjie',
-        developerName : 'yanzhenjie',
-        developerEmail: 'im.yanzhenjie@gmail.com',
-
-        binrayLibrary : "",
-        bintrayRepo   : "maven",
-        bintrayUser   : 'yolanda',
-        bintrayLicense: "Apache-2.0"
+        versionName            : '2.1.2'
     ]
 
     deps = [
         android: [
-            plugin    : 'com.android.tools.build:gradle:3.6.2',
+            plugin    : 'com.android.tools.build:gradle:3.6.3',
             annotation: 'androidx.annotation:annotation:1.1.0',
             compat    : 'androidx.appcompat:appcompat:1.1.0',
             material  : 'com.google.android.material:material:1.1.0',
         ],
 
         project: [
-            annotation: "${bintray.group}:annotation:${bintray.version}",
-            api       : "${bintray.group}:api:${bintray.version}",
-            processor : "${bintray.group}:processor:${bintray.version}",
-            plugin    : "${bintray.group}:plugin:${bintray.version}"
+            annotation: "${PROJECT_GROUP}:annotation:${PROJECT_VERSION}",
+            api       : "${PROJECT_GROUP}:api:${PROJECT_VERSION}",
+            processor : "${PROJECT_GROUP}:processor:${PROJECT_VERSION}",
+            plugin    : "${PROJECT_GROUP}:plugin:${PROJECT_VERSION}"
         ],
 
         apache : [

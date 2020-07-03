@@ -7,22 +7,10 @@ compileJava {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-version = bintray.version
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            pom.groupId = bintray.group
-            pom.artifactId = 'plugin'
-        }
-    }
-}
-
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     compileOnly gradleApi()
-    implementation deps.project.annotation
+    api project(':annotation')
+
     implementation deps.android.plugin
     implementation deps.poet
 }

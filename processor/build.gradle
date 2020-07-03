@@ -6,20 +6,10 @@ compileJava {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-version = bintray.version
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            pom.groupId = bintray.group
-            pom.artifactId = 'processor'
-        }
-    }
-}
-
 dependencies {
+    api project(':annotation')
+
     implementation deps.poet
     implementation deps.apache.lang
     implementation deps.apache.collections
-    implementation deps.project.annotation
 }

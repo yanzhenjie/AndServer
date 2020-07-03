@@ -1,17 +1,6 @@
 apply plugin: plugin.androidLibrary
 apply from: '../publish.gradle'
 
-version = bintray.version
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            pom.groupId = bintray.group
-            pom.artifactId = 'api'
-        }
-    }
-}
-
 android {
     compileSdkVersion androidBuild.compileSdkVersion
     buildToolsVersion androidBuild.buildToolsVersion
@@ -31,7 +20,7 @@ android {
 }
 
 dependencies {
-    api deps.project.annotation
+    api project(':annotation')
 
     implementation deps.apache.httpcore
     implementation deps.apache.fileupload
