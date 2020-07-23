@@ -1,5 +1,4 @@
 apply plugin: plugin.androidLibrary
-apply from: '../publish.gradle'
 
 android {
     compileSdkVersion androidBuild.compileSdkVersion
@@ -8,14 +7,21 @@ android {
     defaultConfig {
         minSdkVersion androidBuild.libraryMinSdkVersion
         targetSdkVersion androidBuild.libraryTargetSdkVersion
-        versionCode androidBuild.versionCode
-        versionName androidBuild.versionName
         consumerProguardFiles 'proguard-rules.txt'
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            buildConfigField "java.lang.String", "PROJECT_VERSION", "\"${PROJECT_VERSION}\""
+        }
+        debug {
+            buildConfigField "java.lang.String", "PROJECT_VERSION", "\"${PROJECT_VERSION}\""
+        }
     }
 }
 
@@ -26,3 +32,5 @@ dependencies {
     implementation deps.apache.fileupload
     compileOnly deps.android.annotation
 }
+
+apply from: '../bintray.gradle'

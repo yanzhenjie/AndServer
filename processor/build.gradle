@@ -1,5 +1,4 @@
 apply plugin: plugin.javaLibrary
-apply from: '../publish.gradle'
 
 compileJava {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -13,3 +12,5 @@ dependencies {
     implementation deps.apache.lang
     implementation deps.apache.collections
 }
+
+apply from: '../bintray.gradle'

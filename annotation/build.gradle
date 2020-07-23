@@ -1,7 +1,8 @@
 apply plugin: plugin.javaLibrary
-apply from: '../publish.gradle'
 
 compileJava {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
 }
+
+apply from: '../bintray.gradle'

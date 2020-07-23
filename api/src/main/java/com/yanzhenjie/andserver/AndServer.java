@@ -28,7 +28,7 @@ import com.yanzhenjie.andserver.server.WebServer;
 public class AndServer {
 
     public static final String TAG = "AndServer";
-    public static final String INFO = String.format("AndServer/%1$s", BuildConfig.VERSION_NAME);
+    public static final String INFO = String.format("AndServer/%1$s", BuildConfig.PROJECT_VERSION);
 
     /**
      * Create a builder for the web server.

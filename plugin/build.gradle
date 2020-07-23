@@ -1,6 +1,5 @@
 apply plugin: plugin.javaLibrary
 apply plugin: plugin.javaPlugin
-apply from: '../publish.gradle'
 
 compileJava {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -14,3 +13,5 @@ dependencies {
     implementation deps.android.plugin
     implementation deps.poet
 }
+
+apply from: '../bintray.gradle'
