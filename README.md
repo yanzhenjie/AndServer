@@ -101,8 +101,8 @@ server.shutdown();
 
 ```gradle
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.1.2'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.2'
+    implementation 'com.yanzhenjie.andserver:api:2.1.3'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.3'
     ...
 }
 ```
