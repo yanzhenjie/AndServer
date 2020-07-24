@@ -9,6 +9,9 @@ afterEvaluate { project ->
         repositories {
             mavenDeployer {
                 repository(url: mavenLocal().getUrl())
+                pom.groupId = PROJECT_GROUP
+                pom.artifactId = POM_ARTIFACT_ID
+                pom.version = PROJECT_VERSION
             }
         }
     }
@@ -68,9 +71,15 @@ install {
     repositories.mavenInstaller {
         pom {
             project {
-                packaging POM_PACKAGING
                 name POM_NAME
+                description POM_DESCRIPTION
                 url POM_URL
+
+                packaging POM_PACKAGING
+                groupId PROJECT_GROUP
+                artifactId POM_ARTIFACT_ID
+                version PROJECT_VERSION
+
                 licenses {
                     license {
                         name POM_LICENCE_NAME

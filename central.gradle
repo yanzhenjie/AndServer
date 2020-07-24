@@ -62,10 +62,10 @@ afterEvaluate { project ->
                     snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
                         authentication(userName: getSonatypeUserName(), password: getSonatypePassword())
                     }
-                    configurePom(pom)
                 } else {
                     repository(url: mavenLocal().getUrl())
                 }
+                configurePom(pom)
             }
         }
     }
