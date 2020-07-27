@@ -1,4 +1,634 @@
-<!DOCTYPE HTML> <html lang=""> <head> <meta charset="UTF-8"> <meta content="text/html; charset=utf-8" http-equiv="Content-Type"> <title>MultipartFile · GitBook</title> <meta http-equiv="X-UA-Compatible" content="IE=edge"/> <meta name="description" content=""> <meta name="generator" content="GitBook 3.2.3"> <link rel="stylesheet" href="../gitbook/style.css"> <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css"> <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css"> <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css"> <meta name="HandheldFriendly" content="true"/> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"> <meta name="apple-mobile-web-app-capable" content="yes"> <meta name="apple-mobile-web-app-status-bar-style" content="black"> <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png"> <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon"> <link rel="next" href="MessageConverter.html"/> <link rel="prev" href="./"/> </head> <body> <div class="book"> <div class="book-summary"> <div id="book-search-input" role="search"> <input type="text" placeholder="Type to search"/> </div> <nav role="navigation"> <ul class="summary"> <li class="chapter " data-level="1.1" data-path="../"> <a href="../"> 概述 </a> </li> <li class="chapter " data-level="1.2" data-path="../sample/"> <a href="../sample/"> 入门 </a> </li> <li class="chapter " data-level="1.3" data-path="../server/"> <a href="../server/"> 服务器 </a> </li> <li class="chapter " data-level="1.4" data-path="../annotation/"> <a href="../annotation/"> 注解 </a> <ul class="articles"> <li class="chapter " data-level="1.4.1" data-path="../annotation/Controller.html"> <a href="../annotation/Controller.html"> Controller </a> </li> <li class="chapter " data-level="1.4.2" data-path="../annotation/RestController.html"> <a href="../annotation/RestController.html"> RestController </a> </li> <li class="chapter " data-level="1.4.3" data-path="../annotation/RequestMapping.html"> <a href="../annotation/RequestMapping.html"> RequestMapping </a> </li> <li class="chapter " data-level="1.4.4" data-path="../annotation/RequestParam.html"> <a href="../annotation/RequestParam.html"> RequestParam </a> </li> <li class="chapter " data-level="1.4.5" data-path="../annotation/PathVariable.html"> <a href="../annotation/PathVariable.html"> PathVariable </a> </li> <li class="chapter " data-level="1.4.6" data-path="../annotation/QueryParam.html"> <a href="../annotation/QueryParam.html"> QueryParam </a> </li> <li class="chapter " data-level="1.4.7" data-path="../annotation/FormPart.html"> <a href="../annotation/FormPart.html"> FormPart </a> </li> <li class="chapter " data-level="1.4.8" data-path="../annotation/ResponseBody.html"> <a href="../annotation/ResponseBody.html"> ResponseBody </a> </li> <li class="chapter " data-level="1.4.9" data-path="../annotation/RequestBody.html"> <a href="../annotation/RequestBody.html"> RequestBody </a> </li> <li class="chapter " data-level="1.4.10" data-path="../annotation/CookieValue.html"> <a href="../annotation/CookieValue.html"> CookieValue </a> </li> <li class="chapter " data-level="1.4.11" data-path="../annotation/RequestHeader.html"> <a href="../annotation/RequestHeader.html"> RequestHeader </a> </li> <li class="chapter " data-level="1.4.12" data-path="../annotation/Addition.html"> <a href="../annotation/Addition.html"> Addition </a> </li> <li class="chapter " data-level="1.4.13" data-path="../annotation/Interceptor.html"> <a href="../annotation/Interceptor.html"> Interceptor </a> </li> <li class="chapter " data-level="1.4.14" data-path="../annotation/Converter.html"> <a href="../annotation/Converter.html"> Converter </a> </li> <li class="chapter " data-level="1.4.15" data-path="../annotation/Resolver.html"> <a href="../annotation/Resolver.html"> Resolver </a> </li> <li class="chapter " data-level="1.4.16" data-path="../annotation/Website.html"> <a href="../annotation/Website.html"> Website </a> </li> </ul> </li> <li class="chapter " data-level="1.5" data-path="./"> <a href="./"> 类与接口 </a> <ul class="articles"> <li class="chapter active" data-level="1.5.1" data-path="MultipartFile.html"> <a href="MultipartFile.html"> MultipartFile </a> </li> <li class="chapter " data-level="1.5.2" data-path="MessageConverter.html"> <a href="MessageConverter.html"> MessageConverter </a> </li> <li class="chapter " data-level="1.5.3" data-path="HandlerInterceptor.html"> <a href="HandlerInterceptor.html"> HandlerInterceptor </a> </li> <li class="chapter " data-level="1.5.4" data-path="ExceptionResolver.html"> <a href="ExceptionResolver.html"> ExeceptionResolver </a> </li> <li class="chapter " data-level="1.5.5" data-path="ResponseBody.html"> <a href="ResponseBody.html"> ResponseBody </a> </li> <li class="chapter " data-level="1.5.6" data-path="RequestBody.html"> <a href="RequestBody.html"> RequestBody </a> </li> <li class="chapter " data-level="1.5.7" data-path="Cookie.html"> <a href="Cookie.html"> Cookie </a> </li> <li class="chapter " data-level="1.5.8" data-path="Addition.html"> <a href="Addition.html"> Addition </a> </li> </ul> </li> <li class="chapter " data-level="1.6" data-path="../website/"> <a href="../website/"> 网站 </a> <ul class="articles"> <li class="chapter " data-level="1.6.1" data-path="../website/AssetsWebsite.html"> <a href="../website/AssetsWebsite.html"> AssetsWebsite </a> </li> <li class="chapter " data-level="1.6.2" data-path="../website/StorageWebsite.html"> <a href="../website/StorageWebsite.html"> StorageWebsite </a> </li> <li class="chapter " data-level="1.6.3" data-path="../website/FileBrowser.html"> <a href="../website/FileBrowser.html"> FileBrowser </a> </li> </ul> </li> <li class="chapter " data-level="1.7" data-path="../cache/"> <a href="../cache/"> 缓存 </a> <ul class="articles"> <li class="chapter " data-level="1.7.1" data-path="../cache/ETag.html"> <a href="../cache/ETag.html"> ETag </a> </li> <li class="chapter " data-level="1.7.2" data-path="../cache/Modified.html"> <a href="../cache/Modified.html"> LastModified </a> </li> </ul> </li> <li class="divider"></li> <li> <a href="https://www.gitbook.com" target="blank" class="gitbook-link"> Published with GitBook </a> </li> </ul> </nav> </div> <div class="book-body"> <div class="body-inner"> <div class="book-header" role="navigation"> <h1> <i class="fa fa-circle-o-notch fa-spin"></i> <a href="..">MultipartFile</a> </h1> </div> <div class="page-wrapper" tabindex="-1" role="main"> <div class="page-inner"> <div id="book-search-results"> <div class="search-noresults"> <section class="normal markdown-section"> <h1 id="multipartfile">MultipartFile</h1> <p>&#x8868;&#x793A;&#x5BA2;&#x6237;&#x7AEF;&#x5728;&#x8868;&#x5355;&#x4E2D;&#x4E0A;&#x4F20;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x5F00;&#x53D1;&#x8005;&#x53EF;&#x4EE5;&#x5C06;&#x6587;&#x4EF6;&#x8F6C;&#x79FB;&#x5230;&#x60F3;&#x8981;&#x4FDD;&#x5B58;&#x7684;&#x76EE;&#x6807;&#x4F4D;&#x7F6E;&#x3002;</p> <pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>MultipartFile · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="MessageConverter.html" />
+    
+    
+    <link rel="prev" href="./" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    概述
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../sample/">
+            
+                <a href="../sample/">
+            
+                    
+                    入门
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../server/">
+            
+                <a href="../server/">
+            
+                    
+                    服务器
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../annotation/">
+            
+                <a href="../annotation/">
+            
+                    
+                    注解
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../annotation/Controller.html">
+            
+                <a href="../annotation/Controller.html">
+            
+                    
+                    Controller
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../annotation/RestController.html">
+            
+                <a href="../annotation/RestController.html">
+            
+                    
+                    RestController
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../annotation/RequestMapping.html">
+            
+                <a href="../annotation/RequestMapping.html">
+            
+                    
+                    RequestMapping
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../annotation/RequestParam.html">
+            
+                <a href="../annotation/RequestParam.html">
+            
+                    
+                    RequestParam
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../annotation/PathVariable.html">
+            
+                <a href="../annotation/PathVariable.html">
+            
+                    
+                    PathVariable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../annotation/QueryParam.html">
+            
+                <a href="../annotation/QueryParam.html">
+            
+                    
+                    QueryParam
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="../annotation/FormPart.html">
+            
+                <a href="../annotation/FormPart.html">
+            
+                    
+                    FormPart
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="../annotation/ResponseBody.html">
+            
+                <a href="../annotation/ResponseBody.html">
+            
+                    
+                    ResponseBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="../annotation/RequestBody.html">
+            
+                <a href="../annotation/RequestBody.html">
+            
+                    
+                    RequestBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="../annotation/CookieValue.html">
+            
+                <a href="../annotation/CookieValue.html">
+            
+                    
+                    CookieValue
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="../annotation/RequestHeader.html">
+            
+                <a href="../annotation/RequestHeader.html">
+            
+                    
+                    RequestHeader
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="../annotation/Addition.html">
+            
+                <a href="../annotation/Addition.html">
+            
+                    
+                    Addition
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.13" data-path="../annotation/Interceptor.html">
+            
+                <a href="../annotation/Interceptor.html">
+            
+                    
+                    Interceptor
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.14" data-path="../annotation/Converter.html">
+            
+                <a href="../annotation/Converter.html">
+            
+                    
+                    Converter
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.15" data-path="../annotation/Resolver.html">
+            
+                <a href="../annotation/Resolver.html">
+            
+                    
+                    Resolver
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.16" data-path="../annotation/Website.html">
+            
+                <a href="../annotation/Website.html">
+            
+                    
+                    Website
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    类与接口
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.5.1" data-path="MultipartFile.html">
+            
+                <a href="MultipartFile.html">
+            
+                    
+                    MultipartFile
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="MessageConverter.html">
+            
+                <a href="MessageConverter.html">
+            
+                    
+                    MessageConverter
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="HandlerInterceptor.html">
+            
+                <a href="HandlerInterceptor.html">
+            
+                    
+                    HandlerInterceptor
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="ExceptionResolver.html">
+            
+                <a href="ExceptionResolver.html">
+            
+                    
+                    ExeceptionResolver
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="ResponseBody.html">
+            
+                <a href="ResponseBody.html">
+            
+                    
+                    ResponseBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" data-path="RequestBody.html">
+            
+                <a href="RequestBody.html">
+            
+                    
+                    RequestBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" data-path="Cookie.html">
+            
+                <a href="Cookie.html">
+            
+                    
+                    Cookie
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.8" data-path="Addition.html">
+            
+                <a href="Addition.html">
+            
+                    
+                    Addition
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../website/">
+            
+                <a href="../website/">
+            
+                    
+                    网站
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../website/AssetsWebsite.html">
+            
+                <a href="../website/AssetsWebsite.html">
+            
+                    
+                    AssetsWebsite
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../website/StorageWebsite.html">
+            
+                <a href="../website/StorageWebsite.html">
+            
+                    
+                    StorageWebsite
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../website/FileBrowser.html">
+            
+                <a href="../website/FileBrowser.html">
+            
+                    
+                    FileBrowser
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../cache/">
+            
+                <a href="../cache/">
+            
+                    
+                    缓存
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../cache/ETag.html">
+            
+                <a href="../cache/ETag.html">
+            
+                    
+                    ETag
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2" data-path="../cache/Modified.html">
+            
+                <a href="../cache/Modified.html">
+            
+                    
+                    LastModified
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >MultipartFile</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="multipartfile">MultipartFile</h1>
+<p>&#x8868;&#x793A;&#x5BA2;&#x6237;&#x7AEF;&#x5728;&#x8868;&#x5355;&#x4E2D;&#x4E0A;&#x4F20;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x5F00;&#x53D1;&#x8005;&#x53EF;&#x4EE5;&#x5C06;&#x6587;&#x4EF6;&#x8F6C;&#x79FB;&#x5230;&#x60F3;&#x8981;&#x4FDD;&#x5B58;&#x7684;&#x76EE;&#x6807;&#x4F4D;&#x7F6E;&#x3002;</p>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UploadController</span> </span>{
 
     <span class="hljs-meta">@PostMapping</span>(<span class="hljs-string">&quot;/upload&quot;</span>)
@@ -7,7 +637,20 @@
         ...
     }
 }
-</code></pre> <h2 id="&#x65B9;&#x6CD5;&#x8BF4;&#x660E;">&#x65B9;&#x6CD5;&#x8BF4;&#x660E;</h2> <ul> <li>getName()&#xFF0C;&#x83B7;&#x53D6;&#x8BE5;&#x6587;&#x4EF6;&#x7684;<code>key</code>&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8868;&#x5355;&#x4E2D;&#x7684;<code>name</code></li> <li>getFilename()&#xFF0C;&#x83B7;&#x53D6;&#x8BE5;&#x6587;&#x4EF6;&#x540D;&#x79F0;&#xFF0C;&#x53EF;&#x80FD;&#x4E3A;&#x7A7A;</li> <li>getContentType()&#xFF0C;&#x83B7;&#x53D6;&#x8BE5;&#x6587;&#x4EF6;&#x7684;&#x5185;&#x5BB9;&#x7C7B;&#x578B;</li> <li>isEmpty()&#xFF0C;&#x5224;&#x65AD;&#x8BE5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x662F;&#x975E;&#x7A7A;&#x7684;</li> <li>getSize()&#xFF0C;&#x83B7;&#x53D6;&#x6587;&#x4EF6;&#x5927;&#x5C0F;</li> <li>getBytes()&#xFF0C;&#x83B7;&#x53D6;&#x6587;&#x4EF6;&#x7684;<code>byte</code>&#x6570;&#x7EC4;&#xFF0C;&#x4E0D;&#x63A8;&#x8350;&#x4F7F;&#x7528;</li> <li>getStream()&#xFF0C;&#x83B7;&#x53D6;&#x8BE5;&#x6587;&#x4EF6;&#x7684;&#x8F93;&#x5165;&#x6D41;</li> <li>transferTo(File)&#xFF0C;&#x8F6C;&#x79FB;&#x8BE5;&#x6587;&#x4EF6;&#x5230;&#x76EE;&#x6807;&#x4F4D;&#x7F6E;</li> </ul> <h2 id="&#x793A;&#x4F8B;">&#x793A;&#x4F8B;</h2> <pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+</code></pre>
+<h2 id="&#x65B9;&#x6CD5;&#x8BF4;&#x660E;">&#x65B9;&#x6CD5;&#x8BF4;&#x660E;</h2>
+<ul>
+<li>getName()&#xFF0C;&#x83B7;&#x53D6;&#x8BE5;&#x6587;&#x4EF6;&#x7684;<code>key</code>&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8868;&#x5355;&#x4E2D;&#x7684;<code>name</code></li>
+<li>getFilename()&#xFF0C;&#x83B7;&#x53D6;&#x8BE5;&#x6587;&#x4EF6;&#x540D;&#x79F0;&#xFF0C;&#x53EF;&#x80FD;&#x4E3A;&#x7A7A;</li>
+<li>getContentType()&#xFF0C;&#x83B7;&#x53D6;&#x8BE5;&#x6587;&#x4EF6;&#x7684;&#x5185;&#x5BB9;&#x7C7B;&#x578B;</li>
+<li>isEmpty()&#xFF0C;&#x5224;&#x65AD;&#x8BE5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x662F;&#x975E;&#x7A7A;&#x7684;</li>
+<li>getSize()&#xFF0C;&#x83B7;&#x53D6;&#x6587;&#x4EF6;&#x5927;&#x5C0F;</li>
+<li>getBytes()&#xFF0C;&#x83B7;&#x53D6;&#x6587;&#x4EF6;&#x7684;<code>byte</code>&#x6570;&#x7EC4;&#xFF0C;&#x4E0D;&#x63A8;&#x8350;&#x4F7F;&#x7528;</li>
+<li>getStream()&#xFF0C;&#x83B7;&#x53D6;&#x8BE5;&#x6587;&#x4EF6;&#x7684;&#x8F93;&#x5165;&#x6D41;</li>
+<li>transferTo(File)&#xFF0C;&#x8F6C;&#x79FB;&#x8BE5;&#x6587;&#x4EF6;&#x5230;&#x76EE;&#x6807;&#x4F4D;&#x7F6E;</li>
+</ul>
+<h2 id="&#x793A;&#x4F8B;">&#x793A;&#x4F8B;</h2>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UploadController</span> </span>{
 
     <span class="hljs-meta">@PostMapping</span>(path = <span class="hljs-string">&quot;/upload&quot;</span>)
@@ -16,4 +659,84 @@
         file.transferTo(localFile);
     }
 }
-</code></pre> </section> </div> <div class="search-results"> <div class="has-results"> <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1> <ul class="search-results-list"></ul> </div> <div class="no-results"> <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1> </div> </div> </div> </div> </div> </div> <a href="./" class="navigation navigation-prev " aria-label="Previous page: 类与接口"> <i class="fa fa-angle-left"></i> </a> <a href="MessageConverter.html" class="navigation navigation-next " aria-label="Next page: MessageConverter"> <i class="fa fa-angle-right"></i> </a> </div> <script>var gitbook=gitbook||[];gitbook.push(function(){gitbook.page.hasChanged({page:{title:"MultipartFile",level:"1.5.1",depth:2,next:{title:"MessageConverter",level:"1.5.2",depth:2,path:"class/MessageConverter.md",ref:"class/MessageConverter.md",articles:[]},previous:{title:"类与接口",level:"1.5",depth:1,path:"class/README.md",ref:"class/README.md",articles:[{title:"MultipartFile",level:"1.5.1",depth:2,path:"class/MultipartFile.md",ref:"class/MultipartFile.md",articles:[]},{title:"MessageConverter",level:"1.5.2",depth:2,path:"class/MessageConverter.md",ref:"class/MessageConverter.md",articles:[]},{title:"HandlerInterceptor",level:"1.5.3",depth:2,path:"class/HandlerInterceptor.md",ref:"class/HandlerInterceptor.md",articles:[]},{title:"ExeceptionResolver",level:"1.5.4",depth:2,path:"class/ExceptionResolver.md",ref:"class/ExceptionResolver.md",articles:[]},{title:"ResponseBody",level:"1.5.5",depth:2,path:"class/ResponseBody.md",ref:"class/ResponseBody.md",articles:[]},{title:"RequestBody",level:"1.5.6",depth:2,path:"class/RequestBody.md",ref:"class/RequestBody.md",articles:[]},{title:"Cookie",level:"1.5.7",depth:2,path:"class/Cookie.md",ref:"class/Cookie.md",articles:[]},{title:"Addition",level:"1.5.8",depth:2,path:"class/Addition.md",ref:"class/Addition.md",articles:[]}]},dir:"ltr"},config:{gitbook:"*",theme:"default",variables:{},plugins:[],pluginsConfig:{highlight:{},search:{},lunr:{maxIndexSize:1000000,ignoreSpecialCharacters:false},sharing:{facebook:true,twitter:true,google:false,weibo:false,instapaper:false,vk:false,all:["facebook","google","twitter","weibo","instapaper"]},fontsettings:{theme:"white",family:"sans",size:2},"theme-default":{styles:{website:"styles/website.css",pdf:"styles/pdf.css",epub:"styles/epub.css",mobi:"styles/mobi.css",ebook:"styles/ebook.css",print:"styles/print.css"},showLevel:false}},structure:{langs:"LANGS.md",readme:"README.md",glossary:"GLOSSARY.md",summary:"SUMMARY.md"},pdf:{pageNumbers:true,fontSize:12,fontFamily:"Arial",paperSize:"a4",chapterMark:"pagebreak",pageBreaksBefore:"/",margin:{right:62,left:62,top:56,bottom:56}},styles:{website:"styles/website.css",pdf:"styles/pdf.css",epub:"styles/epub.css",mobi:"styles/mobi.css",ebook:"styles/ebook.css",print:"styles/print.css"}},file:{path:"class/MultipartFile.md",mtime:"2018-09-21T14:41:00.241Z",type:"markdown"},gitbook:{version:"3.2.3",time:"2018-09-22T09:51:03.238Z"},basePath:"..",book:{language:""}})});</script> </div> <script src="../gitbook/gitbook.js"></script> <script src="../gitbook/theme.js"></script> <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script> <script src="../gitbook/gitbook-plugin-search/search.js"></script> <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script> <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script> <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script> <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script> </body> </html>
+</code></pre>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: 类与接口">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="MessageConverter.html" class="navigation navigation-next " aria-label="Next page: MessageConverter">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"MultipartFile","level":"1.5.1","depth":2,"next":{"title":"MessageConverter","level":"1.5.2","depth":2,"path":"class/MessageConverter.md","ref":"class/MessageConverter.md","articles":[]},"previous":{"title":"类与接口","level":"1.5","depth":1,"path":"class/README.md","ref":"class/README.md","articles":[{"title":"MultipartFile","level":"1.5.1","depth":2,"path":"class/MultipartFile.md","ref":"class/MultipartFile.md","articles":[]},{"title":"MessageConverter","level":"1.5.2","depth":2,"path":"class/MessageConverter.md","ref":"class/MessageConverter.md","articles":[]},{"title":"HandlerInterceptor","level":"1.5.3","depth":2,"path":"class/HandlerInterceptor.md","ref":"class/HandlerInterceptor.md","articles":[]},{"title":"ExeceptionResolver","level":"1.5.4","depth":2,"path":"class/ExceptionResolver.md","ref":"class/ExceptionResolver.md","articles":[]},{"title":"ResponseBody","level":"1.5.5","depth":2,"path":"class/ResponseBody.md","ref":"class/ResponseBody.md","articles":[]},{"title":"RequestBody","level":"1.5.6","depth":2,"path":"class/RequestBody.md","ref":"class/RequestBody.md","articles":[]},{"title":"Cookie","level":"1.5.7","depth":2,"path":"class/Cookie.md","ref":"class/Cookie.md","articles":[]},{"title":"Addition","level":"1.5.8","depth":2,"path":"class/Addition.md","ref":"class/Addition.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"class/MultipartFile.md","mtime":"2019-10-18T03:43:14.609Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-27T09:34:13.072Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

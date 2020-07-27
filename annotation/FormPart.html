@@ -1,4 +1,639 @@
-<!DOCTYPE HTML> <html lang=""> <head> <meta charset="UTF-8"> <meta content="text/html; charset=utf-8" http-equiv="Content-Type"> <title>FormPart · GitBook</title> <meta http-equiv="X-UA-Compatible" content="IE=edge"/> <meta name="description" content=""> <meta name="generator" content="GitBook 3.2.3"> <link rel="stylesheet" href="../gitbook/style.css"> <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css"> <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css"> <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css"> <meta name="HandheldFriendly" content="true"/> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"> <meta name="apple-mobile-web-app-capable" content="yes"> <meta name="apple-mobile-web-app-status-bar-style" content="black"> <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png"> <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon"> <link rel="next" href="ResponseBody.html"/> <link rel="prev" href="QueryParam.html"/> </head> <body> <div class="book"> <div class="book-summary"> <div id="book-search-input" role="search"> <input type="text" placeholder="Type to search"/> </div> <nav role="navigation"> <ul class="summary"> <li class="chapter " data-level="1.1" data-path="../"> <a href="../"> 概述 </a> </li> <li class="chapter " data-level="1.2" data-path="../sample/"> <a href="../sample/"> 入门 </a> </li> <li class="chapter " data-level="1.3" data-path="../server/"> <a href="../server/"> 服务器 </a> </li> <li class="chapter " data-level="1.4" data-path="./"> <a href="./"> 注解 </a> <ul class="articles"> <li class="chapter " data-level="1.4.1" data-path="Controller.html"> <a href="Controller.html"> Controller </a> </li> <li class="chapter " data-level="1.4.2" data-path="RestController.html"> <a href="RestController.html"> RestController </a> </li> <li class="chapter " data-level="1.4.3" data-path="RequestMapping.html"> <a href="RequestMapping.html"> RequestMapping </a> </li> <li class="chapter " data-level="1.4.4" data-path="RequestParam.html"> <a href="RequestParam.html"> RequestParam </a> </li> <li class="chapter " data-level="1.4.5" data-path="PathVariable.html"> <a href="PathVariable.html"> PathVariable </a> </li> <li class="chapter " data-level="1.4.6" data-path="QueryParam.html"> <a href="QueryParam.html"> QueryParam </a> </li> <li class="chapter active" data-level="1.4.7" data-path="FormPart.html"> <a href="FormPart.html"> FormPart </a> </li> <li class="chapter " data-level="1.4.8" data-path="ResponseBody.html"> <a href="ResponseBody.html"> ResponseBody </a> </li> <li class="chapter " data-level="1.4.9" data-path="RequestBody.html"> <a href="RequestBody.html"> RequestBody </a> </li> <li class="chapter " data-level="1.4.10" data-path="CookieValue.html"> <a href="CookieValue.html"> CookieValue </a> </li> <li class="chapter " data-level="1.4.11" data-path="RequestHeader.html"> <a href="RequestHeader.html"> RequestHeader </a> </li> <li class="chapter " data-level="1.4.12" data-path="Addition.html"> <a href="Addition.html"> Addition </a> </li> <li class="chapter " data-level="1.4.13" data-path="Interceptor.html"> <a href="Interceptor.html"> Interceptor </a> </li> <li class="chapter " data-level="1.4.14" data-path="Converter.html"> <a href="Converter.html"> Converter </a> </li> <li class="chapter " data-level="1.4.15" data-path="Resolver.html"> <a href="Resolver.html"> Resolver </a> </li> <li class="chapter " data-level="1.4.16" data-path="Website.html"> <a href="Website.html"> Website </a> </li> </ul> </li> <li class="chapter " data-level="1.5" data-path="../class/"> <a href="../class/"> 类与接口 </a> <ul class="articles"> <li class="chapter " data-level="1.5.1" data-path="../class/MultipartFile.html"> <a href="../class/MultipartFile.html"> MultipartFile </a> </li> <li class="chapter " data-level="1.5.2" data-path="../class/MessageConverter.html"> <a href="../class/MessageConverter.html"> MessageConverter </a> </li> <li class="chapter " data-level="1.5.3" data-path="../class/HandlerInterceptor.html"> <a href="../class/HandlerInterceptor.html"> HandlerInterceptor </a> </li> <li class="chapter " data-level="1.5.4" data-path="../class/ExceptionResolver.html"> <a href="../class/ExceptionResolver.html"> ExeceptionResolver </a> </li> <li class="chapter " data-level="1.5.5" data-path="../class/ResponseBody.html"> <a href="../class/ResponseBody.html"> ResponseBody </a> </li> <li class="chapter " data-level="1.5.6" data-path="../class/RequestBody.html"> <a href="../class/RequestBody.html"> RequestBody </a> </li> <li class="chapter " data-level="1.5.7" data-path="../class/Cookie.html"> <a href="../class/Cookie.html"> Cookie </a> </li> <li class="chapter " data-level="1.5.8" data-path="../class/Addition.html"> <a href="../class/Addition.html"> Addition </a> </li> </ul> </li> <li class="chapter " data-level="1.6" data-path="../website/"> <a href="../website/"> 网站 </a> <ul class="articles"> <li class="chapter " data-level="1.6.1" data-path="../website/AssetsWebsite.html"> <a href="../website/AssetsWebsite.html"> AssetsWebsite </a> </li> <li class="chapter " data-level="1.6.2" data-path="../website/StorageWebsite.html"> <a href="../website/StorageWebsite.html"> StorageWebsite </a> </li> <li class="chapter " data-level="1.6.3" data-path="../website/FileBrowser.html"> <a href="../website/FileBrowser.html"> FileBrowser </a> </li> </ul> </li> <li class="chapter " data-level="1.7" data-path="../cache/"> <a href="../cache/"> 缓存 </a> <ul class="articles"> <li class="chapter " data-level="1.7.1" data-path="../cache/ETag.html"> <a href="../cache/ETag.html"> ETag </a> </li> <li class="chapter " data-level="1.7.2" data-path="../cache/Modified.html"> <a href="../cache/Modified.html"> LastModified </a> </li> </ul> </li> <li class="divider"></li> <li> <a href="https://www.gitbook.com" target="blank" class="gitbook-link"> Published with GitBook </a> </li> </ul> </nav> </div> <div class="book-body"> <div class="body-inner"> <div class="book-header" role="navigation"> <h1> <i class="fa fa-circle-o-notch fa-spin"></i> <a href="..">FormPart</a> </h1> </div> <div class="page-wrapper" tabindex="-1" role="main"> <div class="page-inner"> <div id="book-search-results"> <div class="search-noresults"> <section class="normal markdown-section"> <h1 id="formpart">FormPart</h1> <p><code>FormPart</code>&#x548C;<a href="RequestParam.html">RequestParam</a>&#x548C;<a href="QueryParam.html">QueryParam</a>&#x4E00;&#x6837;&#x53EA;&#x80FD;&#x7528;&#x5728;&#x65B9;&#x6CD5;&#x53C2;&#x6570;&#x4E0A;&#xFF0C;&#x7528;&#x6765;&#x83B7;&#x53D6;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8BF7;&#x6C42;&#x53C2;&#x6570;&#xFF0C;&#x4E0D;&#x540C;&#x7684;&#x662F;<code>FormPart</code>&#x4EC5;&#x7528;&#x6765;&#x83B7;&#x53D6;Form&#x4E2D;&#x7684;&#x53C2;&#x6570;&#x3002;</p> <p>&#x5927;&#x591A;&#x6570;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x4F7F;&#x7528;<code>RequestParams</code>&#x5DF2;&#x7ECF;&#x53EF;&#x4EE5;&#x83B7;&#x53D6;&#x6240;&#x6709;&#x53C2;&#x6570;&#x4E86;&#xFF0C;&#x5305;&#x62EC;&#x8868;&#x5355;&#x91CC;&#x9762;&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x800C;<code>FormPart</code>&#x53EF;&#x4EE5;&#x8BA9;&#x4E00;&#x4E9B;&#x590D;&#x6742;&#x53C2;&#x6570;&#x53D8;&#x5F97;&#x66F4;&#x7B80;&#x5355;&#x3002;</p> <p><code>FormPart</code>&#x652F;&#x6301;&#x7684;&#x53C2;&#x6570;&#x7C7B;&#x578B;&#x6709;&#x4E24;&#x79CD;&#xFF0C;&#x4E00;&#x79CD;&#x662F;<a href="../class/MultipartFile.html">MultipartFile</a>&#xFF0C;&#x53E6;&#x4E00;&#x79CD;&#x662F;Model&#xFF0C;&#x6BD4;&#x5982;<code>User</code>&#x3001;<code>List&lt;User&gt;</code>&#x548C;<code>Map&lt;String, User&gt;</code>&#x8FD9;&#x6837;&#x7684;&#x53C2;&#x6570;&#x3002;</p> <p>&#x4F8B;&#x5982;&#x5BA2;&#x6237;&#x7AEF;&#x5728;&#x8868;&#x5355;&#x7684;&#x67D0;&#x4E2A;Item&#x63D0;&#x4EA4;&#x4E86;&#x4E00;&#x6BB5;JSON&#x3001;&#x6216;&#x8005;&#x4E00;&#x4E2A;JSON&#x6587;&#x4EF6;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x4F7F;&#x7528;<code>RequestParam</code>&#x83B7;&#x53D6;&#x5230;&#x8FD9;&#x6BB5;JSON&#x4EE5;&#x540E;&#xFF0C;&#x8FD8;&#x9700;&#x8981;&#x628A;&#x8FD9;&#x6BB5;JSON&#x8F6C;&#x4E3A;Model&#x5BF9;&#x8C61;&#xFF0C;&#x8FD9;&#x6837;&#x663E;&#x5F97;&#x6BD4;&#x8F83;&#x9EBB;&#x70E6;&#x3002;&#x5982;&#x679C;&#x4F7F;&#x7528;&#x4E86;<code>FormPart</code>&#x5C31;&#x53EF;&#x4EE5;&#x628A;&#x8FD9;&#x6837;&#x7684;&#x590D;&#x6742;&#x53C2;&#x6570;&#x8F6C;&#x6362;&#x4E3A;&#x670D;&#x52A1;&#x7AEF;&#x7684;Model&#x5BF9;&#x8C61;&#x3002;</p> <p>&#x4E0D;&#x8FC7;&#x4F7F;&#x7528;<code>FormPart</code>&#x9700;&#x8981;&#x5F00;&#x53D1;&#x8005;&#x63D0;&#x4F9B;<code>MessageConverter</code>&#x6765;&#x505A;&#x8F6C;&#x6362;&#xFF0C;&#x5177;&#x4F53;&#x4F7F;&#x7528;&#x65B9;&#x6CD5;&#x8BF7;&#x53C2;&#x8003;<a href="Converter.html">Converter</a>&#x6CE8;&#x89E3;&#x548C;<a href="../class/MessageConverter.html">MessageConverter</a>&#x7C7B;&#x3002;</p> <h2 id="&#x793A;&#x4F8B;">&#x793A;&#x4F8B;</h2> <pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>FormPart · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="ResponseBody.html" />
+    
+    
+    <link rel="prev" href="QueryParam.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    概述
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../sample/">
+            
+                <a href="../sample/">
+            
+                    
+                    入门
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../server/">
+            
+                <a href="../server/">
+            
+                    
+                    服务器
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    注解
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="Controller.html">
+            
+                <a href="Controller.html">
+            
+                    
+                    Controller
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="RestController.html">
+            
+                <a href="RestController.html">
+            
+                    
+                    RestController
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="RequestMapping.html">
+            
+                <a href="RequestMapping.html">
+            
+                    
+                    RequestMapping
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="RequestParam.html">
+            
+                <a href="RequestParam.html">
+            
+                    
+                    RequestParam
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="PathVariable.html">
+            
+                <a href="PathVariable.html">
+            
+                    
+                    PathVariable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="QueryParam.html">
+            
+                <a href="QueryParam.html">
+            
+                    
+                    QueryParam
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.7" data-path="FormPart.html">
+            
+                <a href="FormPart.html">
+            
+                    
+                    FormPart
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="ResponseBody.html">
+            
+                <a href="ResponseBody.html">
+            
+                    
+                    ResponseBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="RequestBody.html">
+            
+                <a href="RequestBody.html">
+            
+                    
+                    RequestBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="CookieValue.html">
+            
+                <a href="CookieValue.html">
+            
+                    
+                    CookieValue
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="RequestHeader.html">
+            
+                <a href="RequestHeader.html">
+            
+                    
+                    RequestHeader
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="Addition.html">
+            
+                <a href="Addition.html">
+            
+                    
+                    Addition
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.13" data-path="Interceptor.html">
+            
+                <a href="Interceptor.html">
+            
+                    
+                    Interceptor
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.14" data-path="Converter.html">
+            
+                <a href="Converter.html">
+            
+                    
+                    Converter
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.15" data-path="Resolver.html">
+            
+                <a href="Resolver.html">
+            
+                    
+                    Resolver
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.16" data-path="Website.html">
+            
+                <a href="Website.html">
+            
+                    
+                    Website
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../class/">
+            
+                <a href="../class/">
+            
+                    
+                    类与接口
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="../class/MultipartFile.html">
+            
+                <a href="../class/MultipartFile.html">
+            
+                    
+                    MultipartFile
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="../class/MessageConverter.html">
+            
+                <a href="../class/MessageConverter.html">
+            
+                    
+                    MessageConverter
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="../class/HandlerInterceptor.html">
+            
+                <a href="../class/HandlerInterceptor.html">
+            
+                    
+                    HandlerInterceptor
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="../class/ExceptionResolver.html">
+            
+                <a href="../class/ExceptionResolver.html">
+            
+                    
+                    ExeceptionResolver
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="../class/ResponseBody.html">
+            
+                <a href="../class/ResponseBody.html">
+            
+                    
+                    ResponseBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" data-path="../class/RequestBody.html">
+            
+                <a href="../class/RequestBody.html">
+            
+                    
+                    RequestBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" data-path="../class/Cookie.html">
+            
+                <a href="../class/Cookie.html">
+            
+                    
+                    Cookie
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.8" data-path="../class/Addition.html">
+            
+                <a href="../class/Addition.html">
+            
+                    
+                    Addition
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../website/">
+            
+                <a href="../website/">
+            
+                    
+                    网站
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../website/AssetsWebsite.html">
+            
+                <a href="../website/AssetsWebsite.html">
+            
+                    
+                    AssetsWebsite
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../website/StorageWebsite.html">
+            
+                <a href="../website/StorageWebsite.html">
+            
+                    
+                    StorageWebsite
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../website/FileBrowser.html">
+            
+                <a href="../website/FileBrowser.html">
+            
+                    
+                    FileBrowser
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../cache/">
+            
+                <a href="../cache/">
+            
+                    
+                    缓存
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../cache/ETag.html">
+            
+                <a href="../cache/ETag.html">
+            
+                    
+                    ETag
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2" data-path="../cache/Modified.html">
+            
+                <a href="../cache/Modified.html">
+            
+                    
+                    LastModified
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >FormPart</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="formpart">FormPart</h1>
+<p><code>FormPart</code>&#x548C;<a href="RequestParam.html">RequestParam</a>&#x548C;<a href="QueryParam.html">QueryParam</a>&#x4E00;&#x6837;&#x53EA;&#x80FD;&#x7528;&#x5728;&#x65B9;&#x6CD5;&#x53C2;&#x6570;&#x4E0A;&#xFF0C;&#x7528;&#x6765;&#x83B7;&#x53D6;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8BF7;&#x6C42;&#x53C2;&#x6570;&#xFF0C;&#x4E0D;&#x540C;&#x7684;&#x662F;<code>FormPart</code>&#x4EC5;&#x7528;&#x6765;&#x83B7;&#x53D6;Form&#x4E2D;&#x7684;&#x53C2;&#x6570;&#x3002;</p>
+<p>&#x5927;&#x591A;&#x6570;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x4F7F;&#x7528;<code>RequestParams</code>&#x5DF2;&#x7ECF;&#x53EF;&#x4EE5;&#x83B7;&#x53D6;&#x6240;&#x6709;&#x53C2;&#x6570;&#x4E86;&#xFF0C;&#x5305;&#x62EC;&#x8868;&#x5355;&#x91CC;&#x9762;&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x800C;<code>FormPart</code>&#x53EF;&#x4EE5;&#x8BA9;&#x4E00;&#x4E9B;&#x590D;&#x6742;&#x53C2;&#x6570;&#x53D8;&#x5F97;&#x66F4;&#x7B80;&#x5355;&#x3002;</p>
+<p><code>FormPart</code>&#x652F;&#x6301;&#x7684;&#x53C2;&#x6570;&#x7C7B;&#x578B;&#x6709;&#x4E24;&#x79CD;&#xFF0C;&#x4E00;&#x79CD;&#x662F;<a href="../class/MultipartFile.html">MultipartFile</a>&#xFF0C;&#x53E6;&#x4E00;&#x79CD;&#x662F;Model&#xFF0C;&#x6BD4;&#x5982;<code>User</code>&#x3001;<code>List&lt;User&gt;</code>&#x548C;<code>Map&lt;String, User&gt;</code>&#x8FD9;&#x6837;&#x7684;&#x53C2;&#x6570;&#x3002;</p>
+<p>&#x4F8B;&#x5982;&#x5BA2;&#x6237;&#x7AEF;&#x5728;&#x8868;&#x5355;&#x7684;&#x67D0;&#x4E2A;Item&#x63D0;&#x4EA4;&#x4E86;&#x4E00;&#x6BB5;JSON&#x3001;&#x6216;&#x8005;&#x4E00;&#x4E2A;JSON&#x6587;&#x4EF6;&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x4F7F;&#x7528;<code>RequestParam</code>&#x83B7;&#x53D6;&#x5230;&#x8FD9;&#x6BB5;JSON&#x4EE5;&#x540E;&#xFF0C;&#x8FD8;&#x9700;&#x8981;&#x628A;&#x8FD9;&#x6BB5;JSON&#x8F6C;&#x4E3A;Model&#x5BF9;&#x8C61;&#xFF0C;&#x8FD9;&#x6837;&#x663E;&#x5F97;&#x6BD4;&#x8F83;&#x9EBB;&#x70E6;&#x3002;&#x5982;&#x679C;&#x4F7F;&#x7528;&#x4E86;<code>FormPart</code>&#x5C31;&#x53EF;&#x4EE5;&#x628A;&#x8FD9;&#x6837;&#x7684;&#x590D;&#x6742;&#x53C2;&#x6570;&#x8F6C;&#x6362;&#x4E3A;&#x670D;&#x52A1;&#x7AEF;&#x7684;Model&#x5BF9;&#x8C61;&#x3002;</p>
+<p>&#x4E0D;&#x8FC7;&#x4F7F;&#x7528;<code>FormPart</code>&#x9700;&#x8981;&#x5F00;&#x53D1;&#x8005;&#x63D0;&#x4F9B;<code>MessageConverter</code>&#x6765;&#x505A;&#x8F6C;&#x6362;&#xFF0C;&#x5177;&#x4F53;&#x4F7F;&#x7528;&#x65B9;&#x6CD5;&#x8BF7;&#x53C2;&#x8003;<a href="Converter.html">Converter</a>&#x6CE8;&#x89E3;&#x548C;<a href="../class/MessageConverter.html">MessageConverter</a>&#x7C7B;&#x3002;</p>
+<h2 id="&#x793A;&#x4F8B;">&#x793A;&#x4F8B;</h2>
+<pre><code class="lang-java"><span class="hljs-meta">@RestController</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">UserController</span> </span>{
 
     <span class="hljs-meta">@PostMapping</span>(<span class="hljs-string">&quot;/goods/publish&quot;</span>)
@@ -13,11 +648,15 @@
         <span class="hljs-keyword">return</span> localFile.getAbsolutePath();
     }
 }
-</code></pre> <p>&#x5982;&#x4E0A;&#x6240;&#x793A;&#xFF0C;&#x7B2C;&#x4E00;&#x4E2A;Http Api&#x5BA2;&#x6237;&#x7AEF;&#x5E94;&#x8BE5;&#x5728;&#x8868;&#x5355;&#x4E2D;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;<code>key</code>&#x4E3A;<code>images</code>&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x5176;<code>value</code>&#x7684;JSON&#x7ED3;&#x6784;&#x5E94;&#x8BE5;&#x662F;&#xFF1A;</p> <pre><code class="lang-json">[
+</code></pre>
+<p>&#x5982;&#x4E0A;&#x6240;&#x793A;&#xFF0C;&#x7B2C;&#x4E00;&#x4E2A;Http Api&#x5BA2;&#x6237;&#x7AEF;&#x5E94;&#x8BE5;&#x5728;&#x8868;&#x5355;&#x4E2D;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;<code>key</code>&#x4E3A;<code>images</code>&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x5176;<code>value</code>&#x7684;JSON&#x7ED3;&#x6784;&#x5E94;&#x8BE5;&#x662F;&#xFF1A;</p>
+<pre><code class="lang-json">[
     <span class="hljs-string">&quot;string1&quot;</span>,
     <span class="hljs-string">&quot;string2&quot;</span>
 ]
-</code></pre> <p>&#x7B2C;&#x4E8C;&#x4E2A;Http Api&#x5BA2;&#x6237;&#x7AEF;&#x5E94;&#x8BE5;&#x5728;&#x8868;&#x5355;&#x4E2D;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;<code>key</code>&#x4E3A;<code>items</code>&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x5176;<code>value</code>&#x7684;JSON&#x7ED3;&#x6784;&#x5E94;&#x8BE5;&#x662F;&#xFF1A;</p> <pre><code class="lang-json">[
+</code></pre>
+<p>&#x7B2C;&#x4E8C;&#x4E2A;Http Api&#x5BA2;&#x6237;&#x7AEF;&#x5E94;&#x8BE5;&#x5728;&#x8868;&#x5355;&#x4E2D;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;<code>key</code>&#x4E3A;<code>items</code>&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x5176;<code>value</code>&#x7684;JSON&#x7ED3;&#x6784;&#x5E94;&#x8BE5;&#x662F;&#xFF1A;</p>
+<pre><code class="lang-json">[
     {
         <span class="hljs-string">&quot;id&quot;</span>: <span class="hljs-string">&quot;123&quot;</span>,
         <span class="hljs-string">&quot;name&quot;</span>:<span class="hljs-string">&quot;Kotlin&quot;</span>
@@ -27,4 +666,93 @@
         <span class="hljs-string">&quot;name&quot;</span>:<span class="hljs-string">&quot;Android&quot;</span>
     }
 ]
-</code></pre> <blockquote> <p>&#x56E0;&#x4E3A;&#x4E0D;&#x540C;&#x7684;<code>MessageConverter</code>&#x5B9E;&#x73B0;&#x53EF;&#x80FD;&#x662F;&#x5BF9;JSON&#x7684;&#x8F6C;&#x5316;&#x3001;XML&#x7684;&#x8F6C;&#x5316;&#x6216;&#x8005;Protobuf&#x7684;&#x8F6C;&#x5316;&#x7B49;&#xFF0C;&#x4E0A;&#x8FF0;&#x793A;&#x4F8B;&#x662F;&#x4EE5;JSON&#x4E3A;&#x4F8B;&#xFF0C;&#x5F00;&#x53D1;&#x8005;&#x5E94;&#x6CE8;&#x610F;&#x4E3E;&#x4E00;&#x53CD;&#x4E09;&#x3002;</p> </blockquote> <hr> <p>&#x76F8;&#x5173;&#x9605;&#x8BFB;&#x63A8;&#x8350;&#xFF1A; </p> <ol> <li><a href="RequestParam.html">RequestParam</a> </li> <li><a href="QueryParam.html">QueryParam</a></li> </ol> </section> </div> <div class="search-results"> <div class="has-results"> <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1> <ul class="search-results-list"></ul> </div> <div class="no-results"> <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1> </div> </div> </div> </div> </div> </div> <a href="QueryParam.html" class="navigation navigation-prev " aria-label="Previous page: QueryParam"> <i class="fa fa-angle-left"></i> </a> <a href="ResponseBody.html" class="navigation navigation-next " aria-label="Next page: ResponseBody"> <i class="fa fa-angle-right"></i> </a> </div> <script>var gitbook=gitbook||[];gitbook.push(function(){gitbook.page.hasChanged({page:{title:"FormPart",level:"1.4.7",depth:2,next:{title:"ResponseBody",level:"1.4.8",depth:2,path:"annotation/ResponseBody.md",ref:"annotation/ResponseBody.md",articles:[]},previous:{title:"QueryParam",level:"1.4.6",depth:2,path:"annotation/QueryParam.md",ref:"annotation/QueryParam.md",articles:[]},dir:"ltr"},config:{gitbook:"*",theme:"default",variables:{},plugins:[],pluginsConfig:{highlight:{},search:{},lunr:{maxIndexSize:1000000,ignoreSpecialCharacters:false},sharing:{facebook:true,twitter:true,google:false,weibo:false,instapaper:false,vk:false,all:["facebook","google","twitter","weibo","instapaper"]},fontsettings:{theme:"white",family:"sans",size:2},"theme-default":{styles:{website:"styles/website.css",pdf:"styles/pdf.css",epub:"styles/epub.css",mobi:"styles/mobi.css",ebook:"styles/ebook.css",print:"styles/print.css"},showLevel:false}},structure:{langs:"LANGS.md",readme:"README.md",glossary:"GLOSSARY.md",summary:"SUMMARY.md"},pdf:{pageNumbers:true,fontSize:12,fontFamily:"Arial",paperSize:"a4",chapterMark:"pagebreak",pageBreaksBefore:"/",margin:{right:62,left:62,top:56,bottom:56}},styles:{website:"styles/website.css",pdf:"styles/pdf.css",epub:"styles/epub.css",mobi:"styles/mobi.css",ebook:"styles/ebook.css",print:"styles/print.css"}},file:{path:"annotation/FormPart.md",mtime:"2018-09-21T14:06:33.924Z",type:"markdown"},gitbook:{version:"3.2.3",time:"2018-09-22T09:51:03.238Z"},basePath:"..",book:{language:""}})});</script> </div> <script src="../gitbook/gitbook.js"></script> <script src="../gitbook/theme.js"></script> <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script> <script src="../gitbook/gitbook-plugin-search/search.js"></script> <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script> <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script> <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script> <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script> </body> </html>
+</code></pre>
+<blockquote>
+<p>&#x56E0;&#x4E3A;&#x4E0D;&#x540C;&#x7684;<code>MessageConverter</code>&#x5B9E;&#x73B0;&#x53EF;&#x80FD;&#x662F;&#x5BF9;JSON&#x7684;&#x8F6C;&#x5316;&#x3001;XML&#x7684;&#x8F6C;&#x5316;&#x6216;&#x8005;Protobuf&#x7684;&#x8F6C;&#x5316;&#x7B49;&#xFF0C;&#x4E0A;&#x8FF0;&#x793A;&#x4F8B;&#x662F;&#x4EE5;JSON&#x4E3A;&#x4F8B;&#xFF0C;&#x5F00;&#x53D1;&#x8005;&#x5E94;&#x6CE8;&#x610F;&#x4E3E;&#x4E00;&#x53CD;&#x4E09;&#x3002;</p>
+</blockquote>
+<hr>
+<p>&#x76F8;&#x5173;&#x9605;&#x8BFB;&#x63A8;&#x8350;&#xFF1A;  </p>
+<ol>
+<li><a href="RequestParam.html">RequestParam</a>  </li>
+<li><a href="QueryParam.html">QueryParam</a></li>
+</ol>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="QueryParam.html" class="navigation navigation-prev " aria-label="Previous page: QueryParam">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="ResponseBody.html" class="navigation navigation-next " aria-label="Next page: ResponseBody">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"FormPart","level":"1.4.7","depth":2,"next":{"title":"ResponseBody","level":"1.4.8","depth":2,"path":"annotation/ResponseBody.md","ref":"annotation/ResponseBody.md","articles":[]},"previous":{"title":"QueryParam","level":"1.4.6","depth":2,"path":"annotation/QueryParam.md","ref":"annotation/QueryParam.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"annotation/FormPart.md","mtime":"2019-10-18T03:43:14.602Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-27T09:34:13.072Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

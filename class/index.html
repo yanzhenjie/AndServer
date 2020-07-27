@@ -1,1 +1,710 @@
-<!DOCTYPE HTML> <html lang=""> <head> <meta charset="UTF-8"> <meta content="text/html; charset=utf-8" http-equiv="Content-Type"> <title>类与接口 · GitBook</title> <meta http-equiv="X-UA-Compatible" content="IE=edge"/> <meta name="description" content=""> <meta name="generator" content="GitBook 3.2.3"> <link rel="stylesheet" href="../gitbook/style.css"> <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css"> <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css"> <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css"> <meta name="HandheldFriendly" content="true"/> <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"> <meta name="apple-mobile-web-app-capable" content="yes"> <meta name="apple-mobile-web-app-status-bar-style" content="black"> <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png"> <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon"> <link rel="next" href="MultipartFile.html"/> <link rel="prev" href="../annotation/Website.html"/> </head> <body> <div class="book"> <div class="book-summary"> <div id="book-search-input" role="search"> <input type="text" placeholder="Type to search"/> </div> <nav role="navigation"> <ul class="summary"> <li class="chapter " data-level="1.1" data-path="../"> <a href="../"> 概述 </a> </li> <li class="chapter " data-level="1.2" data-path="../sample/"> <a href="../sample/"> 入门 </a> </li> <li class="chapter " data-level="1.3" data-path="../server/"> <a href="../server/"> 服务器 </a> </li> <li class="chapter " data-level="1.4" data-path="../annotation/"> <a href="../annotation/"> 注解 </a> <ul class="articles"> <li class="chapter " data-level="1.4.1" data-path="../annotation/Controller.html"> <a href="../annotation/Controller.html"> Controller </a> </li> <li class="chapter " data-level="1.4.2" data-path="../annotation/RestController.html"> <a href="../annotation/RestController.html"> RestController </a> </li> <li class="chapter " data-level="1.4.3" data-path="../annotation/RequestMapping.html"> <a href="../annotation/RequestMapping.html"> RequestMapping </a> </li> <li class="chapter " data-level="1.4.4" data-path="../annotation/RequestParam.html"> <a href="../annotation/RequestParam.html"> RequestParam </a> </li> <li class="chapter " data-level="1.4.5" data-path="../annotation/PathVariable.html"> <a href="../annotation/PathVariable.html"> PathVariable </a> </li> <li class="chapter " data-level="1.4.6" data-path="../annotation/QueryParam.html"> <a href="../annotation/QueryParam.html"> QueryParam </a> </li> <li class="chapter " data-level="1.4.7" data-path="../annotation/FormPart.html"> <a href="../annotation/FormPart.html"> FormPart </a> </li> <li class="chapter " data-level="1.4.8" data-path="../annotation/ResponseBody.html"> <a href="../annotation/ResponseBody.html"> ResponseBody </a> </li> <li class="chapter " data-level="1.4.9" data-path="../annotation/RequestBody.html"> <a href="../annotation/RequestBody.html"> RequestBody </a> </li> <li class="chapter " data-level="1.4.10" data-path="../annotation/CookieValue.html"> <a href="../annotation/CookieValue.html"> CookieValue </a> </li> <li class="chapter " data-level="1.4.11" data-path="../annotation/RequestHeader.html"> <a href="../annotation/RequestHeader.html"> RequestHeader </a> </li> <li class="chapter " data-level="1.4.12" data-path="../annotation/Addition.html"> <a href="../annotation/Addition.html"> Addition </a> </li> <li class="chapter " data-level="1.4.13" data-path="../annotation/Interceptor.html"> <a href="../annotation/Interceptor.html"> Interceptor </a> </li> <li class="chapter " data-level="1.4.14" data-path="../annotation/Converter.html"> <a href="../annotation/Converter.html"> Converter </a> </li> <li class="chapter " data-level="1.4.15" data-path="../annotation/Resolver.html"> <a href="../annotation/Resolver.html"> Resolver </a> </li> <li class="chapter " data-level="1.4.16" data-path="../annotation/Website.html"> <a href="../annotation/Website.html"> Website </a> </li> </ul> </li> <li class="chapter active" data-level="1.5" data-path="./"> <a href="./"> 类与接口 </a> <ul class="articles"> <li class="chapter " data-level="1.5.1" data-path="MultipartFile.html"> <a href="MultipartFile.html"> MultipartFile </a> </li> <li class="chapter " data-level="1.5.2" data-path="MessageConverter.html"> <a href="MessageConverter.html"> MessageConverter </a> </li> <li class="chapter " data-level="1.5.3" data-path="HandlerInterceptor.html"> <a href="HandlerInterceptor.html"> HandlerInterceptor </a> </li> <li class="chapter " data-level="1.5.4" data-path="ExceptionResolver.html"> <a href="ExceptionResolver.html"> ExeceptionResolver </a> </li> <li class="chapter " data-level="1.5.5" data-path="ResponseBody.html"> <a href="ResponseBody.html"> ResponseBody </a> </li> <li class="chapter " data-level="1.5.6" data-path="RequestBody.html"> <a href="RequestBody.html"> RequestBody </a> </li> <li class="chapter " data-level="1.5.7" data-path="Cookie.html"> <a href="Cookie.html"> Cookie </a> </li> <li class="chapter " data-level="1.5.8" data-path="Addition.html"> <a href="Addition.html"> Addition </a> </li> </ul> </li> <li class="chapter " data-level="1.6" data-path="../website/"> <a href="../website/"> 网站 </a> <ul class="articles"> <li class="chapter " data-level="1.6.1" data-path="../website/AssetsWebsite.html"> <a href="../website/AssetsWebsite.html"> AssetsWebsite </a> </li> <li class="chapter " data-level="1.6.2" data-path="../website/StorageWebsite.html"> <a href="../website/StorageWebsite.html"> StorageWebsite </a> </li> <li class="chapter " data-level="1.6.3" data-path="../website/FileBrowser.html"> <a href="../website/FileBrowser.html"> FileBrowser </a> </li> </ul> </li> <li class="chapter " data-level="1.7" data-path="../cache/"> <a href="../cache/"> 缓存 </a> <ul class="articles"> <li class="chapter " data-level="1.7.1" data-path="../cache/ETag.html"> <a href="../cache/ETag.html"> ETag </a> </li> <li class="chapter " data-level="1.7.2" data-path="../cache/Modified.html"> <a href="../cache/Modified.html"> LastModified </a> </li> </ul> </li> <li class="divider"></li> <li> <a href="https://www.gitbook.com" target="blank" class="gitbook-link"> Published with GitBook </a> </li> </ul> </nav> </div> <div class="book-body"> <div class="body-inner"> <div class="book-header" role="navigation"> <h1> <i class="fa fa-circle-o-notch fa-spin"></i> <a href="..">类与接口</a> </h1> </div> <div class="page-wrapper" tabindex="-1" role="main"> <div class="page-inner"> <div id="book-search-results"> <div class="search-noresults"> <section class="normal markdown-section"> <h1 id="&#x5E38;&#x7528;&#x7C7B;">&#x5E38;&#x7528;&#x7C7B;</h1> <p>&#x8FD9;&#x91CC;&#x662F;&#x4E00;&#x4E9B;&#x5E38;&#x7528;&#x7C7B;&#x7684;&#x6587;&#x6863;&#xFF0C;&#x8F85;&#x52A9;&#x5F00;&#x53D1;&#x8005;&#x5B8C;&#x5584;&#x5E94;&#x7528;&#x67B6;&#x6784;&#x3001;&#x5F00;&#x53D1;&#x66F4;&#x52A0;&#x7B80;&#x6613;&#x641E;&#x7B11;&#x7684;Http Api&#x3002;</p> </section> </div> <div class="search-results"> <div class="has-results"> <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1> <ul class="search-results-list"></ul> </div> <div class="no-results"> <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1> </div> </div> </div> </div> </div> </div> <a href="../annotation/Website.html" class="navigation navigation-prev " aria-label="Previous page: Website"> <i class="fa fa-angle-left"></i> </a> <a href="MultipartFile.html" class="navigation navigation-next " aria-label="Next page: MultipartFile"> <i class="fa fa-angle-right"></i> </a> </div> <script>var gitbook=gitbook||[];gitbook.push(function(){gitbook.page.hasChanged({page:{title:"类与接口",level:"1.5",depth:1,next:{title:"MultipartFile",level:"1.5.1",depth:2,path:"class/MultipartFile.md",ref:"class/MultipartFile.md",articles:[]},previous:{title:"Website",level:"1.4.16",depth:2,path:"annotation/Website.md",ref:"annotation/Website.md",articles:[]},dir:"ltr"},config:{gitbook:"*",theme:"default",variables:{},plugins:[],pluginsConfig:{highlight:{},search:{},lunr:{maxIndexSize:1000000,ignoreSpecialCharacters:false},sharing:{facebook:true,twitter:true,google:false,weibo:false,instapaper:false,vk:false,all:["facebook","google","twitter","weibo","instapaper"]},fontsettings:{theme:"white",family:"sans",size:2},"theme-default":{styles:{website:"styles/website.css",pdf:"styles/pdf.css",epub:"styles/epub.css",mobi:"styles/mobi.css",ebook:"styles/ebook.css",print:"styles/print.css"},showLevel:false}},structure:{langs:"LANGS.md",readme:"README.md",glossary:"GLOSSARY.md",summary:"SUMMARY.md"},pdf:{pageNumbers:true,fontSize:12,fontFamily:"Arial",paperSize:"a4",chapterMark:"pagebreak",pageBreaksBefore:"/",margin:{right:62,left:62,top:56,bottom:56}},styles:{website:"styles/website.css",pdf:"styles/pdf.css",epub:"styles/epub.css",mobi:"styles/mobi.css",ebook:"styles/ebook.css",print:"styles/print.css"}},file:{path:"class/README.md",mtime:"2018-09-21T14:29:39.509Z",type:"markdown"},gitbook:{version:"3.2.3",time:"2018-09-22T09:51:03.238Z"},basePath:"..",book:{language:""}})});</script> </div> <script src="../gitbook/gitbook.js"></script> <script src="../gitbook/theme.js"></script> <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script> <script src="../gitbook/gitbook-plugin-search/search.js"></script> <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script> <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script> <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script> <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script> </body> </html>
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>类与接口 · GitBook</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="MultipartFile.html" />
+    
+    
+    <link rel="prev" href="../annotation/Website.html" />
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    概述
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../sample/">
+            
+                <a href="../sample/">
+            
+                    
+                    入门
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../server/">
+            
+                <a href="../server/">
+            
+                    
+                    服务器
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../annotation/">
+            
+                <a href="../annotation/">
+            
+                    
+                    注解
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../annotation/Controller.html">
+            
+                <a href="../annotation/Controller.html">
+            
+                    
+                    Controller
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../annotation/RestController.html">
+            
+                <a href="../annotation/RestController.html">
+            
+                    
+                    RestController
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../annotation/RequestMapping.html">
+            
+                <a href="../annotation/RequestMapping.html">
+            
+                    
+                    RequestMapping
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../annotation/RequestParam.html">
+            
+                <a href="../annotation/RequestParam.html">
+            
+                    
+                    RequestParam
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../annotation/PathVariable.html">
+            
+                <a href="../annotation/PathVariable.html">
+            
+                    
+                    PathVariable
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../annotation/QueryParam.html">
+            
+                <a href="../annotation/QueryParam.html">
+            
+                    
+                    QueryParam
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="../annotation/FormPart.html">
+            
+                <a href="../annotation/FormPart.html">
+            
+                    
+                    FormPart
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="../annotation/ResponseBody.html">
+            
+                <a href="../annotation/ResponseBody.html">
+            
+                    
+                    ResponseBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="../annotation/RequestBody.html">
+            
+                <a href="../annotation/RequestBody.html">
+            
+                    
+                    RequestBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="../annotation/CookieValue.html">
+            
+                <a href="../annotation/CookieValue.html">
+            
+                    
+                    CookieValue
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="../annotation/RequestHeader.html">
+            
+                <a href="../annotation/RequestHeader.html">
+            
+                    
+                    RequestHeader
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="../annotation/Addition.html">
+            
+                <a href="../annotation/Addition.html">
+            
+                    
+                    Addition
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.13" data-path="../annotation/Interceptor.html">
+            
+                <a href="../annotation/Interceptor.html">
+            
+                    
+                    Interceptor
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.14" data-path="../annotation/Converter.html">
+            
+                <a href="../annotation/Converter.html">
+            
+                    
+                    Converter
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.15" data-path="../annotation/Resolver.html">
+            
+                <a href="../annotation/Resolver.html">
+            
+                    
+                    Resolver
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.16" data-path="../annotation/Website.html">
+            
+                <a href="../annotation/Website.html">
+            
+                    
+                    Website
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.5" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    类与接口
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.5.1" data-path="MultipartFile.html">
+            
+                <a href="MultipartFile.html">
+            
+                    
+                    MultipartFile
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.2" data-path="MessageConverter.html">
+            
+                <a href="MessageConverter.html">
+            
+                    
+                    MessageConverter
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.3" data-path="HandlerInterceptor.html">
+            
+                <a href="HandlerInterceptor.html">
+            
+                    
+                    HandlerInterceptor
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.4" data-path="ExceptionResolver.html">
+            
+                <a href="ExceptionResolver.html">
+            
+                    
+                    ExeceptionResolver
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.5" data-path="ResponseBody.html">
+            
+                <a href="ResponseBody.html">
+            
+                    
+                    ResponseBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.6" data-path="RequestBody.html">
+            
+                <a href="RequestBody.html">
+            
+                    
+                    RequestBody
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.7" data-path="Cookie.html">
+            
+                <a href="Cookie.html">
+            
+                    
+                    Cookie
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5.8" data-path="Addition.html">
+            
+                <a href="Addition.html">
+            
+                    
+                    Addition
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../website/">
+            
+                <a href="../website/">
+            
+                    
+                    网站
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.6.1" data-path="../website/AssetsWebsite.html">
+            
+                <a href="../website/AssetsWebsite.html">
+            
+                    
+                    AssetsWebsite
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.2" data-path="../website/StorageWebsite.html">
+            
+                <a href="../website/StorageWebsite.html">
+            
+                    
+                    StorageWebsite
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6.3" data-path="../website/FileBrowser.html">
+            
+                <a href="../website/FileBrowser.html">
+            
+                    
+                    FileBrowser
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../cache/">
+            
+                <a href="../cache/">
+            
+                    
+                    缓存
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.7.1" data-path="../cache/ETag.html">
+            
+                <a href="../cache/ETag.html">
+            
+                    
+                    ETag
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7.2" data-path="../cache/Modified.html">
+            
+                <a href="../cache/Modified.html">
+            
+                    
+                    LastModified
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >类与接口</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x5E38;&#x7528;&#x7C7B;">&#x5E38;&#x7528;&#x7C7B;</h1>
+<p>&#x8FD9;&#x91CC;&#x662F;&#x4E00;&#x4E9B;&#x5E38;&#x7528;&#x7C7B;&#x7684;&#x6587;&#x6863;&#xFF0C;&#x8F85;&#x52A9;&#x5F00;&#x53D1;&#x8005;&#x5B8C;&#x5584;&#x5E94;&#x7528;&#x67B6;&#x6784;&#x3001;&#x5F00;&#x53D1;&#x66F4;&#x52A0;&#x7B80;&#x6613;&#x641E;&#x7B11;&#x7684;Http Api&#x3002;</p>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="../annotation/Website.html" class="navigation navigation-prev " aria-label="Previous page: Website">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="MultipartFile.html" class="navigation navigation-next " aria-label="Next page: MultipartFile">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"类与接口","level":"1.5","depth":1,"next":{"title":"MultipartFile","level":"1.5.1","depth":2,"path":"class/MultipartFile.md","ref":"class/MultipartFile.md","articles":[]},"previous":{"title":"Website","level":"1.4.16","depth":2,"path":"annotation/Website.md","ref":"annotation/Website.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"class/README.md","mtime":"2019-10-18T03:43:14.609Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2020-07-27T09:34:13.072Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
