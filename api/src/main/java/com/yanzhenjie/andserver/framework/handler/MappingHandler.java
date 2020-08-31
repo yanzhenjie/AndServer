@@ -49,7 +49,7 @@ public abstract class MappingHandler implements MethodHandler {
     }
 
     @Override
-    public String getETag(@NonNull HttpRequest request) throws IOException {
+    public String getETag(@NonNull HttpRequest request) throws Exception {
         Object o = getHost();
         if (o instanceof ETag) {
             return ((ETag) o).getETag(request);
@@ -58,7 +58,7 @@ public abstract class MappingHandler implements MethodHandler {
     }
 
     @Override
-    public long getLastModified(@NonNull HttpRequest request) throws IOException {
+    public long getLastModified(@NonNull HttpRequest request) throws Exception {
         Object o = getHost();
         if (o instanceof LastModified) {
             return ((LastModified) o).getLastModified(request);

@@ -1153,7 +1153,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             .returns(mView)
             .addParameter(mRequest, "request")
             .addParameter(mResponse, "response")
-            .addException(IOException.class)
+            .addException(Exception.class)
             .addCode(handleCode.build())
             .build();
 

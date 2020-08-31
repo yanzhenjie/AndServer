@@ -42,13 +42,13 @@ public class ModifiedInterceptor implements HandlerInterceptor {
             String eTag = null;
             try {
                 eTag = handler.getETag(request);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Log.w(AndServer.TAG, e.getMessage());
             }
             long lastModified = -1;
             try {
                 lastModified = handler.getLastModified(request);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Log.w(AndServer.TAG, e.getMessage());
             }
             return new Modified(request, response).process(eTag, lastModified);
