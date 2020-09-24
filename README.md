@@ -99,31 +99,18 @@ server.shutdown();
 
 ## Download
 
-```gradle
-dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.1.3'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.3'
-    ...
-}
-```
-
-If you are using Kotlin, replace `annotationProcessor` with `kapt`.
-
-### Library Modules
-
-If you use AndServer in the library module, we recommend that you use the AndServer plugin, but this is not necessary. This is to avoid conflicts with the application module when using AndServer.
-
 Add the plugin to your project build script :
 
 ```gradle
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
         google()
     }
 
     dependencies {
-        classpath 'com.yanzhenjie.andserver:plugin:2.1.2'
+        classpath 'com.yanzhenjie.andserver:plugin:2.1.4'
         ...
     }
 }
@@ -134,7 +121,17 @@ And then apply it in your module:
 
 ```gradle
 apply plugin: 'com.yanzhenjie.andserver'
+
+...
+
+dependencies {
+    implementation 'com.yanzhenjie.andserver:api:2.1.4'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.4'
+    ...
+}
 ```
+
+If you are using Kotlin, replace `annotationProcessor` with `kapt`.
 
 ## Contributing
 
