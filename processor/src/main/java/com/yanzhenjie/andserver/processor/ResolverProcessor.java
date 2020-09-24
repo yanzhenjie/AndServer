@@ -37,8 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
@@ -184,20 +182,6 @@ public class ResolverProcessor extends BaseProcessor {
             return resolver.value();
         }
         throw new IllegalStateException(String.format("The type is not a Resolver: %1$s.", type));
-    }
-
-    private String getRegisterPackageName(Set<? extends Element> appSet) {
-        List<String> list = appSet.stream()
-            .map((Function<Element, String>) element -> {
-                AppInfo appInfo = element.getAnnotation(AppInfo.class);
-                return appInfo == null ? null : appInfo.value();
-            })
-            .collect(Collectors.toList());
-        String rootPackage = Constants.PACKAGE_NAME;
-        if (list.size() > 0) {
-            rootPackage = list.get(0);
-        }
-        return String.format("%s.%s", rootPackage, "andserver.processor.generator");
     }
 
     @Override

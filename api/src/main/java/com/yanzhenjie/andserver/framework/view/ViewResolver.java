@@ -60,9 +60,6 @@ public class ViewResolver implements Patterns, StatusCode, HttpHeaders {
         }
 
         Object output = view.output();
-        if (output == null) {
-            return;
-        }
 
         if (view.rest()) {
             resolveRest(output, request, response);
@@ -76,6 +73,8 @@ public class ViewResolver implements Patterns, StatusCode, HttpHeaders {
             response.setBody((ResponseBody) output);
         } else if (mConverter != null) {
             response.setBody(mConverter.convert(output, obtainProduce(request)));
+        } else if (output == null) {
+            response.setBody(new StringBody(""));
         } else if (output instanceof String) {
             response.setBody(new StringBody(output.toString(), obtainProduce(request)));
         } else {

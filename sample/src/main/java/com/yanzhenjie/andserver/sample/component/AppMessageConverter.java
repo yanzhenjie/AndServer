@@ -38,7 +38,7 @@ import java.nio.charset.Charset;
 public class AppMessageConverter implements MessageConverter {
 
     @Override
-    public ResponseBody convert(@NonNull Object output, @Nullable MediaType mediaType) {
+    public ResponseBody convert(@Nullable Object output, @Nullable MediaType mediaType) {
         return new JsonBody(JsonUtils.successfulJson(output));
     }
 

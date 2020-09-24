@@ -79,29 +79,30 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
         Executors.getInstance().execute(new Runnable() {
             @Override
             public void run() {
-                mHttpServer = ServerBootstrap.bootstrap()
-                    .setServerSocketFactory(mSocketFactory)
-                    .setSocketConfig(
-                        SocketConfig.custom()
-                            .setSoKeepAlive(true)
-                            .setSoReuseAddress(true)
-                            .setTcpNoDelay(true)
-                            .setSoTimeout(mTimeout)
-                            .setBacklogSize(BUFFER)
-                            .setRcvBufSize(BUFFER)
-                            .setSndBufSize(BUFFER)
-                            .setSoLinger(0)
-                            .build()
-                    )
-                    .setLocalAddress(mInetAddress)
-                    .setListenerPort(mPort)
-                    .setSslContext(mSSLContext)
-                    .setSslSetupHandler(new SSLSetup(mSSLSocketInitializer))
-                    .setServerInfo(AndServer.INFO)
-                    .registerHandler("*", requestHandler())
-                    .setExceptionLogger(ExceptionLogger.NO_OP)
-                    .create();
                 try {
+                    mHttpServer = ServerBootstrap.bootstrap()
+                        .setServerSocketFactory(mSocketFactory)
+                        .setSocketConfig(
+                            SocketConfig.custom()
+                                .setSoKeepAlive(true)
+                                .setSoReuseAddress(true)
+                                .setTcpNoDelay(true)
+                                .setSoTimeout(mTimeout)
+                                .setBacklogSize(BUFFER)
+                                .setRcvBufSize(BUFFER)
+                                .setSndBufSize(BUFFER)
+                                .setSoLinger(0)
+                                .build()
+                        )
+                        .setLocalAddress(mInetAddress)
+                        .setListenerPort(mPort)
+                        .setSslContext(mSSLContext)
+                        .setSslSetupHandler(new SSLSetup(mSSLSocketInitializer))
+                        .setServerInfo(AndServer.INFO)
+                        .registerHandler("*", requestHandler())
+                        .setExceptionLogger(ExceptionLogger.NO_OP)
+                        .create();
+
                     mHttpServer.start();
                     isRunning = true;
 

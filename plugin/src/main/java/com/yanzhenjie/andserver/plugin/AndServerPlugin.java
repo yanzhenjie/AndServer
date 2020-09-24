@@ -24,12 +24,15 @@ import com.android.build.gradle.LibraryPlugin;
 import com.android.build.gradle.api.BaseVariant;
 import com.yanzhenjie.andserver.plugin.util.Log;
 
+import org.apache.commons.io.FileUtils;
+import org.gradle.api.Action;
 import org.gradle.api.DomainObjectSet;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
@@ -44,19 +47,20 @@ public class AndServerPlugin implements Plugin<Project> {
         project.getPlugins().all(it -> {
             if (it instanceof AppPlugin) {
                 AppExtension extension = project.getExtensions().getByType(AppExtension.class);
-                configGenerator(project, extension.getApplicationVariants());
+                configGenerator(project, false, extension.getApplicationVariants());
             } else if (it instanceof LibraryPlugin) {
                 LibraryExtension extension = project.getExtensions().getByType(LibraryExtension.class);
-                configGenerator(project, extension.getLibraryVariants());
+                configGenerator(project, true, extension.getLibraryVariants());
             } else if (it instanceof FeaturePlugin) {
                 FeatureExtension extension = project.getExtensions().getByType(FeatureExtension.class);
-                configGenerator(project, extension.getFeatureVariants());
+                configGenerator(project, true, extension.getFeatureVariants());
             }
         });
     }
 
-    private void configGenerator(Project project, DomainObjectSet<? extends BaseVariant> variants) {
+    private void configGenerator(Project project, boolean library, DomainObjectSet<? extends BaseVariant> variants) {
         variants.all(it -> {
+            configTask(project, library, it.getApplicationId());
             File outputDir = new File(project.getBuildDir(), "generated/source/andServer/" + it.getDirName());
             String taskName = String.format("generate%sAppInfo", capitalize(it.getName()));
             Task generate = project.getTasks().create(taskName, AppInfoGenerator.class, generator -> {
@@ -68,6 +72,34 @@ public class AndServerPlugin implements Plugin<Project> {
             });
             it.registerJavaGeneratingTask(generate, outputDir);
         });
+    }
+
+    private void configTask(Project project, boolean library, String appId) {
+        Action<Task> action = task -> {
+            String taskName = task.getName();
+            String moduleType = String.format("%s_assets", library ? "library" : "merged");
+            String buildType = taskName.toLowerCase().contains("debug") ? "debug" : "release";
+            String path = String.format("./intermediates/%s/%s/out", moduleType, buildType);
+
+            File dir = new File(project.getBuildDir(), path);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            String filename = String.format("%s.generator.andserver", appId);
+            File file = new File(dir, filename);
+            if (!file.exists()) {
+                try {
+                    file.createNewFile();
+                    FileUtils.write(file, filename);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        project.getTasks().getByName(String.format("%sReleaseAssets", library ? "package" : "merge")).doLast(action);
+        project.getTasks().getByName(String.format("%sDebugAssets", library ? "package" : "merge")).doLast(action);
     }
 
     public static String capitalize(String text) {

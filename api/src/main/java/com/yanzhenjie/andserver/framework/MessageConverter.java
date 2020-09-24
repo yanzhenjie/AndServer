@@ -32,13 +32,14 @@ import java.lang.reflect.Type;
 public interface MessageConverter {
 
     /**
-     * Convert a specific output to the response body. Some of the return values of handlers that cannot be recognized by
+     * Convert a specific output to the response body. Some of the return values of handlers that cannot be recognized
+     * by
      * {@link ViewResolver} require a message converter to be converted to a response body.
      *
      * @param output output of handle.
      * @param mediaType the content media type specified by the handler.
      */
-    ResponseBody convert(@NonNull Object output, @Nullable MediaType mediaType);
+    ResponseBody convert(@Nullable Object output, @Nullable MediaType mediaType);
 
     /**
      * Convert RequestBody to a object.

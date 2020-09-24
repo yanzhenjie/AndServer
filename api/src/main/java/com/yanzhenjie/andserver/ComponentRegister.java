@@ -16,41 +16,32 @@
 package com.yanzhenjie.andserver;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.os.Build;
-import android.util.Log;
+import android.content.res.AssetManager;
 
 import com.yanzhenjie.andserver.register.OnRegister;
 import com.yanzhenjie.andserver.register.Register;
+import com.yanzhenjie.andserver.util.ObjectUtils;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import dalvik.system.DexFile;
 
 /**
- * <p> Load all the components in the dex file. </p>
- *
  * Created by Zhenjie Yan on 2018/9/23.
  */
 public class ComponentRegister {
 
+    private static final String ANDSERVER_SUFFIX = ".generator.andserver";
     private static final String PROCESSOR_PACKAGE = ".andserver.processor.generator.";
+    private static final List<String> REGISTER_LIST = new ArrayList<>();
 
-    private static final String CODE_CACHE_SECONDARY_DIRECTORY = "code_cache/secondary-dexes";
-    private static final String EXTRACTED_NAME_EXT = ".classes";
-    private static final String EXTRACTED_SUFFIX = ".zip";
-
-    private static final String PREFS_FILE = "multidex.version";
-    private static final String KEY_DEX_NUMBER = "dex.number";
+    static {
+        REGISTER_LIST.add("AdapterRegister");
+        REGISTER_LIST.add("ConfigRegister");
+        REGISTER_LIST.add("ConverterRegister");
+        REGISTER_LIST.add("InterceptorRegister");
+        REGISTER_LIST.add("ResolverRegister");
+    }
 
     private Context mContext;
 
@@ -59,158 +50,41 @@ public class ComponentRegister {
     }
 
     public void register(Register register, String group) {
-        List<String> paths = getDexFilePaths(mContext);
-
-        for (final String path : paths) {
-            DexFile dexfile = null;
-
-            try {
-                if (path.endsWith(EXTRACTED_SUFFIX)) {
-                    dexfile = DexFile.loadDex(path, path + ".tmp", 0);
-                } else {
-                    dexfile = new DexFile(path);
-                }
-
-                Enumeration<String> dexEntries = dexfile.entries();
-                while (dexEntries.hasMoreElements()) {
-                    String className = dexEntries.nextElement();
-                    if (className.contains(PROCESSOR_PACKAGE)) {
-                        try {
-                            registerClass(register, group, className);
-                        } catch (Exception ignored) {
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                Log.w(AndServer.TAG, "An exception occurred while registering components.", e);
-            } finally {
-                if (dexfile != null) {
-                    try {
-                        dexfile.close();
-                    } catch (Throwable ignore) {
-                    }
-                }
-            }
+        AssetManager manager = mContext.getAssets();
+        String[] pathList = null;
+        try {
+            pathList = manager.list("");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    }
 
-    private void registerClass(Register register, String group, String className) throws Exception {
-        Class clazz = Class.forName(className);
-        if (clazz.isInterface()) {
+        if (ObjectUtils.isEmpty(pathList)) {
             return;
         }
 
-        Class<?>[] interfaces = clazz.getInterfaces();
-        for (Class<?> anInterface : interfaces) {
-            if (anInterface.isAssignableFrom(OnRegister.class)) {
+        for (String path : pathList) {
+            if (path.endsWith(ANDSERVER_SUFFIX)) {
+                String packageName = path.substring(0, path.indexOf(ANDSERVER_SUFFIX));
+                for (String clazz : REGISTER_LIST) {
+                    String className = String.format("%s%s%s", packageName, PROCESSOR_PACKAGE, clazz);
+                    registerClass(register, group, className);
+                }
+            }
+        }
+    }
+
+    private void registerClass(Register register, String group, String className) {
+        try {
+            Class<?> clazz = Class.forName(className);
+            if (clazz.isAssignableFrom(OnRegister.class)) {
                 OnRegister load = (OnRegister) clazz.newInstance();
                 load.onRegister(mContext, group, register);
-                break;
             }
+        } catch (ClassNotFoundException e) {
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
         }
-    }
-
-    private static SharedPreferences getMultiDexPreferences(Context context) {
-        return context.getSharedPreferences(PREFS_FILE,
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB ? Context.MODE_PRIVATE : Context.MODE_MULTI_PROCESS);
-    }
-
-    /**
-     * Obtain all the dex path.
-     *
-     * @see MultiDexExtractor#loadExistingExtractions(Context, String)
-     * @see MultiDex#clearOldDexDir(Context)
-     */
-    public static List<String> getDexFilePaths(Context context) {
-        ApplicationInfo appInfo = context.getApplicationInfo();
-
-        List<String> sourcePaths = new ArrayList<>();
-        sourcePaths.add(appInfo.sourceDir);
-
-        if (!isVMMultidexCapable()) {
-            File sourceApk = new File(appInfo.sourceDir);
-            String extractedFilePrefix = sourceApk.getName() + EXTRACTED_NAME_EXT;
-            int totalDexNumber = getMultiDexPreferences(context).getInt(KEY_DEX_NUMBER, 1);
-            File dexDir = new File(appInfo.dataDir, CODE_CACHE_SECONDARY_DIRECTORY);
-
-            for (int secondaryNumber = 2; secondaryNumber <= totalDexNumber; secondaryNumber++) {
-                String fileName = extractedFilePrefix + secondaryNumber + EXTRACTED_SUFFIX;
-                File extractedFile = new File(dexDir, fileName);
-                if (extractedFile.isFile()) {
-                    sourcePaths.add(extractedFile.getAbsolutePath());
-                }
-            }
-        }
-
-        if (isDebug(context)) {
-            sourcePaths.addAll(loadInstantRunDexFile(appInfo));
-        }
-        return sourcePaths;
-    }
-
-    /**
-     * Identifies if the current VM has a native support for multidex.
-     *
-     * @return true, otherwise is false.
-     *
-     * @see MultiDexExtractor#getMultiDexPreferences(Context)
-     */
-    private static boolean isVMMultidexCapable() {
-        boolean isMultidexCapable = false;
-        String vmVersion = System.getProperty("java.vm.version");
-        try {
-            Matcher matcher = Pattern.compile("(\\d+)\\.(\\d+)(\\.\\d+)?").matcher(vmVersion);
-            if (matcher.matches()) {
-                int major = Integer.parseInt(matcher.group(1));
-                int minor = Integer.parseInt(matcher.group(2));
-                isMultidexCapable = (major > 2) || ((major == 2) && (minor >= 1));
-            }
-        } catch (Exception ignore) {
-        }
-        String multidex = isMultidexCapable ? "has Multidex support" : "does not have Multidex support";
-        Log.i(AndServer.TAG, String.format("VM with version %s %s.", vmVersion, multidex));
-        return false;
-    }
-
-    /**
-     * Get instant run dex path, used to catch the branch usingApkSplits=false.
-     */
-    private static List<String> loadInstantRunDexFile(ApplicationInfo appInfo) {
-        List<String> instantRunDexPaths = new ArrayList<>();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && appInfo.splitSourceDirs != null) {
-            instantRunDexPaths.addAll(Arrays.asList(appInfo.splitSourceDirs));
-            Log.i(AndServer.TAG, "InstantRun support was found.");
-        } else {
-            try {
-                // Reflect instant run sdk to find where is the dex file.
-                Class pathsByInstantRun = Class.forName("com.android.tools.fd.runtime.Paths");
-                Method getDexFileDirectory = pathsByInstantRun.getMethod("getDexFileDirectory", String.class);
-                String dexDirectory = (String) getDexFileDirectory.invoke(null, appInfo.packageName);
-
-                File dexFolder = new File(dexDirectory);
-                if (dexFolder.exists() && dexFolder.isDirectory()) {
-                    File[] dexFiles = dexFolder.listFiles();
-                    for (File file : dexFiles) {
-                        if (file.exists() && file.isFile() && file.getName().endsWith(".dex")) {
-                            instantRunDexPaths.add(file.getAbsolutePath());
-                        }
-                    }
-                    Log.i(AndServer.TAG, "InstantRun support was found.");
-                }
-
-            } catch (ClassNotFoundException e) {
-                Log.i(AndServer.TAG, "InstantRun support was not found.");
-            } catch (Exception e) {
-                Log.w(AndServer.TAG, "Finding InstantRun failed.", e);
-            }
-        }
-
-        return instantRunDexPaths;
-    }
-
-    private static boolean isDebug(Context context) {
-        ApplicationInfo appInfo = context.getApplicationInfo();
-        return (appInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
     }
 }

@@ -16,11 +16,14 @@
 package com.yanzhenjie.andserver.processor;
 
 import com.squareup.javapoet.TypeName;
+import com.yanzhenjie.andserver.annotation.AppInfo;
 
 import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.lang.model.SourceVersion;
@@ -94,4 +97,32 @@ public abstract class BaseProcessor extends AbstractProcessor {
         }
         return false;
     }
+
+    protected String getRegisterPackageName(Set<? extends Element> appSet) {
+        List<String> list = appSet.stream()
+            .map((Function<Element, String>) element -> {
+                AppInfo appInfo = element.getAnnotation(AppInfo.class);
+                return appInfo == null ? null : appInfo.value();
+            })
+            .collect(Collectors.toList());
+        if (list.size() <= 0) {
+            throw new RuntimeException(PLUGIN_MESSAGE);
+        }
+        String rootPackage = list.get(0);
+        return String.format("%s.%s", rootPackage, "andserver.processor.generator");
+    }
+
+    private static final String PLUGIN_MESSAGE = "\nAdd the plugin to your project build script :"
+        + "\nbuildscript {"
+        + "\n    repositories {"
+        + "\n       mavenCentral()"
+        + "\n       google()"
+        + "\n    }"
+        + "\n    dependencies {"
+        + "\n        classpath 'com.yanzhenjie.andserver:plugin:{version}'"
+        + "\n        ..."
+        + "\n    }"
+        + "\n}\n"
+        + "\nAnd then apply it in your module:"
+        + "\napply plugin: 'com.yanzhenjie.andserver'";
 }

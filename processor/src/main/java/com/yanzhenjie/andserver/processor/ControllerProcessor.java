@@ -72,8 +72,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
@@ -1297,20 +1295,6 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             element = element.getEnclosingElement();
         }
         return (PackageElement) element;
-    }
-
-    private String getRegisterPackageName(Set<? extends Element> appSet) {
-        List<String> list = appSet.stream()
-            .map((Function<Element, String>) element -> {
-                AppInfo appInfo = element.getAnnotation(AppInfo.class);
-                return appInfo == null ? null : appInfo.value();
-            })
-            .collect(Collectors.toList());
-        String rootPackage = Constants.PACKAGE_NAME;
-        if (list.size() > 0) {
-            rootPackage = list.get(0);
-        }
-        return String.format("%s.%s", rootPackage, "andserver.processor.generator");
     }
 
     @Override
