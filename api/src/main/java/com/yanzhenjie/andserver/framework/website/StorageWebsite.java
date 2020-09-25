@@ -96,7 +96,7 @@ public class StorageWebsite extends BasicWebsite implements Patterns {
     }
 
     @Override
-    public String getETag(@NonNull HttpRequest request) throws IOException {
+    public String getETag(@NonNull HttpRequest request) throws Throwable {
         String httpPath = request.getPath();
         File resource = findPathResource(httpPath);
         if (resource != null) {
@@ -107,7 +107,7 @@ public class StorageWebsite extends BasicWebsite implements Patterns {
     }
 
     @Override
-    public long getLastModified(@NonNull HttpRequest request) throws IOException {
+    public long getLastModified(@NonNull HttpRequest request) throws Throwable {
         String httpPath = request.getPath();
         File resource = findPathResource(httpPath);
         if (resource != null) {

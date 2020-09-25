@@ -1136,14 +1136,13 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
         String executeName = execute.getSimpleName().toString();
         TypeMirror returnMirror = execute.getReturnType();
-        handleCode.add("\n").addStatement("Object o = null", type, executeName).beginControlFlow("try");
-        if (!TypeKind.VOID.equals(returnMirror.getKind())) {
-            handleCode.addStatement("o = (($T)mHost).$L($L)", type, executeName, paramBuild.toString());
-        } else {
+        boolean isVoid = TypeKind.VOID.equals(returnMirror.getKind());
+        if (isVoid) {
             handleCode.addStatement("(($T)mHost).$L($L)", type, executeName, paramBuild.toString());
+        } else {
+            handleCode.addStatement("Object o = (($T)mHost).$L($L)", type, executeName, paramBuild.toString());
         }
-        handleCode.endControlFlow().beginControlFlow("catch (Throwable e)").addStatement("throw e").endControlFlow();
-        handleCode.addStatement("return new $T($L, o)", mViewObject, isRest);
+        handleCode.addStatement("return new $T($L, $L)", mViewObject, isRest, isVoid ? null : "o");
 
         MethodSpec handleMethod = MethodSpec.methodBuilder("handle")
             .addAnnotation(Override.class)
@@ -1151,7 +1150,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             .returns(mView)
             .addParameter(mRequest, "request")
             .addParameter(mResponse, "response")
-            .addException(Exception.class)
+            .addException(Throwable.class)
             .addCode(handleCode.build())
             .build();
 

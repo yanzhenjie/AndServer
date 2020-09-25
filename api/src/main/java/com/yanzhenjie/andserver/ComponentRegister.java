@@ -76,7 +76,7 @@ public class ComponentRegister {
     private void registerClass(Register register, String group, String className) {
         try {
             Class<?> clazz = Class.forName(className);
-            if (clazz.isAssignableFrom(OnRegister.class)) {
+            if (OnRegister.class.isAssignableFrom(clazz)) {
                 OnRegister load = (OnRegister) clazz.newInstance();
                 load.onRegister(mContext, group, register);
             }

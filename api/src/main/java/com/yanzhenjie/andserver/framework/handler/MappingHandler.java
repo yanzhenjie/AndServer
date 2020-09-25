@@ -20,12 +20,11 @@ import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.framework.ETag;
 import com.yanzhenjie.andserver.framework.LastModified;
-import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.framework.mapping.Addition;
 import com.yanzhenjie.andserver.framework.mapping.Mapping;
 import com.yanzhenjie.andserver.framework.mapping.Path;
+import com.yanzhenjie.andserver.http.HttpRequest;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +48,7 @@ public abstract class MappingHandler implements MethodHandler {
     }
 
     @Override
-    public String getETag(@NonNull HttpRequest request) throws Exception {
+    public String getETag(@NonNull HttpRequest request) throws Throwable {
         Object o = getHost();
         if (o instanceof ETag) {
             return ((ETag) o).getETag(request);
@@ -58,7 +57,7 @@ public abstract class MappingHandler implements MethodHandler {
     }
 
     @Override
-    public long getLastModified(@NonNull HttpRequest request) throws Exception {
+    public long getLastModified(@NonNull HttpRequest request) throws Throwable {
         Object o = getHost();
         if (o instanceof LastModified) {
             return ((LastModified) o).getLastModified(request);
@@ -126,7 +125,7 @@ public abstract class MappingHandler implements MethodHandler {
                 Map<String, String> map = new HashMap<>();
                 for (int i = 0; i < segments.size(); i++) {
                     Path.Segment segment = segments.get(i);
-                    if(segment.isBlurred()) {
+                    if (segment.isBlurred()) {
                         Path.Segment httpSegment = httpSegments.get(i);
 
                         String key = segment.getValue();

@@ -15,8 +15,6 @@
  */
 package com.yanzhenjie.andserver.sample.controller;
 
-import android.database.SQLException;
-
 import com.yanzhenjie.andserver.annotation.Addition;
 import com.yanzhenjie.andserver.annotation.CookieValue;
 import com.yanzhenjie.andserver.annotation.FormPart;
@@ -59,13 +57,13 @@ class TestController {
     @PutMapping(path = "/get/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     String modify(@PathVariable("userId") String userId, @RequestParam(name = "sex") String sex,
         @RequestParam(name = "age") int age) {
-        return String.format(Locale.US, "The userId is %1$s, and the sex is %2$s, and the age is %3$d.", userId, sex,
-            age);
+        String message = "The userId is %1$s, and the sex is %2$s, and the age is %3$d.";
+        return String.format(Locale.US, message, userId, sex, age);
     }
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     String login(HttpRequest request, HttpResponse response, @RequestParam(name = "account") String account,
-        @RequestParam(name = "password") String password) throws SQLException {
+        @RequestParam(name = "password") String password) {
         Session session = request.getValidSession();
         session.setAttribute(LoginInterceptor.LOGIN_ATTRIBUTE, true);
 
@@ -76,7 +74,7 @@ class TestController {
 
     @Addition(stringType = "login", booleanType = true)
     @GetMapping(path = "/userInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    UserInfo userInfo(@CookieValue("account") String account) throws SQLException {
+    UserInfo userInfo(@CookieValue("account") String account) {
         Logger.i("Account: " + account);
         UserInfo userInfo = new UserInfo();
         userInfo.setUserId("123");
@@ -85,23 +83,23 @@ class TestController {
     }
 
     @PostMapping(path = "/upload", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    String upload(@RequestParam(name = "header") MultipartFile file) throws IOException {
+    String upload(@RequestParam(name = "avatar") MultipartFile file) throws IOException {
         File localFile = FileUtils.createRandomFile(file);
         file.transferTo(localFile);
         return localFile.getAbsolutePath();
     }
 
-    @GetMapping(path = "/consume", consumes = {"application/json", "!application/xml"})
+    @GetMapping(path = "/consume", consumes = {"application/json", "!application/xml" })
     String consume() {
         return "Consume is successful";
     }
 
-    @GetMapping(path = "/produce", produces = {"application/json; charset=utf-8"})
+    @GetMapping(path = "/produce", produces = {"application/json; charset=utf-8" })
     String produce() {
         return "Produce is successful";
     }
 
-    @GetMapping(path = "/include", params = {"name=123"})
+    @GetMapping(path = "/include", params = {"name=123" })
     String include(@RequestParam(name = "name") String name) {
         return name;
     }
@@ -111,12 +109,12 @@ class TestController {
         return "Exclude is successful.";
     }
 
-    @GetMapping(path = {"/mustKey", "/getName"}, params = "name")
+    @GetMapping(path = {"/mustKey", "/getName" }, params = "name")
     String getMustKey(@RequestParam(name = "name") String name) {
         return name;
     }
 
-    @PostMapping(path = {"/mustKey", "/postName"}, params = "name")
+    @PostMapping(path = {"/mustKey", "/postName" }, params = "name")
     String postMustKey(@RequestParam(name = "name") String name) {
         return name;
     }

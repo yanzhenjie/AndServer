@@ -26,8 +26,6 @@ import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
 import com.yanzhenjie.andserver.http.Modified;
 
-import java.io.IOException;
-
 /**
  * Created by Zhenjie Yan on 2018/9/14.
  */
@@ -42,14 +40,14 @@ public class ModifiedInterceptor implements HandlerInterceptor {
             String eTag = null;
             try {
                 eTag = handler.getETag(request);
-            } catch (Exception e) {
-                Log.w(AndServer.TAG, e.getMessage());
+            } catch (Throwable e) {
+                Log.w(AndServer.TAG, e);
             }
             long lastModified = -1;
             try {
                 lastModified = handler.getLastModified(request);
-            } catch (Exception e) {
-                Log.w(AndServer.TAG, e.getMessage());
+            } catch (Throwable e) {
+                Log.w(AndServer.TAG, e);
             }
             return new Modified(request, response).process(eTag, lastModified);
         }

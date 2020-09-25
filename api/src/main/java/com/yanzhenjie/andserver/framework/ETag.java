@@ -19,8 +19,6 @@ import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.http.HttpRequest;
 
-import java.io.IOException;
-
 /**
  * Created by Zhenjie Yan on 2018/8/31.
  */
@@ -31,5 +29,5 @@ public interface ETag {
      *
      * <p>Can simply return {@code null} if there's no support.
      */
-    String getETag(@NonNull HttpRequest request) throws IOException;
+    String getETag(@NonNull HttpRequest request) throws Throwable;
 }

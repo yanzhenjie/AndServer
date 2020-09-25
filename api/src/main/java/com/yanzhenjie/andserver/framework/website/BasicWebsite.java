@@ -22,7 +22,6 @@ import com.yanzhenjie.andserver.util.Assert;
 import com.yanzhenjie.andserver.util.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by Zhenjie Yan on 2018/9/6.
@@ -48,12 +47,12 @@ public abstract class BasicWebsite extends Website {
     }
 
     @Override
-    public String getETag(@NonNull HttpRequest request) throws IOException {
+    public String getETag(@NonNull HttpRequest request) throws Throwable {
         return null;
     }
 
     @Override
-    public long getLastModified(@NonNull HttpRequest request) throws IOException {
+    public long getLastModified(@NonNull HttpRequest request) throws Throwable {
         return -1;
     }
 

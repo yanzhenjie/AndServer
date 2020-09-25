@@ -127,7 +127,7 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
     }
 
     @Override
-    public String getETag(@NonNull HttpRequest request) throws IOException {
+    public String getETag(@NonNull HttpRequest request) throws Throwable {
         String httpPath = request.getPath();
         String filePath = mPatternMap.get(httpPath);
         final InputStream stream = mReader.getInputStream(filePath);
@@ -138,7 +138,7 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
     }
 
     @Override
-    public long getLastModified(@NonNull HttpRequest request) throws IOException {
+    public long getLastModified(@NonNull HttpRequest request) throws Throwable {
         String filePath = mPatternMap.get(request.getPath());
         return mReader.isFile(filePath) ? mPackageInfo.lastUpdateTime : -1;
     }

@@ -19,8 +19,6 @@ import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.http.HttpRequest;
 
-import java.io.IOException;
-
 /**
  * Created by Zhenjie Yan on 2018/8/29.
  */
@@ -36,5 +34,5 @@ public interface LastModified {
      * @return the time the underlying resource was last modified, or -1 meaning that the content must always be
      *     regenerated.
      */
-    long getLastModified(@NonNull HttpRequest request) throws IOException;
+    long getLastModified(@NonNull HttpRequest request) throws Throwable;
 }
