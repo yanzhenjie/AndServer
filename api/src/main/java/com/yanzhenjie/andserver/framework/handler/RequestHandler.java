@@ -37,7 +37,7 @@ public interface RequestHandler {
      * @return the ETag value for this handler.
      */
     @Nullable
-    String getETag(@NonNull HttpRequest request) throws IOException;
+    String getETag(@NonNull HttpRequest request) throws Exception;
 
     /**
      * Can simply return -1 if there's no support in this handler.
@@ -46,7 +46,7 @@ public interface RequestHandler {
      *
      * @return the {@code LastModified} value for resource.
      */
-    long getLastModified(@NonNull HttpRequest request) throws IOException;
+    long getLastModified(@NonNull HttpRequest request) throws Exception;
 
     /**
      * Use the given handler to handle this request.
@@ -56,5 +56,5 @@ public interface RequestHandler {
      *
      * @return the impression sent to the client.
      */
-    View handle(@NonNull HttpRequest request, @NonNull HttpResponse response) throws IOException;
+    View handle(@NonNull HttpRequest request, @NonNull HttpResponse response) throws Exception;
 }

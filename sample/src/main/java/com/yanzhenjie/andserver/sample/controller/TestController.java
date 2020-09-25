@@ -15,6 +15,8 @@
  */
 package com.yanzhenjie.andserver.sample.controller;
 
+import android.database.SQLException;
+
 import com.yanzhenjie.andserver.annotation.Addition;
 import com.yanzhenjie.andserver.annotation.CookieValue;
 import com.yanzhenjie.andserver.annotation.FormPart;
@@ -63,7 +65,7 @@ class TestController {
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     String login(HttpRequest request, HttpResponse response, @RequestParam(name = "account") String account,
-        @RequestParam(name = "password") String password) {
+        @RequestParam(name = "password") String password) throws SQLException {
         Session session = request.getValidSession();
         session.setAttribute(LoginInterceptor.LOGIN_ATTRIBUTE, true);
 
@@ -74,7 +76,7 @@ class TestController {
 
     @Addition(stringType = "login", booleanType = true)
     @GetMapping(path = "/userInfo", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    UserInfo userInfo(@CookieValue("account") String account) {
+    UserInfo userInfo(@CookieValue("account") String account) throws SQLException {
         Logger.i("Account: " + account);
         UserInfo userInfo = new UserInfo();
         userInfo.setUserId("123");
