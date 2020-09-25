@@ -110,14 +110,14 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.yanzhenjie.andserver:plugin:2.1.4'
+        classpath 'com.yanzhenjie.andserver:plugin:2.1.5'
         ...
     }
 }
 ...
 ```
 
-And then apply it in your module:
+And then add `AndServer` dependency to your moduel:
 
 ```gradle
 apply plugin: 'com.yanzhenjie.andserver'
@@ -125,8 +125,8 @@ apply plugin: 'com.yanzhenjie.andserver'
 ...
 
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.1.4'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.4'
+    implementation 'com.yanzhenjie.andserver:api:2.1.5'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.5'
     ...
 }
 ```
