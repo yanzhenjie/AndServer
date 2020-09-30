@@ -29,7 +29,7 @@ server.startup();
 server.shutdown();
 ```
 
-It also has some features, such as `inetAddress(InetAddress)`, `serverSocketFactory(ServerSocketFactory)` and `sslContext(SSLContext)`, depending on what you want to achieve.
+It also has some features, such as `inetAddress(InetAddress)`, `serverSocketFactory(ServerSocketFactory)` and `sslContext(SSLContext)`, depending on users choice.
 
 ```java
 @RestController
@@ -117,7 +117,7 @@ buildscript {
 ...
 ```
 
-And then add `AndServer` dependency to your moduel:
+And then add `AndServer` dependency to your module:
 
 ```gradle
 apply plugin: 'com.yanzhenjie.andserver'
