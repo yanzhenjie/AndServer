@@ -41,6 +41,7 @@ import com.yanzhenjie.andserver.http.RequestWrapper;
 import com.yanzhenjie.andserver.http.StandardContext;
 import com.yanzhenjie.andserver.http.StandardRequest;
 import com.yanzhenjie.andserver.http.StandardResponse;
+import com.yanzhenjie.andserver.http.StatusCode;
 import com.yanzhenjie.andserver.http.cookie.Cookie;
 import com.yanzhenjie.andserver.http.multipart.MultipartRequest;
 import com.yanzhenjie.andserver.http.multipart.MultipartResolver;
@@ -50,7 +51,6 @@ import com.yanzhenjie.andserver.http.session.SessionManager;
 import com.yanzhenjie.andserver.http.session.StandardSessionManager;
 import com.yanzhenjie.andserver.register.Register;
 import com.yanzhenjie.andserver.util.Assert;
-import com.yanzhenjie.andserver.util.StatusCode;
 
 import org.apache.httpcore.protocol.HttpRequestHandler;
 
@@ -79,7 +79,7 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
         this.mContext = context;
         this.mSessionManager = new StandardSessionManager(context);
         this.mViewResolver = new ViewResolver();
-        this.mResolver = ExceptionResolver.DEFAULT;
+        this.mResolver = new ExceptionResolver.ResolverWrapper(ExceptionResolver.DEFAULT);
 
         this.mInterceptorList.add(new ModifiedInterceptor());
     }
@@ -112,7 +112,7 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
     public void setResolver(@NonNull ExceptionResolver resolver) {
         Assert.notNull(resolver, "The exceptionResolver cannot be null.");
 
-        this.mResolver = resolver;
+        this.mResolver = new ExceptionResolver.ResolverWrapper(resolver);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
 
     @Override
     public void handle(org.apache.httpcore.HttpRequest req, org.apache.httpcore.HttpResponse res,
-        org.apache.httpcore.protocol.HttpContext con) {
+                       org.apache.httpcore.protocol.HttpContext con) {
         HttpRequest request = new StandardRequest(req, new StandardContext(con), this, mSessionManager);
         HttpResponse response = new StandardResponse(res);
         handle(request, response);
@@ -207,7 +207,7 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
      * @return the {@link RequestHandler}, or {@code null} if no handler could be found.
      */
     private HandlerAdapter getHandlerAdapter(HttpRequest request) {
-        for (HandlerAdapter ha : mAdapterList) {
+        for (HandlerAdapter ha: mAdapterList) {
             if (ha.intercept(request)) {
                 return ha;
             }
@@ -225,7 +225,7 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
      * @return true if the interceptor has processed the request and responded.
      */
     private boolean preHandle(HttpRequest request, HttpResponse response, RequestHandler handler) throws Exception {
-        for (HandlerInterceptor interceptor : mInterceptorList) {
+        for (HandlerInterceptor interceptor: mInterceptorList) {
             if (interceptor.onIntercept(request, response, handler)) {
                 return true;
             }

@@ -71,7 +71,6 @@ public class ConfigProcessor extends BaseProcessor {
     private Logger mLog;
 
     private TypeName mContext;
-    private TypeName mCollectionUtils;
     private TypeName mOnRegisterType;
     private TypeName mRegisterType;
 
@@ -89,7 +88,6 @@ public class ConfigProcessor extends BaseProcessor {
         mLog = new Logger(processingEnv.getMessager());
 
         mContext = TypeName.get(mElements.getTypeElement(Constants.CONTEXT_TYPE).asType());
-        mCollectionUtils = TypeName.get(mElements.getTypeElement(Constants.COLLECTION_UTIL_TYPE).asType());
         mOnRegisterType = TypeName.get(mElements.getTypeElement(Constants.ON_REGISTER_TYPE).asType());
         mRegisterType = TypeName.get(mElements.getTypeElement(Constants.REGISTER_TYPE).asType());
 
@@ -119,7 +117,7 @@ public class ConfigProcessor extends BaseProcessor {
         Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(Config.class);
         Map<String, TypeElement> configMap = new HashMap<>();
 
-        for (Element element : set) {
+        for (Element element: set) {
             if (element instanceof TypeElement) {
                 TypeElement typeElement = (TypeElement) element;
                 Set<Modifier> modifiers = typeElement.getModifiers();
@@ -132,7 +130,7 @@ public class ConfigProcessor extends BaseProcessor {
                         typeElement.getQualifiedName()));
                     continue;
                 }
-                for (TypeMirror typeMirror : interfaces) {
+                for (TypeMirror typeMirror: interfaces) {
                     if (mConfig.equals(TypeName.get(typeMirror))) {
                         configMap.put(getGroup(typeElement), typeElement);
                         break;
@@ -151,7 +149,7 @@ public class ConfigProcessor extends BaseProcessor {
         FieldSpec mapField = FieldSpec.builder(typeName, "mMap", Modifier.PRIVATE).build();
 
         CodeBlock.Builder rootCode = CodeBlock.builder().addStatement("this.mMap = new $T<>()", HashMap.class);
-        for (Map.Entry<String, TypeElement> entry : configMap.entrySet()) {
+        for (Map.Entry<String, TypeElement> entry: configMap.entrySet()) {
             String group = entry.getKey();
             TypeElement config = entry.getValue();
             mLog.i(String.format("------ Processing %s ------", config.getSimpleName()));
@@ -175,7 +173,7 @@ public class ConfigProcessor extends BaseProcessor {
             .addStatement("$T delegate = $T.newInstance()", mDelegate, mDelegate)
             .addStatement("config.onConfig(context, delegate)")
             .addStatement("$T list = delegate.getWebsites()", listType)
-            .beginControlFlow("if(!$T.isEmpty(list))", mCollectionUtils)
+            .beginControlFlow("if(list != null && !list.isEmpty())")
             .beginControlFlow("for ($T website : list)", mWebsite)
             .addStatement("register.addAdapter(website)")
             .endControlFlow()

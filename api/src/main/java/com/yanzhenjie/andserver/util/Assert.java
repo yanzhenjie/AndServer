@@ -15,6 +15,8 @@
  */
 package com.yanzhenjie.andserver.util;
 
+import android.text.TextUtils;
+
 import java.util.Collection;
 import java.util.Map;
 
@@ -102,7 +104,7 @@ public abstract class Assert {
      * @throws IllegalArgumentException if the text is empty.
      */
     public static void hasLength(String text, String message) {
-        if (!StringUtils.hasLength(text)) {
+        if (TextUtils.isEmpty(text)) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -119,7 +121,7 @@ public abstract class Assert {
      * @throws IllegalArgumentException if the text does not contain valid text content.
      */
     public static void hasText(String text, String message) {
-        if (!StringUtils.hasText(text)) {
+        if (TextUtils.isEmpty(text)) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -136,8 +138,7 @@ public abstract class Assert {
      * @throws IllegalArgumentException if the text contains the substring.
      */
     public static void doesNotContain(String textToSearch, String substring, String message) {
-        if (StringUtils.hasLength(textToSearch) && StringUtils.hasLength(substring) &&
-            textToSearch.contains(substring)) {
+        if (!TextUtils.isEmpty(textToSearch) && !TextUtils.isEmpty(substring) && textToSearch.contains(substring)) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -154,7 +155,7 @@ public abstract class Assert {
      * @throws IllegalArgumentException if the object array is {@code null} or contains no elements.
      */
     public static void notEmpty(Object[] array, String message) {
-        if (ObjectUtils.isEmpty(array)) {
+        if (array == null || array.length == 0) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -171,7 +172,7 @@ public abstract class Assert {
      */
     public static void noNullElements(Object[] array, String message) {
         if (array != null) {
-            for (Object element : array) {
+            for (Object element: array) {
                 if (element == null) {
                     throw new IllegalArgumentException(message);
                 }
@@ -191,7 +192,7 @@ public abstract class Assert {
      * @throws IllegalArgumentException if the collection is {@code null} or contains no elements.
      */
     public static void notEmpty(Collection<?> collection, String message) {
-        if (CollectionUtils.isEmpty(collection)) {
+        if (collection == null || collection.isEmpty()) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -207,7 +208,7 @@ public abstract class Assert {
      * @throws IllegalArgumentException if the map is {@code null} or contains no entries.
      */
     public static void notEmpty(Map<?, ?> map, String message) {
-        if (CollectionUtils.isEmpty(map)) {
+        if (map == null || map.isEmpty()) {
             throw new IllegalArgumentException(message);
         }
     }
@@ -288,7 +289,7 @@ public abstract class Assert {
         String className = (obj != null ? obj.getClass().getName() : "null");
         String result = "";
         boolean defaultMessage = true;
-        if (StringUtils.hasLength(msg)) {
+        if (!TextUtils.isEmpty(msg)) {
             if (endsWithSeparator(msg)) {
                 result = msg + " ";
             } else {
@@ -305,7 +306,7 @@ public abstract class Assert {
     private static void assignableCheckFailed(Class<?> superType, Class<?> subType, String msg) {
         String result = "";
         boolean defaultMessage = true;
-        if (StringUtils.hasLength(msg)) {
+        if (!TextUtils.isEmpty(msg)) {
             if (endsWithSeparator(msg)) {
                 result = msg + " ";
             } else {

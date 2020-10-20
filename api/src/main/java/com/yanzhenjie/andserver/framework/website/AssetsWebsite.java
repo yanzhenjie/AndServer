@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,7 +32,6 @@ import com.yanzhenjie.andserver.util.Assert;
 import com.yanzhenjie.andserver.util.DigestUtils;
 import com.yanzhenjie.andserver.util.MediaType;
 import com.yanzhenjie.andserver.util.Patterns;
-import com.yanzhenjie.andserver.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,8 +71,8 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
      */
     public AssetsWebsite(@NonNull Context context, @NonNull String rootPath, @NonNull String indexFileName) {
         super(indexFileName);
-        Assert.isTrue(!StringUtils.isEmpty(rootPath), "The rootPath cannot be empty.");
-        Assert.isTrue(!StringUtils.isEmpty(indexFileName), "The indexFileName cannot be empty.");
+        Assert.isTrue(!TextUtils.isEmpty(rootPath), "The rootPath cannot be empty.");
+        Assert.isTrue(!TextUtils.isEmpty(indexFileName), "The indexFileName cannot be empty.");
 
         if (!rootPath.matches(PATH)) {
             String message = String.format("The format of [%s] is wrong, it should be like [/root/project].", rootPath);
@@ -107,7 +107,7 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
             synchronized (AssetsWebsite.class) {
                 if (!isScanned) {
                     List<String> fileList = mReader.scanFile(mRootPath);
-                    for (String filePath : fileList) {
+                    for (String filePath: fileList) {
                         String httpPath = filePath.substring(mRootPath.length());
                         httpPath = addStartSlash(httpPath);
                         mPatternMap.put(httpPath, filePath);
@@ -226,14 +226,14 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
          */
         @NonNull
         public List<String> scanFile(@NonNull String path) {
-            Assert.isTrue(!StringUtils.isEmpty(path), "The path cannot be empty.");
+            Assert.isTrue(!TextUtils.isEmpty(path), "The path cannot be empty.");
 
             List<String> pathList = new ArrayList<>();
             if (isFile(path)) {
                 pathList.add(path);
             } else {
                 List<String> files = list(path);
-                for (String file : files) {
+                for (String file: files) {
                     String realPath = path + File.separator + file;
                     if (isFile(realPath)) {
                         pathList.add(realPath);

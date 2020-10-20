@@ -15,6 +15,8 @@
  */
 package com.yanzhenjie.andserver.util;
 
+import android.text.TextUtils;
+
 import com.yanzhenjie.andserver.error.InvalidMimeTypeException;
 
 import java.io.Serializable;
@@ -164,7 +166,7 @@ public class MimeType implements Comparable<MimeType>, Serializable {
         this.subtype = subtype.toLowerCase(Locale.ENGLISH);
         if (parameters != null && !parameters.isEmpty()) {
             Map<String, String> map = new LinkedCaseInsensitiveMap<>(parameters.size(), Locale.ENGLISH);
-            for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            for (Map.Entry<String, String> entry: parameters.entrySet()) {
                 String attribute = entry.getKey();
                 String value = entry.getValue();
                 checkParameters(attribute, value);
@@ -408,16 +410,24 @@ public class MimeType implements Comparable<MimeType>, Serializable {
             return false;
         }
 
-        for (String key : this.parameters.keySet()) {
+        for (String key: this.parameters.keySet()) {
             if (!other.parameters.containsKey(key)) {
                 return false;
             }
 
             if (PARAM_CHARSET.equals(key)) {
-                if (!ObjectUtils.nullSafeEquals(getCharset(), other.getCharset())) {
+                Charset mCharset = getCharset();
+                Charset oCharset = other.getCharset();
+                if (mCharset == null || !mCharset.equals(oCharset)) {
                     return false;
+                } else {
+                    return true;
                 }
-            } else if (!ObjectUtils.nullSafeEquals(this.parameters.get(key), other.parameters.get(key))) {
+            }
+
+            String mValue = this.parameters.get(key);
+            String oValue = other.parameters.get(key);
+            if (mValue == null || !mValue.equals(oValue)) {
                 return false;
             }
         }
@@ -448,7 +458,7 @@ public class MimeType implements Comparable<MimeType>, Serializable {
     }
 
     private void appendTo(Map<String, String> map, StringBuilder builder) {
-        for (Map.Entry<String, String> entry : map.entrySet()) {
+        for (Map.Entry<String, String> entry: map.entrySet()) {
             builder.append(';');
             builder.append(entry.getKey());
             builder.append('=');
@@ -506,7 +516,7 @@ public class MimeType implements Comparable<MimeType>, Serializable {
      * Parse the given string value into a {@code Mime} object.
      */
     public static MimeType valueOf(String mimeType) {
-        if (!StringUtils.hasLength(mimeType)) {
+        if (TextUtils.isEmpty(mimeType)) {
             throw new InvalidMimeTypeException(mimeType, "[mimeType] must not be empty");
         }
 
@@ -561,7 +571,8 @@ public class MimeType implements Comparable<MimeType>, Serializable {
                 }
             }
             index = nextIndex;
-        } while (index < mimeType.length());
+        }
+        while (index < mimeType.length());
 
         try {
             return new MimeType(type, subtype, parameters);

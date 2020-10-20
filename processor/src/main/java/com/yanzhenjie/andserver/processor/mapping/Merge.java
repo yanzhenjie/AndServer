@@ -16,14 +16,12 @@
 package com.yanzhenjie.andserver.processor.mapping;
 
 import com.yanzhenjie.andserver.annotation.RequestMethod;
+import com.yanzhenjie.andserver.processor.util.Utils;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Zhenjie Yan on 2018/9/8.
@@ -67,8 +65,8 @@ public class Merge implements Mapping {
 
         if (ArrayUtils.isNotEmpty(pPaths)) {
             List<String> paths = new ArrayList<>();
-            for (String pPath : pPaths) {
-                for (String cPath : cPaths) {
+            for (String pPath: pPaths) {
+                for (String cPath: cPaths) {
                     String path = pPath + cPath;
                     paths.add(path);
                 }
@@ -78,7 +76,7 @@ public class Merge implements Mapping {
             mPaths = cPaths;
         }
 
-        mPaths = mergeRepeat(mPaths, null, false);
+        mPaths = Utils.mergeRepeat(mPaths, null, false);
         return mPaths;
     }
 
@@ -90,9 +88,9 @@ public class Merge implements Mapping {
 
         String[] pMethods = mParent.method();
         String[] cMethods = mChild.method();
-        mMethods = mergeRepeat(pMethods, cMethods, true);
+        mMethods = Utils.mergeRepeat(pMethods, cMethods, true);
         if (ArrayUtils.isEmpty(mMethods)) {
-            mMethods = new String[]{RequestMethod.GET.value()};
+            mMethods = new String[] {RequestMethod.GET.value()};
         }
         return mMethods;
     }
@@ -105,7 +103,7 @@ public class Merge implements Mapping {
 
         String[] pParams = mParent.params();
         String[] cParams = mChild.params();
-        mParams = mergeRepeat(pParams, cParams, false);
+        mParams = Utils.mergeRepeat(pParams, cParams, false);
         return mParams;
     }
 
@@ -117,7 +115,7 @@ public class Merge implements Mapping {
 
         String[] pHeaders = mParent.headers();
         String[] cHeaders = mChild.headers();
-        mHeaders = mergeRepeat(pHeaders, cHeaders, true);
+        mHeaders = Utils.mergeRepeat(pHeaders, cHeaders, true);
         return mHeaders;
     }
 
@@ -129,7 +127,7 @@ public class Merge implements Mapping {
 
         String[] pConsumes = mParent.consumes();
         String[] cConsumes = mChild.consumes();
-        mConsumes = mergeRepeat(pConsumes, cConsumes, true);
+        mConsumes = Utils.mergeRepeat(pConsumes, cConsumes, true);
         return mConsumes;
     }
 
@@ -141,28 +139,12 @@ public class Merge implements Mapping {
 
         String[] pProduces = mParent.produces();
         String[] cProduces = mChild.produces();
-        mProduces = mergeRepeat(pProduces, cProduces, true);
+        mProduces = Utils.mergeRepeat(pProduces, cProduces, true);
         return mProduces;
     }
 
     @Override
     public boolean isRest() {
         return mParent.isRest() || mChild.isRest();
-    }
-
-    private static String[] mergeRepeat(String[] parents, String[] children, boolean ignoreCap) {
-        Map<String, String> map = new HashMap<>();
-        if (ArrayUtils.isNotEmpty(parents)) {
-            for (String parent : parents) {
-                map.put(ignoreCap ? parent.toLowerCase() : parent, parent);
-            }
-        }
-        if (ArrayUtils.isNotEmpty(children)) {
-            for (String child : children) {
-                map.put(ignoreCap ? child.toLowerCase() : child, child);
-            }
-        }
-        Collection<String> values = map.values();
-        return values.toArray(new String[0]);
     }
 }

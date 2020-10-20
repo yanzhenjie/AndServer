@@ -18,11 +18,12 @@ package com.yanzhenjie.andserver.http;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.yanzhenjie.andserver.util.LinkedMultiValueMap;
 import com.yanzhenjie.andserver.util.MultiValueMap;
-import com.yanzhenjie.andserver.util.ObjectUtils;
 import com.yanzhenjie.andserver.util.Patterns;
-import com.yanzhenjie.andserver.util.StringUtils;
 import com.yanzhenjie.andserver.util.UrlCoder;
 
 import org.apache.commons.io.Charsets;
@@ -34,9 +35,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Add the mPath to the URL, such as:
@@ -137,23 +135,23 @@ public class Uri implements Patterns {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        if (!StringUtils.isEmpty(mScheme)) {
+        if (!TextUtils.isEmpty(mScheme)) {
             builder.append(mScheme).append(":");
         }
 
-        if (!StringUtils.isEmpty(mHost) && mPort > 0) {
+        if (!TextUtils.isEmpty(mHost) && mPort > 0) {
             builder.append("//").append(mHost).append(":").append(mPort);
         }
 
-        if (!StringUtils.isEmpty(mPath)) {
+        if (!TextUtils.isEmpty(mPath)) {
             builder.append(mPath);
         }
 
-        if (!StringUtils.isEmpty(mQuery)) {
+        if (!TextUtils.isEmpty(mQuery)) {
             builder.append("?").append(mQuery);
         }
 
-        if (!StringUtils.isEmpty(mFragment)) {
+        if (!TextUtils.isEmpty(mFragment)) {
             builder.append("#").append(mFragment);
         }
 
@@ -162,7 +160,9 @@ public class Uri implements Patterns {
 
     @Nullable
     public Uri location(@Nullable String location) {
-        if (TextUtils.isEmpty(location)) return null;
+        if (TextUtils.isEmpty(location)) {
+            return null;
+        }
 
         if (URLUtil.isNetworkUrl(location)) {
             return newBuilder(location).build();
@@ -314,7 +314,7 @@ public class Uri implements Patterns {
         }
 
         public Builder addQuery(@NonNull String key, @NonNull List<String> values) {
-            for (String value : values) {
+            for (String value: values) {
                 mQuery.add(key, value);
             }
             return this;
@@ -355,7 +355,7 @@ public class Uri implements Patterns {
         while (path.endsWith("/")) path = path.substring(0, path.length() - 1);
 
         List<String> pathList = new LinkedList<>();
-        if (!StringUtils.isEmpty(path)) {
+        if (!TextUtils.isEmpty(path)) {
             while (path.startsWith("/")) path = path.substring(1);
             String[] pathArray = path.split("/");
             Collections.addAll(pathList, pathArray);
@@ -365,8 +365,10 @@ public class Uri implements Patterns {
 
     private static MultiValueMap<String, String> convertQuery(String query) {
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        if (!StringUtils.isEmpty(query)) {
-            if (query.startsWith("?")) query = query.substring(1);
+        if (!TextUtils.isEmpty(query)) {
+            if (query.startsWith("?")) {
+                query = query.substring(1);
+            }
 
             StringTokenizer tokenizer = new StringTokenizer(query, "&");
             while (tokenizer.hasMoreElements()) {
@@ -384,9 +386,11 @@ public class Uri implements Patterns {
     }
 
     private static String path(List<String> pathList) {
-        if (ObjectUtils.isEmpty(pathList)) return "/";
+        if (pathList == null || pathList.isEmpty()) {
+            return "/";
+        }
         StringBuilder builder = new StringBuilder();
-        for (String path : pathList) {
+        for (String path: pathList) {
             builder.append("/").append(path);
         }
         return builder.toString();
@@ -399,8 +403,8 @@ public class Uri implements Patterns {
             Map.Entry<String, List<String>> param = iterator.next();
             String key = param.getKey();
             List<String> valueList = param.getValue();
-            if (!ObjectUtils.isEmpty(valueList)) {
-                for (String value : valueList) {
+            if (valueList != null && !valueList.isEmpty()) {
+                for (String value: valueList) {
                     builder.append(key).append("=").append(value);
                 }
             } else {
@@ -412,8 +416,8 @@ public class Uri implements Patterns {
             Map.Entry<String, List<String>> param = iterator.next();
             String key = param.getKey();
             List<String> valueList = param.getValue();
-            if (!ObjectUtils.isEmpty(valueList)) {
-                for (String value : valueList) {
+            if (valueList != null && !valueList.isEmpty()) {
+                for (String value: valueList) {
                     builder.append("&").append(key).append("=").append(value);
                 }
             } else {

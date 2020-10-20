@@ -15,6 +15,8 @@
  */
 package com.yanzhenjie.andserver.framework.view;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -23,15 +25,14 @@ import com.yanzhenjie.andserver.error.ServerInternalException;
 import com.yanzhenjie.andserver.framework.MessageConverter;
 import com.yanzhenjie.andserver.framework.body.StringBody;
 import com.yanzhenjie.andserver.http.HttpContext;
+import com.yanzhenjie.andserver.http.HttpHeaders;
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
 import com.yanzhenjie.andserver.http.RequestDispatcher;
 import com.yanzhenjie.andserver.http.ResponseBody;
-import com.yanzhenjie.andserver.util.HttpHeaders;
+import com.yanzhenjie.andserver.http.StatusCode;
 import com.yanzhenjie.andserver.util.MediaType;
 import com.yanzhenjie.andserver.util.Patterns;
-import com.yanzhenjie.andserver.util.StatusCode;
-import com.yanzhenjie.andserver.util.StringUtils;
 
 /**
  * Created by Zhenjie Yan on 2018/8/31.
@@ -94,7 +95,7 @@ public class ViewResolver implements Patterns, StatusCode, HttpHeaders {
     private void resolvePath(Object output, @NonNull HttpRequest request, @NonNull HttpResponse response) {
         if (output instanceof CharSequence) {
             final String action = output.toString();
-            if (StringUtils.isEmpty(action)) {
+            if (TextUtils.isEmpty(action)) {
                 return;
             }
 

@@ -23,7 +23,6 @@ import com.yanzhenjie.andserver.http.cookie.CookieProcessor;
 import com.yanzhenjie.andserver.http.cookie.StandardCookieProcessor;
 import com.yanzhenjie.andserver.util.HttpDateFormat;
 import com.yanzhenjie.andserver.util.MediaType;
-import com.yanzhenjie.andserver.util.ObjectUtils;
 
 import org.apache.httpcore.Header;
 import org.apache.httpcore.HttpEntity;
@@ -73,7 +72,7 @@ public class StandardResponse implements HttpResponse {
     @Override
     public String getHeader(@NonNull String name) {
         Header header = mResponse.getFirstHeader(name);
-        return ObjectUtils.isEmpty(header) ? null : header.getValue();
+        return header == null ? null : header.getValue();
     }
 
     @Override
@@ -105,12 +104,12 @@ public class StandardResponse implements HttpResponse {
     @Override
     public List<String> getHeaders(@NonNull String name) {
         Header[] headers = mResponse.getHeaders(name);
-        if (ObjectUtils.isEmpty(headers)) {
+        if (headers == null || headers.length == 0) {
             return Collections.emptyList();
         }
 
         List<String> list = new ArrayList<>();
-        for (Header header : headers) {
+        for (Header header: headers) {
             list.add(header.getValue());
         }
         return list;
@@ -120,12 +119,12 @@ public class StandardResponse implements HttpResponse {
     @Override
     public List<String> getHeaderNames() {
         Header[] headers = mResponse.getAllHeaders();
-        if (ObjectUtils.isEmpty(headers)) {
+        if (headers == null || headers.length == 0) {
             return Collections.emptyList();
         }
 
         List<String> list = new ArrayList<>();
-        for (Header header : headers) {
+        for (Header header: headers) {
             list.add(header.getName());
         }
         return list;

@@ -15,11 +15,10 @@
  */
 package com.yanzhenjie.andserver.http.cookie;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.yanzhenjie.andserver.util.ObjectUtils;
-import com.yanzhenjie.andserver.util.StringUtils;
 
 import org.apache.httpcore.Header;
 
@@ -71,12 +70,12 @@ public class StandardCookieProcessor implements CookieProcessor {
     @NonNull
     @Override
     public List<Cookie> parseCookieHeader(@Nullable Header[] headers) {
-        if (ObjectUtils.isEmpty(headers)) {
+        if (headers == null || headers.length == 0) {
             return Collections.emptyList();
         }
 
         List<Cookie> cookieList = new ArrayList<>();
-        for (Header header : headers) {
+        for (Header header: headers) {
             String name = header.getName();
             if ("Cookie".equalsIgnoreCase(name)) {
                 String headerValue = header.getValue();
@@ -108,7 +107,7 @@ public class StandardCookieProcessor implements CookieProcessor {
         header.append(cookie.getName());
         header.append('=');
         String value = cookie.getValue();
-        if (!StringUtils.isEmpty(value)) {
+        if (!TextUtils.isEmpty(value)) {
             validateCookieValue(value);
             header.append(value);
         }

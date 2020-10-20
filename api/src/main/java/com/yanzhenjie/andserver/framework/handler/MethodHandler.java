@@ -18,6 +18,7 @@ package com.yanzhenjie.andserver.framework.handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.yanzhenjie.andserver.framework.cross.CrossOrigin;
 import com.yanzhenjie.andserver.framework.mapping.Addition;
 import com.yanzhenjie.andserver.framework.mapping.Mapping;
 
@@ -27,19 +28,20 @@ import com.yanzhenjie.andserver.framework.mapping.Mapping;
 public interface MethodHandler extends RequestHandler {
 
     /**
-     * Is a rest style handler ?
-     *
-     * @return true, otherwise is false.
-     */
-    boolean isRest();
-
-    /**
      * Get addition configuration, addition provides some added value.
      *
      * @return {@link Addition}.
      */
-    @Nullable
+    @NonNull
     Addition getAddition();
+
+    /**
+     * Get cross origin information.
+     *
+     * @return {@link CrossOrigin}
+     */
+    @Nullable
+    CrossOrigin getCrossOrigin();
 
     /**
      * Get mapping configuration, mapping provides all the annotation information for this method.

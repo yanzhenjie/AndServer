@@ -15,56 +15,17 @@
  */
 package com.yanzhenjie.andserver.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
 
 /**
  * Created by YanZhenjie on 2018/8/7.
+ *
+ * @deprecated use {@link com.yanzhenjie.andserver.http.AcceptLanguage} instead.
  */
-public class AcceptLanguage {
-
-    private final Locale locale;
-    private final double quality;
+@Deprecated
+public class AcceptLanguage extends com.yanzhenjie.andserver.http.AcceptLanguage {
 
     protected AcceptLanguage(Locale locale, double quality) {
-        this.locale = locale;
-        this.quality = quality;
-    }
-
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public double getQuality() {
-        return quality;
-    }
-
-    public static List<AcceptLanguage> parse(String input) {
-        if (StringUtils.isEmpty(input)) {
-            return Collections.emptyList();
-        }
-
-        String[] segments = input.split(",");
-        if (ObjectUtils.isEmpty(segments)) {
-            return Collections.emptyList();
-        }
-
-        List<AcceptLanguage> list = new ArrayList<>();
-        for (String segment : segments) {
-            String[] values = segment.split(";");
-            if (values.length == 2 && values[1].length() > 2 && values[1].charAt(0) == 'q' &&
-                values[1].charAt(1) == '=') {
-                String q = values[1].substring(2);
-                try {
-                    list.add(new AcceptLanguage(new Locale(values[1]), Double.parseDouble(q)));
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return list;
+        super(locale, quality);
     }
 }

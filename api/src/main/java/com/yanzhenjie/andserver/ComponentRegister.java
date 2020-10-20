@@ -20,7 +20,6 @@ import android.content.res.AssetManager;
 
 import com.yanzhenjie.andserver.register.OnRegister;
 import com.yanzhenjie.andserver.register.Register;
-import com.yanzhenjie.andserver.util.ObjectUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,14 +57,14 @@ public class ComponentRegister {
             e.printStackTrace();
         }
 
-        if (ObjectUtils.isEmpty(pathList)) {
+        if (pathList == null || pathList.length == 0) {
             return;
         }
 
-        for (String path : pathList) {
+        for (String path: pathList) {
             if (path.endsWith(ANDSERVER_SUFFIX)) {
                 String packageName = path.substring(0, path.indexOf(ANDSERVER_SUFFIX));
-                for (String clazz : REGISTER_LIST) {
+                for (String clazz: REGISTER_LIST) {
                     String className = String.format("%s%s%s", packageName, PROCESSOR_PACKAGE, clazz);
                     registerClass(register, group, className);
                 }
