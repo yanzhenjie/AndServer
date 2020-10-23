@@ -17,6 +17,7 @@ package com.yanzhenjie.andserver.sample.controller;
 
 import com.yanzhenjie.andserver.annotation.Addition;
 import com.yanzhenjie.andserver.annotation.CookieValue;
+import com.yanzhenjie.andserver.annotation.CrossOrigin;
 import com.yanzhenjie.andserver.annotation.FormPart;
 import com.yanzhenjie.andserver.annotation.GetMapping;
 import com.yanzhenjie.andserver.annotation.PathVariable;
@@ -24,6 +25,7 @@ import com.yanzhenjie.andserver.annotation.PostMapping;
 import com.yanzhenjie.andserver.annotation.PutMapping;
 import com.yanzhenjie.andserver.annotation.RequestBody;
 import com.yanzhenjie.andserver.annotation.RequestMapping;
+import com.yanzhenjie.andserver.annotation.RequestMethod;
 import com.yanzhenjie.andserver.annotation.RequestParam;
 import com.yanzhenjie.andserver.annotation.RestController;
 import com.yanzhenjie.andserver.http.HttpRequest;
@@ -49,21 +51,27 @@ import java.util.Locale;
 @RequestMapping(path = "/user")
 class TestController {
 
-    @GetMapping(path = "/get/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @CrossOrigin(
+        methods = {RequestMethod.POST, RequestMethod.GET}
+    )
+    @RequestMapping(
+        path = "/get/{userId}",
+        method = {RequestMethod.PUT, RequestMethod.POST, RequestMethod.GET},
+        produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     String info(@PathVariable(name = "userId") String userId) {
         return userId;
     }
 
     @PutMapping(path = "/get/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     String modify(@PathVariable("userId") String userId, @RequestParam(name = "sex") String sex,
-        @RequestParam(name = "age") int age) {
+                  @RequestParam(name = "age") int age) {
         String message = "The userId is %1$s, and the sex is %2$s, and the age is %3$d.";
         return String.format(Locale.US, message, userId, sex, age);
     }
 
     @PostMapping(path = "/login", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     String login(HttpRequest request, HttpResponse response, @RequestParam(name = "account") String account,
-        @RequestParam(name = "password") String password) {
+                 @RequestParam(name = "password") String password) {
         Session session = request.getValidSession();
         session.setAttribute(LoginInterceptor.LOGIN_ATTRIBUTE, true);
 
@@ -89,17 +97,17 @@ class TestController {
         return localFile.getAbsolutePath();
     }
 
-    @GetMapping(path = "/consume", consumes = {"application/json", "!application/xml" })
+    @GetMapping(path = "/consume", consumes = {"application/json", "!application/xml"})
     String consume() {
         return "Consume is successful";
     }
 
-    @GetMapping(path = "/produce", produces = {"application/json; charset=utf-8" })
+    @GetMapping(path = "/produce", produces = {"application/json; charset=utf-8"})
     String produce() {
         return "Produce is successful";
     }
 
-    @GetMapping(path = "/include", params = {"name=123" })
+    @GetMapping(path = "/include", params = {"name=123"})
     String include(@RequestParam(name = "name") String name) {
         return name;
     }
@@ -109,12 +117,12 @@ class TestController {
         return "Exclude is successful.";
     }
 
-    @GetMapping(path = {"/mustKey", "/getName" }, params = "name")
+    @GetMapping(path = {"/mustKey", "/getName"}, params = "name")
     String getMustKey(@RequestParam(name = "name") String name) {
         return name;
     }
 
-    @PostMapping(path = {"/mustKey", "/postName" }, params = "name")
+    @PostMapping(path = {"/mustKey", "/postName"}, params = "name")
     String postMustKey(@RequestParam(name = "name") String name) {
         return name;
     }

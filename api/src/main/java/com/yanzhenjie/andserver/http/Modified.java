@@ -15,12 +15,10 @@
  */
 package com.yanzhenjie.andserver.http;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.yanzhenjie.andserver.util.HttpHeaders;
-import com.yanzhenjie.andserver.util.StatusCode;
-import com.yanzhenjie.andserver.util.StringUtils;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -105,7 +103,7 @@ public class Modified implements HttpHeaders {
             if (lastModified > 0 && mResponse.getHeader(LAST_MODIFIED) == null) {
                 mResponse.setDateHeader(LAST_MODIFIED, lastModified);
             }
-            if (StringUtils.hasLength(eTag) && mResponse.getHeader(ETAG) == null) {
+            if (!TextUtils.isEmpty(eTag) && mResponse.getHeader(ETAG) == null) {
                 mResponse.setHeader(ETAG, padETagIfNecessary(eTag));
             }
             mResponse.setHeader(CACHE_CONTROL, "private");
@@ -114,7 +112,7 @@ public class Modified implements HttpHeaders {
     }
 
     private boolean validateIfNoneMatch(String eTag) {
-        if (!StringUtils.hasLength(eTag)) {
+        if (TextUtils.isEmpty(eTag)) {
             return false;
         }
 
@@ -125,11 +123,11 @@ public class Modified implements HttpHeaders {
 
         // We will perform this validation...
         eTag = padETagIfNecessary(eTag);
-        for (String clientETags : ifNoneMatch) {
+        for (String clientETags: ifNoneMatch) {
             Matcher eTagMatcher = ETAG_PATTERN.matcher(clientETags);
             // Compare weak/strong ETags as per https://tools.ietf.org/html/rfc7232#section-2.3
             while (eTagMatcher.find()) {
-                if (StringUtils.hasLength(eTagMatcher.group()) &&
+                if (!TextUtils.isEmpty(eTagMatcher.group()) &&
                     eTag.replaceFirst("^W/", "").equals(eTagMatcher.group(3))) {
                     isNotModified = true;
                     break;
@@ -140,7 +138,7 @@ public class Modified implements HttpHeaders {
     }
 
     private String padETagIfNecessary(String eTag) {
-        if (!StringUtils.hasLength(eTag)) {
+        if (TextUtils.isEmpty(eTag)) {
             return eTag;
         }
         if ((eTag.startsWith("\"") || eTag.startsWith("W/\"")) && eTag.endsWith("\"")) {
@@ -183,7 +181,7 @@ public class Modified implements HttpHeaders {
             dateValue = mRequest.getDateHeader(headerName);
         } catch (IllegalStateException ex) {
             String headerValue = mRequest.getHeader(headerName);
-            if (StringUtils.isEmpty(headerValue)) {
+            if (TextUtils.isEmpty(headerValue)) {
                 return -1;
             }
             // Possibly an IE 10 style value: "Wed, 09 Apr 2014 09:57:42 GMT; length=13774"

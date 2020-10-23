@@ -15,16 +15,28 @@
  */
 package com.yanzhenjie.andserver.framework.handler;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.framework.ETag;
 import com.yanzhenjie.andserver.framework.LastModified;
+import com.yanzhenjie.andserver.framework.body.StringBody;
+import com.yanzhenjie.andserver.framework.cross.CrossOrigin;
 import com.yanzhenjie.andserver.framework.mapping.Addition;
 import com.yanzhenjie.andserver.framework.mapping.Mapping;
 import com.yanzhenjie.andserver.framework.mapping.Path;
+import com.yanzhenjie.andserver.framework.view.BodyView;
+import com.yanzhenjie.andserver.framework.view.View;
+import com.yanzhenjie.andserver.http.HttpHeaders;
+import com.yanzhenjie.andserver.http.HttpMethod;
 import com.yanzhenjie.andserver.http.HttpRequest;
+import com.yanzhenjie.andserver.http.HttpResponse;
 
+import org.apache.httpcore.HttpStatus;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -38,13 +50,14 @@ public abstract class MappingHandler implements MethodHandler {
     private final Object mHost;
     private final Mapping mMapping;
     private final Addition mAddition;
-    private final boolean isRest;
+    private final CrossOrigin mCrossOrigin;
 
-    public MappingHandler(@NonNull Object host, @NonNull Mapping mapping, @NonNull Addition addition, boolean isRest) {
+    public MappingHandler(@NonNull Object host, @NonNull Mapping mapping, @NonNull Addition addition,
+                          @Nullable CrossOrigin crossOrigin) {
         this.mHost = host;
         this.mMapping = mapping;
         this.mAddition = addition;
-        this.isRest = isRest;
+        this.mCrossOrigin = crossOrigin;
     }
 
     @Override
@@ -65,15 +78,16 @@ public abstract class MappingHandler implements MethodHandler {
         return -1;
     }
 
+    @NonNull
     @Override
-    public boolean isRest() {
-        return isRest;
+    public Addition getAddition() {
+        return mAddition;
     }
 
     @Nullable
     @Override
-    public Addition getAddition() {
-        return mAddition;
+    public CrossOrigin getCrossOrigin() {
+        return mCrossOrigin;
     }
 
     @NonNull
@@ -98,7 +112,7 @@ public abstract class MappingHandler implements MethodHandler {
     protected Map<String, String> getPathVariable(@NonNull String httpPath) {
         List<Path.Segment> httpSegments = Path.pathToList(httpPath);
         List<Path.Rule> ruleList = mMapping.getPath().getRuleList();
-        for (Path.Rule rule : ruleList) {
+        for (Path.Rule rule: ruleList) {
             List<Path.Segment> segments = rule.getSegments();
             if (httpSegments.size() != segments.size()) {
                 continue;
@@ -139,4 +153,34 @@ public abstract class MappingHandler implements MethodHandler {
 
         return Collections.emptyMap();
     }
+
+    @Override
+    public View handle(@NonNull HttpRequest request, @NonNull HttpResponse response) throws Throwable {
+        String origin = request.getHeader(HttpHeaders.ORIGIN);
+        if (!TextUtils.isEmpty(origin) && mCrossOrigin != null) {
+            HttpMethod method = request.getMethod();
+
+            List<HttpMethod> allowMethods = Arrays.asList(mCrossOrigin.getMethods());
+            if (!allowMethods.isEmpty() && !allowMethods.contains(method)) {
+                return invalidCORS(response);
+            }
+
+            response.setHeader(HttpHeaders.Access_Control_Allow_Origin, origin);
+            boolean credentials = mCrossOrigin.isAllowCredentials();
+            response.setHeader(HttpHeaders.Access_Control_Allow_Credentials, Boolean.toString(credentials));
+            response.setHeader(HttpHeaders.VARY, HttpHeaders.ORIGIN);
+        }
+
+        return onHandle(request, response);
+    }
+
+    private View invalidCORS(HttpResponse response, HttpMethod... methods) {
+        response.setStatus(HttpStatus.SC_FORBIDDEN);
+        if (methods != null && methods.length > 0) {
+            response.setHeader(HttpHeaders.ALLOW, TextUtils.join(", ", methods));
+        }
+        return new BodyView(new StringBody(OptionsHandler.INVALID_CORS_REQUEST));
+    }
+
+    protected abstract View onHandle(HttpRequest request, HttpResponse response) throws Throwable;
 }

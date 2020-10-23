@@ -32,7 +32,10 @@ import java.util.TimeZone;
 
 /**
  * Created by YanZhenjie on 2018/7/10.
+ *
+ * @deprecated use apache commons-lang instead.
  */
+@Deprecated
 public abstract class StringUtils {
 
     private static final String FOLDER_SEPARATOR = "/";
@@ -768,7 +771,7 @@ public abstract class StringUtils {
      */
     public static String[] addStringToArray(String[] array, String str) {
         if (ObjectUtils.isEmpty(array)) {
-            return new String[]{str};
+            return new String[] {str};
         }
 
         String[] newArr = new String[array.length + 1];
@@ -820,7 +823,7 @@ public abstract class StringUtils {
 
         List<String> result = new ArrayList<String>();
         result.addAll(Arrays.asList(array1));
-        for (String str : array2) {
+        for (String str: array2) {
             if (!result.contains(str)) {
                 result.add(str);
             }
@@ -912,7 +915,7 @@ public abstract class StringUtils {
         }
 
         Set<String> set = new LinkedHashSet<>();
-        for (String element : array) {
+        for (String element: array) {
             set.add(element);
         }
         return toStringArray(set);
@@ -939,7 +942,7 @@ public abstract class StringUtils {
 
         String beforeDelimiter = toSplit.substring(0, offset);
         String afterDelimiter = toSplit.substring(offset + delimiter.length());
-        return new String[]{beforeDelimiter, afterDelimiter};
+        return new String[] {beforeDelimiter, afterDelimiter};
     }
 
     /**
@@ -981,7 +984,7 @@ public abstract class StringUtils {
         }
 
         Properties result = new Properties();
-        for (String element : array) {
+        for (String element: array) {
             if (charsToDelete != null) {
                 element = deleteAny(element, charsToDelete);
             }
@@ -1036,14 +1039,14 @@ public abstract class StringUtils {
      * @see #delimitedListToStringArray
      */
     public static String[] tokenizeToStringArray(String str, String delimiters, boolean trimTokens,
-        boolean ignoreEmptyTokens) {
+                                                 boolean ignoreEmptyTokens) {
 
         if (str == null) {
             return null;
         }
 
         StringTokenizer st = new StringTokenizer(str, delimiters);
-        List<String> tokens = new ArrayList<String>();
+        List<String> tokens = new ArrayList<>();
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             if (trimTokens) {
@@ -1095,7 +1098,7 @@ public abstract class StringUtils {
             return new String[0];
         }
         if (delimiter == null) {
-            return new String[]{str};
+            return new String[] {str};
         }
 
         List<String> result = new ArrayList<String>();
@@ -1143,7 +1146,7 @@ public abstract class StringUtils {
     public static Set<String> commaDelimitedListToSet(String str) {
         Set<String> set = new LinkedHashSet<String>();
         String[] tokens = commaDelimitedListToStringArray(str);
-        for (String token : tokens) {
+        for (String token: tokens) {
             set.add(token);
         }
         return set;
@@ -1161,7 +1164,7 @@ public abstract class StringUtils {
      * @return the delimited {@code String}
      */
     public static String collectionToDelimitedString(Collection<?> coll, String delim, String prefix, String suffix) {
-        if (CollectionUtils.isEmpty(coll)) {
+        if (coll == null || coll.isEmpty()) {
             return "";
         }
 

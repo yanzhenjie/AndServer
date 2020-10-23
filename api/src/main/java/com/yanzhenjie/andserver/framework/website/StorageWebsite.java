@@ -15,6 +15,8 @@
  */
 package com.yanzhenjie.andserver.framework.website;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.error.NotFoundException;
@@ -24,7 +26,6 @@ import com.yanzhenjie.andserver.http.ResponseBody;
 import com.yanzhenjie.andserver.util.Assert;
 import com.yanzhenjie.andserver.util.DigestUtils;
 import com.yanzhenjie.andserver.util.Patterns;
-import com.yanzhenjie.andserver.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class StorageWebsite extends BasicWebsite implements Patterns {
      */
     public StorageWebsite(@NonNull String rootPath, @NonNull String indexFileName) {
         super(indexFileName);
-        Assert.isTrue(!StringUtils.isEmpty(rootPath), "The rootPath cannot be empty.");
+        Assert.isTrue(!TextUtils.isEmpty(rootPath), "The rootPath cannot be empty.");
         Assert.isTrue(rootPath.matches(PATH), "The format of [%s] is wrong, it should be like [/root/project].");
 
         this.mRootPath = rootPath;

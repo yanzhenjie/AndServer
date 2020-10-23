@@ -17,6 +17,7 @@ package com.yanzhenjie.andserver.util;
 
 import android.os.Build;
 import android.os.StatFs;
+import android.text.TextUtils;
 
 import com.yanzhenjie.andserver.http.RequestBody;
 
@@ -499,7 +500,7 @@ public class IOUtils {
      * @return True: success, or false: failure.
      */
     public static boolean createFolder(String folderPath) {
-        if (!StringUtils.isEmpty(folderPath)) {
+        if (!TextUtils.isEmpty(folderPath)) {
             File folder = new File(folderPath);
             return createFolder(folder);
         }
@@ -554,7 +555,7 @@ public class IOUtils {
      * @return True: success, or false: failure.
      */
     public static boolean createFile(String filePath) {
-        if (!StringUtils.isEmpty(filePath)) {
+        if (!TextUtils.isEmpty(filePath)) {
             File file = new File(filePath);
             return createFile(file);
         }
@@ -590,7 +591,7 @@ public class IOUtils {
      * @return True: success, or false: failure.
      */
     public static boolean createNewFile(String filePath) {
-        if (!StringUtils.isEmpty(filePath)) {
+        if (!TextUtils.isEmpty(filePath)) {
             File file = new File(filePath);
             return createNewFile(file);
         }
@@ -645,7 +646,7 @@ public class IOUtils {
         } else if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files != null) {
-                for (File sonFile : files) {
+                for (File sonFile: files) {
                     delFileOrFolder(sonFile);
                 }
             }

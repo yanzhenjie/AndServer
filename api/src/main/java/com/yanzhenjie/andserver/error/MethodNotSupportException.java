@@ -16,14 +16,18 @@
 package com.yanzhenjie.andserver.error;
 
 import com.yanzhenjie.andserver.http.HttpMethod;
-import com.yanzhenjie.andserver.util.StatusCode;
+import com.yanzhenjie.andserver.http.StatusCode;
+
+import java.util.List;
 
 /**
  * Created by YanZhenjie on 2018/7/19.
  */
 public class MethodNotSupportException extends BasicException {
-    
+
     private static final String MESSAGE = "The request method [%s] is not supported.";
+
+    private List<HttpMethod> mMethods;
 
     public MethodNotSupportException(HttpMethod method) {
         super(StatusCode.SC_METHOD_NOT_ALLOWED, String.format(MESSAGE, method.value()));
@@ -31,5 +35,13 @@ public class MethodNotSupportException extends BasicException {
 
     public MethodNotSupportException(HttpMethod method, Throwable cause) {
         super(StatusCode.SC_METHOD_NOT_ALLOWED, String.format(MESSAGE, method.value()), cause);
+    }
+
+    public List<HttpMethod> getMethods() {
+        return mMethods;
+    }
+
+    public void setMethods(List<HttpMethod> methods) {
+        mMethods = methods;
     }
 }

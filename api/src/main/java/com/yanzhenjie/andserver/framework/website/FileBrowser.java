@@ -15,6 +15,8 @@
  */
 package com.yanzhenjie.andserver.framework.website;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -25,9 +27,7 @@ import com.yanzhenjie.andserver.http.ResponseBody;
 import com.yanzhenjie.andserver.util.Assert;
 import com.yanzhenjie.andserver.util.DigestUtils;
 import com.yanzhenjie.andserver.util.MediaType;
-import com.yanzhenjie.andserver.util.ObjectUtils;
 import com.yanzhenjie.andserver.util.Patterns;
-import com.yanzhenjie.andserver.util.StringUtils;
 
 import org.apache.commons.io.Charsets;
 
@@ -44,7 +44,7 @@ public class FileBrowser extends BasicWebsite implements Patterns {
     private final String mRootPath;
 
     public FileBrowser(String rootPath) {
-        Assert.isTrue(!StringUtils.isEmpty(rootPath), "The rootPath cannot be empty.");
+        Assert.isTrue(!TextUtils.isEmpty(rootPath), "The rootPath cannot be empty.");
         Assert.isTrue(rootPath.matches(PATH), "The format of [%s] is wrong, it should be like [/root/project].");
         this.mRootPath = rootPath;
     }
@@ -115,8 +115,8 @@ public class FileBrowser extends BasicWebsite implements Patterns {
             outputStream.write(prefix.getBytes("utf-8"));
 
             File[] children = resource.listFiles();
-            if (!ObjectUtils.isEmpty(children)) {
-                for (File file : children) {
+            if (children != null && children.length > 0) {
+                for (File file: children) {
                     String filePath = file.getAbsolutePath();
                     int rootIndex = filePath.indexOf(mRootPath);
                     String subHttpPath = filePath.substring(rootIndex + mRootPath.length());

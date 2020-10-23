@@ -15,10 +15,11 @@
  */
 package com.yanzhenjie.andserver.framework.mapping;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.util.Patterns;
-import com.yanzhenjie.andserver.util.StringUtils;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -97,13 +98,13 @@ public class Path implements Patterns {
     @NonNull
     public static List<Segment> pathToList(@NonNull String path) {
         List<Segment> segmentList = new LinkedList<>();
-        if (!StringUtils.isEmpty(path)) {
+        if (!TextUtils.isEmpty(path)) {
             while (path.startsWith("/"))
                 path = path.substring(1);
             while (path.endsWith("/"))
                 path = path.substring(0, path.length() - 1);
             String[] pathArray = path.split("/");
-            for (String segmentText : pathArray) {
+            for (String segmentText: pathArray) {
                 Segment segment = new Segment(segmentText, segmentText.contains("{"));
                 segmentList.add(segment);
             }
@@ -117,7 +118,7 @@ public class Path implements Patterns {
         if (segments.isEmpty()) {
             builder.append("/");
         }
-        for (Segment segment : segments) {
+        for (Segment segment: segments) {
             builder.append("/").append(segment.getValue());
         }
         return builder.toString();

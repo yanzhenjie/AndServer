@@ -15,6 +15,8 @@
  */
 package com.yanzhenjie.andserver.http;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -24,16 +26,12 @@ import com.yanzhenjie.andserver.http.cookie.CookieProcessor;
 import com.yanzhenjie.andserver.http.cookie.StandardCookieProcessor;
 import com.yanzhenjie.andserver.http.session.Session;
 import com.yanzhenjie.andserver.http.session.SessionManager;
-import com.yanzhenjie.andserver.util.AcceptLanguage;
-import com.yanzhenjie.andserver.util.CollectionUtils;
 import com.yanzhenjie.andserver.util.HttpDateFormat;
 import com.yanzhenjie.andserver.util.IOUtils;
 import com.yanzhenjie.andserver.util.LinkedMultiValueMap;
 import com.yanzhenjie.andserver.util.MediaType;
 import com.yanzhenjie.andserver.util.MimeType;
 import com.yanzhenjie.andserver.util.MultiValueMap;
-import com.yanzhenjie.andserver.util.ObjectUtils;
-import com.yanzhenjie.andserver.util.StringUtils;
 import com.yanzhenjie.andserver.util.UrlCoder;
 
 import org.apache.commons.io.Charsets;
@@ -82,7 +80,7 @@ public class StandardRequest implements HttpRequest {
     private boolean isParsedParameter;
 
     public StandardRequest(org.apache.httpcore.HttpRequest request, HttpContext context, DispatcherHandler handler,
-        SessionManager sessionManager) {
+                           SessionManager sessionManager) {
         this.mRequest = request;
         this.mContext = context;
         this.mHandler = handler;
@@ -104,7 +102,7 @@ public class StandardRequest implements HttpRequest {
         }
 
         String uriText = mRequestLine.getUri();
-        if (StringUtils.isEmpty(uriText)) {
+        if (TextUtils.isEmpty(uriText)) {
             uriText = "/";
         }
         return uriText;
@@ -153,7 +151,7 @@ public class StandardRequest implements HttpRequest {
     public List<String> getQueries(@NonNull String name) {
         parseQuery();
         List<String> values = mQuery.get(name);
-        return ObjectUtils.isEmpty(values) ? Collections.<String>emptyList() : values;
+        return (values == null || values.isEmpty()) ? Collections.emptyList() : values;
     }
 
     @NonNull
@@ -177,12 +175,12 @@ public class StandardRequest implements HttpRequest {
     @Override
     public List<String> getHeaderNames() {
         Header[] headers = mRequest.getAllHeaders();
-        if (ObjectUtils.isEmpty(headers)) {
+        if (headers == null || headers.length == 0) {
             return Collections.emptyList();
         }
 
         List<String> nameList = new ArrayList<>();
-        for (Header header : headers) {
+        for (Header header: headers) {
             nameList.add(header.getName());
         }
         return nameList;
@@ -199,12 +197,12 @@ public class StandardRequest implements HttpRequest {
     @Override
     public List<String> getHeaders(@NonNull String name) {
         Header[] headers = mRequest.getHeaders(name);
-        if (ObjectUtils.isEmpty(headers)) {
+        if (headers == null || headers.length == 0) {
             return Collections.emptyList();
         }
 
         List<String> valueList = new ArrayList<>();
-        for (Header header : headers) {
+        for (Header header: headers) {
             valueList.add(header.getValue());
         }
         return valueList;
@@ -263,8 +261,8 @@ public class StandardRequest implements HttpRequest {
 
         mAccepts = new ArrayList<>();
         Header[] headers = mRequest.getHeaders(ACCEPT);
-        if (!ObjectUtils.isEmpty(headers)) {
-            for (Header header : headers) {
+        if (headers != null && headers.length > 0) {
+            for (Header header: headers) {
                 List<MediaType> mediaTypes = MediaType.parseMediaTypes(header.getValue());
                 mAccepts.addAll(mediaTypes);
             }
@@ -296,10 +294,10 @@ public class StandardRequest implements HttpRequest {
 
         mLocales = new ArrayList<>();
         Header[] headers = mRequest.getHeaders(ACCEPT_LANGUAGE);
-        if (!ObjectUtils.isEmpty(headers)) {
-            for (Header header : headers) {
+        if (headers != null && headers.length > 0) {
+            for (Header header: headers) {
                 List<AcceptLanguage> acceptLanguages = AcceptLanguage.parse(header.getValue());
-                for (AcceptLanguage acceptLanguage : acceptLanguages) {
+                for (AcceptLanguage acceptLanguage: acceptLanguages) {
                     mLocales.add(acceptLanguage.getLocale());
                 }
             }
@@ -325,11 +323,11 @@ public class StandardRequest implements HttpRequest {
     @Override
     public Cookie getCookie(@NonNull String name) {
         List<Cookie> cookies = getCookies();
-        if (ObjectUtils.isEmpty(cookies)) {
+        if (cookies.isEmpty()) {
             return null;
         }
 
-        for (Cookie cookie : cookies) {
+        for (Cookie cookie: cookies) {
             if (name.equalsIgnoreCase(cookie.getName())) {
                 return cookie;
             }
@@ -346,7 +344,7 @@ public class StandardRequest implements HttpRequest {
     @Override
     public long getContentLength() {
         String contentLength = getHeader(CONTENT_LENGTH);
-        if (StringUtils.isEmpty(contentLength)) {
+        if (TextUtils.isEmpty(contentLength)) {
             return -1;
         }
         try {
@@ -360,7 +358,7 @@ public class StandardRequest implements HttpRequest {
     @Override
     public MediaType getContentType() {
         String contentType = getHeader(CONTENT_TYPE);
-        if (StringUtils.isEmpty(contentType)) {
+        if (TextUtils.isEmpty(contentType)) {
             return null;
         }
         return MediaType.valueOf(contentType);
@@ -383,7 +381,7 @@ public class StandardRequest implements HttpRequest {
     public String getParameter(@NonNull String name) {
         parseParameter();
         String value = mParameter.getFirst(name);
-        return StringUtils.isEmpty(value) ? getQuery(name) : value;
+        return TextUtils.isEmpty(value) ? getQuery(name) : value;
     }
 
     @NonNull
@@ -391,7 +389,7 @@ public class StandardRequest implements HttpRequest {
     public List<String> getParameters(@NonNull String name) {
         parseParameter();
         List<String> values = mParameter.get(name);
-        if (CollectionUtils.isEmpty(values)) {
+        if (values == null || values.isEmpty()) {
             return getQueries(name);
         }
         return values;
@@ -468,19 +466,19 @@ public class StandardRequest implements HttpRequest {
         }
 
         List<Cookie> cookies = getCookies();
-        if (CollectionUtils.isEmpty(cookies)) {
+        if (cookies.isEmpty()) {
             return null;
         }
 
         String sessionId = null;
-        for (Cookie cookie : cookies) {
+        for (Cookie cookie: cookies) {
             if (SESSION_NAME.equalsIgnoreCase(cookie.getName())) {
                 sessionId = cookie.getValue();
                 break;
             }
         }
 
-        if (StringUtils.isEmpty(sessionId)) {
+        if (TextUtils.isEmpty(sessionId)) {
             return null;
         }
 

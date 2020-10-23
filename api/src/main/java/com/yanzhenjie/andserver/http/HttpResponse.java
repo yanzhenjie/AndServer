@@ -19,8 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.http.cookie.Cookie;
-import com.yanzhenjie.andserver.util.HttpHeaders;
-import com.yanzhenjie.andserver.util.StatusCode;
 
 import java.util.Enumeration;
 import java.util.List;

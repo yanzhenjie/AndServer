@@ -15,6 +15,8 @@
  */
 package com.yanzhenjie.andserver.http.multipart;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -22,7 +24,6 @@ import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.RequestWrapper;
 import com.yanzhenjie.andserver.util.LinkedMultiValueMap;
 import com.yanzhenjie.andserver.util.MultiValueMap;
-import com.yanzhenjie.andserver.util.StringUtils;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -42,7 +43,8 @@ public class StandardMultipartRequest extends RequestWrapper implements Multipar
     private Map<String, String> mMultipartContentTypes;
 
     public StandardMultipartRequest(@NonNull HttpRequest request, @NonNull MultiValueMap<String, MultipartFile> mpFiles,
-        @NonNull MultiValueMap<String, String> mpParams, @NonNull Map<String, String> mpContentTypes) {
+                                    @NonNull MultiValueMap<String, String> mpParams,
+                                    @NonNull Map<String, String> mpContentTypes) {
         super(request);
         this.mRequest = request;
         this.mMultipartFiles = new LinkedMultiValueMap<>(Collections.unmodifiableMap(mpFiles));
@@ -112,7 +114,7 @@ public class StandardMultipartRequest extends RequestWrapper implements Multipar
     @Override
     public String getParameter(@NonNull String name) {
         String value = mMultipartParameters.getFirst(name);
-        return StringUtils.isEmpty(value) ? mRequest.getParameter(name) : value;
+        return TextUtils.isEmpty(value) ? mRequest.getParameter(name) : value;
     }
 
     @NonNull

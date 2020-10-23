@@ -15,11 +15,12 @@
  */
 package com.yanzhenjie.andserver.http.session;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.util.Assert;
-import com.yanzhenjie.andserver.util.StringUtils;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -50,7 +51,7 @@ public class StandardSession implements Session {
     }
 
     public void setId(@NonNull String id) {
-        if (StringUtils.isEmpty(id)) {
+        if (TextUtils.isEmpty(id)) {
             throw new IllegalArgumentException("The id can not be empty or null.");
         }
         this.id = id;
@@ -195,7 +196,7 @@ public class StandardSession implements Session {
         stream.writeBoolean(isValid);
         stream.writeInt(mAttributes.size());
         String keys[] = mAttributes.keySet().toArray(EMPTY_ARRAY);
-        for (String key : keys) {
+        for (String key: keys) {
             Object value = mAttributes.get(key);
             if (value != null && value instanceof Serializable) {
                 stream.writeObject(key);

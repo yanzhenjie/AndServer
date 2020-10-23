@@ -15,13 +15,14 @@
  */
 package com.yanzhenjie.andserver.framework.body;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.http.ResponseBody;
 import com.yanzhenjie.andserver.util.IOUtils;
 import com.yanzhenjie.andserver.util.MediaType;
-import com.yanzhenjie.andserver.util.StringUtils;
 
 import org.apache.commons.io.Charsets;
 
@@ -42,7 +43,7 @@ public class StringBody implements ResponseBody {
     }
 
     public StringBody(String body, MediaType mediaType) {
-        if (StringUtils.isEmpty(body)) {
+        if (TextUtils.isEmpty(body)) {
             throw new IllegalArgumentException("The content cannot be null or empty.");
         }
 

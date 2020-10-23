@@ -22,7 +22,10 @@ import java.util.Map;
 
 /**
  * Created by Zhenjie Yan on 2018/7/5.
+ *
+ * @deprecated use apache commons-lang instead.
  */
+@Deprecated
 public abstract class ObjectUtils {
 
     private static final int INITIAL_HASH = 7;
@@ -61,7 +64,7 @@ public abstract class ObjectUtils {
             return true;
         }
         if (declaredExceptions != null) {
-            for (Class<?> declaredException : declaredExceptions) {
+            for (Class<?> declaredException: declaredExceptions) {
                 if (declaredException.isInstance(ex)) {
                     return true;
                 }
@@ -98,12 +101,6 @@ public abstract class ObjectUtils {
      * @param obj the object to check.
      *
      * @return {@code true} if the object is {@code null} or <em>empty</em>.
-     *
-     * @see ObjectUtils#isEmpty(Object[])
-     * @see StringUtils#hasLength(CharSequence)
-     * @see StringUtils#isEmpty(Object)
-     * @see CollectionUtils#isEmpty(java.util.Collection)
-     * @see CollectionUtils#isEmpty(java.util.Map)
      */
     @SuppressWarnings("rawtypes")
     public static boolean isEmpty(Object obj) {
@@ -139,7 +136,7 @@ public abstract class ObjectUtils {
         if (array == null) {
             return false;
         }
-        for (Object arrayEle : array) {
+        for (Object arrayEle: array) {
             if (nullSafeEquals(arrayEle, element)) {
                 return true;
             }
@@ -170,7 +167,7 @@ public abstract class ObjectUtils {
      * @return whether the constant has been found in the given array.
      */
     public static boolean containsConstant(Enum<?>[] enumValues, String constant, boolean caseSensitive) {
-        for (Enum<?> candidate : enumValues) {
+        for (Enum<?> candidate: enumValues) {
             if (caseSensitive
                 ? candidate.toString().equals(constant)
                 : candidate.toString().equalsIgnoreCase(constant)) {
@@ -191,7 +188,7 @@ public abstract class ObjectUtils {
      *     {@link #containsConstant(Enum[], String)} as a guard to avoid this exception.
      */
     public static <E extends Enum<?>> E caseInsensitiveValueOf(E[] enumValues, String constant) {
-        for (E candidate : enumValues) {
+        for (E candidate: enumValues) {
             if (candidate.toString().equalsIgnoreCase(constant)) {
                 return candidate;
             }
@@ -396,7 +393,7 @@ public abstract class ObjectUtils {
             return 0;
         }
         int hash = INITIAL_HASH;
-        for (Object element : array) {
+        for (Object element: array) {
             hash = MULTIPLIER * hash + nullSafeHashCode(element);
         }
         return hash;
@@ -411,7 +408,7 @@ public abstract class ObjectUtils {
             return 0;
         }
         int hash = INITIAL_HASH;
-        for (boolean element : array) {
+        for (boolean element: array) {
             hash = MULTIPLIER * hash + hashCode(element);
         }
         return hash;
@@ -426,7 +423,7 @@ public abstract class ObjectUtils {
             return 0;
         }
         int hash = INITIAL_HASH;
-        for (byte element : array) {
+        for (byte element: array) {
             hash = MULTIPLIER * hash + element;
         }
         return hash;
@@ -441,7 +438,7 @@ public abstract class ObjectUtils {
             return 0;
         }
         int hash = INITIAL_HASH;
-        for (char element : array) {
+        for (char element: array) {
             hash = MULTIPLIER * hash + element;
         }
         return hash;
@@ -456,7 +453,7 @@ public abstract class ObjectUtils {
             return 0;
         }
         int hash = INITIAL_HASH;
-        for (double element : array) {
+        for (double element: array) {
             hash = MULTIPLIER * hash + hashCode(element);
         }
         return hash;
@@ -471,7 +468,7 @@ public abstract class ObjectUtils {
             return 0;
         }
         int hash = INITIAL_HASH;
-        for (float element : array) {
+        for (float element: array) {
             hash = MULTIPLIER * hash + hashCode(element);
         }
         return hash;
@@ -486,7 +483,7 @@ public abstract class ObjectUtils {
             return 0;
         }
         int hash = INITIAL_HASH;
-        for (int element : array) {
+        for (int element: array) {
             hash = MULTIPLIER * hash + element;
         }
         return hash;
@@ -501,7 +498,7 @@ public abstract class ObjectUtils {
             return 0;
         }
         int hash = INITIAL_HASH;
-        for (long element : array) {
+        for (long element: array) {
             hash = MULTIPLIER * hash + hashCode(element);
         }
         return hash;
@@ -516,7 +513,7 @@ public abstract class ObjectUtils {
             return 0;
         }
         int hash = INITIAL_HASH;
-        for (short element : array) {
+        for (short element: array) {
             hash = MULTIPLIER * hash + element;
         }
         return hash;

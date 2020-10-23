@@ -15,18 +15,45 @@
  */
 package com.yanzhenjie.andserver.framework;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.error.BasicException;
+import com.yanzhenjie.andserver.error.MethodNotSupportException;
 import com.yanzhenjie.andserver.framework.body.StringBody;
+import com.yanzhenjie.andserver.http.HttpHeaders;
+import com.yanzhenjie.andserver.http.HttpMethod;
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
-import com.yanzhenjie.andserver.util.StatusCode;
+import com.yanzhenjie.andserver.http.StatusCode;
+
+import java.util.List;
 
 /**
  * Created by Zhenjie Yan on 2018/8/8.
  */
 public interface ExceptionResolver {
+
+    class ResolverWrapper implements ExceptionResolver {
+
+        private final ExceptionResolver mResolver;
+
+        public ResolverWrapper(ExceptionResolver resolver) {
+            this.mResolver = resolver;
+        }
+
+        @Override
+        public void onResolve(@NonNull HttpRequest request, @NonNull HttpResponse response, @NonNull Throwable e) {
+            if (e instanceof MethodNotSupportException) {
+                List<HttpMethod> methods = ((MethodNotSupportException) e).getMethods();
+                if (methods != null && methods.size() > 0) {
+                    response.setHeader(HttpHeaders.ALLOW, TextUtils.join(", ", methods));
+                }
+            }
+            mResolver.onResolve(request, response, e);
+        }
+    }
 
     ExceptionResolver DEFAULT = new ExceptionResolver() {
         @Override

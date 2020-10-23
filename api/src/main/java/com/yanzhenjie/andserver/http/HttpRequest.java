@@ -20,7 +20,6 @@ import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.http.cookie.Cookie;
 import com.yanzhenjie.andserver.http.session.Session;
-import com.yanzhenjie.andserver.util.HttpHeaders;
 import com.yanzhenjie.andserver.util.MediaType;
 import com.yanzhenjie.andserver.util.MultiValueMap;
 

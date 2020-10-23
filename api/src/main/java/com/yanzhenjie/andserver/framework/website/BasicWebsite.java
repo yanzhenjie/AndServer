@@ -15,11 +15,12 @@
  */
 package com.yanzhenjie.andserver.framework.website;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.util.Assert;
-import com.yanzhenjie.andserver.util.StringUtils;
 
 import java.io.File;
 
@@ -42,7 +43,7 @@ public abstract class BasicWebsite extends Website {
      * @param indexFileName the default file name for each directory, e.g. index.html.
      */
     public BasicWebsite(@NonNull String indexFileName) {
-        Assert.isTrue(!StringUtils.isEmpty(indexFileName), "The indexFileName cannot be empty.");
+        Assert.isTrue(!TextUtils.isEmpty(indexFileName), "The indexFileName cannot be empty.");
         this.mIndexFileName = indexFileName;
     }
 

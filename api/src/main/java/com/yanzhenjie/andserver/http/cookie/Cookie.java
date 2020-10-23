@@ -15,10 +15,10 @@
  */
 package com.yanzhenjie.andserver.http.cookie;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.yanzhenjie.andserver.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Locale;
@@ -63,7 +63,7 @@ public class Cookie implements Cloneable, Serializable {
      * @see #setVersion(int)
      */
     public Cookie(@NonNull String name, @Nullable String value) {
-        if (StringUtils.isEmpty(name)) {
+        if (TextUtils.isEmpty(name)) {
             throw new IllegalArgumentException("The name of the cookie cannot be empty or null.");
         }
         if (!isToken(name) || name.equalsIgnoreCase("Comment") || // rfc2019
@@ -117,7 +117,7 @@ public class Cookie implements Cloneable, Serializable {
      * @see #getDomain()
      */
     public void setDomain(@Nullable String domain) {
-        if (!StringUtils.isEmpty(domain)) {
+        if (!TextUtils.isEmpty(domain)) {
             this.domain = domain.toLowerCase(Locale.ENGLISH); // IE allegedly needs this.
         } else {
             this.domain = null;
