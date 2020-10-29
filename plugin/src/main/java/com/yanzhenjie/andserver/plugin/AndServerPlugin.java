@@ -60,7 +60,7 @@ public class AndServerPlugin implements Plugin<Project> {
 
     private void configGenerator(Project project, boolean library, DomainObjectSet<? extends BaseVariant> variants) {
         variants.all(it -> {
-            configTask(project, library, it.getApplicationId());
+            configTask(project, library, it.getApplicationId(), it.getFlavorName());
             File outputDir = new File(project.getBuildDir(), "generated/source/andServer/" + it.getDirName());
             String taskName = String.format("generate%sAppInfo", capitalize(it.getName()));
             Task generate = project.getTasks().create(taskName, AppInfoGenerator.class, generator -> {
@@ -74,7 +74,7 @@ public class AndServerPlugin implements Plugin<Project> {
         });
     }
 
-    private void configTask(Project project, boolean library, String appId) {
+    private void configTask(Project project, boolean library, String appId, String flavorName) {
         Action<Task> action = task -> {
             String taskName = task.getName();
             String moduleType = String.format("%s_assets", library ? "library" : "merged");
@@ -98,8 +98,8 @@ public class AndServerPlugin implements Plugin<Project> {
             }
         };
 
-        project.getTasks().getByName(String.format("%sReleaseAssets", library ? "package" : "merge")).doLast(action);
-        project.getTasks().getByName(String.format("%sDebugAssets", library ? "package" : "merge")).doLast(action);
+        project.getTasks().getByName(String.format("%s%sReleaseAssets", library ? "package" : "merge", capitalize(flavorName))).doLast(action);
+        project.getTasks().getByName(String.format("%s%sDebugAssets", library ? "package" : "merge", capitalize(flavorName))).doLast(action);
     }
 
     public static String capitalize(String text) {
