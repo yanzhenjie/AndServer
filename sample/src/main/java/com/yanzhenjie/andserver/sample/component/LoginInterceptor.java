@@ -18,7 +18,7 @@ package com.yanzhenjie.andserver.sample.component;
 import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.annotation.Interceptor;
-import com.yanzhenjie.andserver.error.BasicException;
+import com.yanzhenjie.andserver.error.HttpException;
 import com.yanzhenjie.andserver.framework.HandlerInterceptor;
 import com.yanzhenjie.andserver.framework.handler.MethodHandler;
 import com.yanzhenjie.andserver.framework.handler.RequestHandler;
@@ -44,7 +44,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             MethodHandler methodHandler = (MethodHandler) handler;
             Addition addition = methodHandler.getAddition();
             if (!isLogin(request, addition)) {
-                throw new BasicException(401, "You are not logged in yet.");
+                throw new HttpException(401, "You are not logged in yet.");
             }
         }
         return false;

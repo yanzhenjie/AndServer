@@ -54,10 +54,36 @@ public class CoreService extends Service {
 
                 @Override
                 public void onException(Exception e) {
+                    e.printStackTrace();
                     ServerManager.onServerError(CoreService.this, e.getMessage());
                 }
             })
             .build();
+
+        AndServer.proxyServer()
+            .port(9090)
+            .timeout(10, TimeUnit.SECONDS)
+            .listener(new Server.ServerListener() {
+                @Override
+                public void onStarted() {
+                    System.out.println("反向代理服务器启动成功");
+                }
+
+                @Override
+                public void onStopped() {
+                    System.out.println("反向代理服务器启动失败");
+                }
+
+                @Override
+                public void onException(Exception e) {
+                    System.out.println("反向代理服务器启动异常");
+                    e.printStackTrace();
+                }
+            })
+            .addProxy("192.168.1.111", "http://www.sebobox4.com")
+            .build()
+            .startup();
+
     }
 
     @Override
