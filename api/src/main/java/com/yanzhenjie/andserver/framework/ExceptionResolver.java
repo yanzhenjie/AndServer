@@ -19,7 +19,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.yanzhenjie.andserver.error.BasicException;
+import com.yanzhenjie.andserver.error.HttpException;
 import com.yanzhenjie.andserver.error.MethodNotSupportException;
 import com.yanzhenjie.andserver.framework.body.StringBody;
 import com.yanzhenjie.andserver.http.HttpHeaders;
@@ -58,8 +58,8 @@ public interface ExceptionResolver {
     ExceptionResolver DEFAULT = new ExceptionResolver() {
         @Override
         public void onResolve(@NonNull HttpRequest request, @NonNull HttpResponse response, @NonNull Throwable e) {
-            if (e instanceof BasicException) {
-                BasicException ex = (BasicException) e;
+            if (e instanceof HttpException) {
+                HttpException ex = (HttpException) e;
                 response.setStatus(ex.getStatusCode());
             } else {
                 response.setStatus(StatusCode.SC_INTERNAL_SERVER_ERROR);

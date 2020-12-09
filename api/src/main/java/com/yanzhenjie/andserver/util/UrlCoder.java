@@ -21,7 +21,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 /**
- * Created by YanZhenjie on 2018/8/6.
+ * Created by Zhenjie Yan on 2018/8/6.
  */
 public class UrlCoder {
 

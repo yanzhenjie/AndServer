@@ -20,7 +20,7 @@ import com.yanzhenjie.andserver.http.StatusCode;
 /**
  * Created by Zhenjie Yan on 2018/9/9.
  */
-public class HeaderMissingException extends BasicException {
+public class HeaderMissingException extends HttpException {
 
     private static final String MESSAGE = "Missing header [%s] for method parameter.";
 

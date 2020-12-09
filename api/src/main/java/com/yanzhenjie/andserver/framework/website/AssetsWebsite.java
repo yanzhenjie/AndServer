@@ -26,10 +26,13 @@ import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.error.NotFoundException;
 import com.yanzhenjie.andserver.framework.body.StreamBody;
+import com.yanzhenjie.andserver.framework.body.StringBody;
 import com.yanzhenjie.andserver.http.HttpRequest;
+import com.yanzhenjie.andserver.http.HttpResponse;
 import com.yanzhenjie.andserver.http.ResponseBody;
 import com.yanzhenjie.andserver.util.Assert;
 import com.yanzhenjie.andserver.util.DigestUtils;
+import com.yanzhenjie.andserver.util.IOUtils;
 import com.yanzhenjie.andserver.util.MediaType;
 import com.yanzhenjie.andserver.util.Patterns;
 
@@ -38,21 +41,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Zhenjie Yan on 2018/9/7.
  */
 public class AssetsWebsite extends BasicWebsite implements Patterns {
 
-    private final AssetsReader mReader;
+    private final AssetsReader mAssetsReader;
     private final String mRootPath;
-    private final Map<String, String> mPatternMap;
     private final PackageInfo mPackageInfo;
-
-    private boolean isScanned;
 
     /**
      * Create a website object.
@@ -75,85 +73,95 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
         Assert.isTrue(!TextUtils.isEmpty(indexFileName), "The indexFileName cannot be empty.");
 
         if (!rootPath.matches(PATH)) {
-            String message = String.format("The format of [%s] is wrong, it should be like [/root/project].", rootPath);
-            throw new IllegalArgumentException(message);
+            String message = "The format of [%s] is wrong, it should be like [/root/project] or [/root/project/].";
+            String format = String.format(message, rootPath);
+            throw new IllegalArgumentException(format);
         }
 
-        this.mReader = new AssetsReader(context.getAssets());
-        this.mRootPath = trimStartSlash(rootPath);
-        this.mPatternMap = new HashMap<>();
+        this.mAssetsReader = new AssetsReader(context.getAssets());
+        this.mRootPath = trimSlash(rootPath);
 
         PackageManager packageManager = context.getPackageManager();
         try {
             mPackageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
-        } catch (Exception ignored) {
-            throw new RuntimeException(ignored);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public boolean intercept(@NonNull HttpRequest request) {
-        tryScanFile();
-
         String httpPath = request.getPath();
-        return mPatternMap.containsKey(httpPath);
-    }
-
-    /**
-     * Try to scan the file, no longer scan if it has already been scanned.
-     */
-    private void tryScanFile() {
-        if (!isScanned) {
-            synchronized (AssetsWebsite.class) {
-                if (!isScanned) {
-                    List<String> fileList = mReader.scanFile(mRootPath);
-                    for (String filePath: fileList) {
-                        String httpPath = filePath.substring(mRootPath.length());
-                        httpPath = addStartSlash(httpPath);
-                        mPatternMap.put(httpPath, filePath);
-
-                        String indexFileName = getIndexFileName();
-                        if (httpPath.endsWith(indexFileName)) {
-                            httpPath = httpPath.substring(0, httpPath.indexOf(indexFileName) - 1);
-                            httpPath = addStartSlash(httpPath);
-                            mPatternMap.put(httpPath, filePath);
-                            mPatternMap.put(addEndSlash(httpPath), filePath);
-                        }
-                    }
-                    isScanned = true;
-                }
-            }
-        }
+        InputStream stream = findPathSteam(httpPath);
+        IOUtils.closeQuietly(stream);
+        return stream != null;
     }
 
     @Override
     public String getETag(@NonNull HttpRequest request) throws Throwable {
         String httpPath = request.getPath();
-        String filePath = mPatternMap.get(httpPath);
-        final InputStream stream = mReader.getInputStream(filePath);
+        InputStream stream = findPathSteam(httpPath);
         if (stream != null) {
-            return DigestUtils.md5DigestAsHex(stream);
+            try {
+                return DigestUtils.md5DigestAsHex(stream);
+            } finally {
+                IOUtils.closeQuietly(stream);
+            }
         }
-        throw new NotFoundException(httpPath);
+        return null;
     }
 
     @Override
     public long getLastModified(@NonNull HttpRequest request) throws Throwable {
-        String filePath = mPatternMap.get(request.getPath());
-        return mReader.isFile(filePath) ? mPackageInfo.lastUpdateTime : -1;
+        String httpPath = request.getPath();
+        InputStream stream = findPathSteam(httpPath);
+        IOUtils.closeQuietly(stream);
+        return stream != null ? mPackageInfo.lastUpdateTime : -1;
     }
 
     @NonNull
     @Override
-    public ResponseBody getBody(@NonNull HttpRequest request) throws IOException {
+    public ResponseBody getBody(@NonNull HttpRequest request, @NonNull HttpResponse response) throws IOException {
         String httpPath = request.getPath();
-        String filePath = mPatternMap.get(httpPath);
-        final InputStream stream = mReader.getInputStream(filePath);
-        if (stream == null) {
-            throw new NotFoundException(httpPath);
+        String objectPath = mRootPath + httpPath;
+        InputStream stream = mAssetsReader.getInputStream(objectPath);
+        if (stream != null) {
+            MediaType mediaType = MediaType.getFileMediaType(objectPath);
+            return new StreamBody(stream, stream.available(), mediaType);
         }
-        final MediaType mediaType = MediaType.getFileMediaType(filePath);
-        return new StreamBody(stream, stream.available(), mediaType);
+
+        String indexPath = addEndSlash(objectPath) + getIndexFileName();
+        InputStream indexStream = mAssetsReader.getInputStream(indexPath);
+        if (indexStream != null) {
+            if (!httpPath.endsWith(File.separator)) {
+                IOUtils.closeQuietly(indexStream);
+                String redirectPath = addEndSlash(httpPath);
+                String query = queryString(request);
+                response.sendRedirect(redirectPath + "?" + query);
+                return new StringBody("");
+            }
+
+            final MediaType mediaType = MediaType.getFileMediaType(indexPath);
+            return new StreamBody(indexStream, indexStream.available(), mediaType);
+        }
+
+        throw new NotFoundException(httpPath);
+    }
+
+    private InputStream findPathSteam(String httpPath) {
+        String targetPath = mRootPath + httpPath;
+        InputStream targetStream = mAssetsReader.getInputStream(targetPath);
+        if (targetStream != null) {
+            return targetStream;
+        }
+
+        String indexPath = addEndSlash(targetPath) + getIndexFileName();
+        InputStream indexStream = mAssetsReader.getInputStream(indexPath);
+        if (indexStream != null) {
+            return indexStream;
+        }
+
+        return null;
     }
 
     public static class AssetsReader {
@@ -196,7 +204,13 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
          * @return true, other wise is false.
          */
         public boolean isFile(@NonNull String fileName) {
-            return getInputStream(fileName) != null;
+            InputStream stream = null;
+            try {
+                stream = getInputStream(fileName);
+                return stream != null;
+            } finally {
+                IOUtils.closeQuietly(stream);
+            }
         }
 
         /**

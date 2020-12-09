@@ -98,7 +98,7 @@ public class ConverterProcessor extends BaseProcessor {
         Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(Converter.class);
         Map<String, TypeElement> converterMap = new HashMap<>();
 
-        for (Element element : set) {
+        for (Element element: set) {
             if (element instanceof TypeElement) {
                 TypeElement typeElement = (TypeElement) element;
                 Set<Modifier> modifiers = typeElement.getModifiers();
@@ -112,7 +112,7 @@ public class ConverterProcessor extends BaseProcessor {
                         typeElement.getQualifiedName()));
                     continue;
                 }
-                for (TypeMirror typeMirror : interfaces) {
+                for (TypeMirror typeMirror: interfaces) {
                     if (mConverter.equals(TypeName.get(typeMirror))) {
                         converterMap.put(getGroup(typeElement), typeElement);
                         break;
@@ -132,7 +132,7 @@ public class ConverterProcessor extends BaseProcessor {
         FieldSpec mapField = FieldSpec.builder(typeName, "mMap", Modifier.PRIVATE).build();
 
         CodeBlock.Builder rootCode = CodeBlock.builder().addStatement("this.mMap = new $T<>()", HashMap.class);
-        for (Map.Entry<String, TypeElement> entry : converterMap.entrySet()) {
+        for (Map.Entry<String, TypeElement> entry: converterMap.entrySet()) {
             String group = entry.getKey();
             TypeElement converter = entry.getValue();
             mLog.i(String.format("------ Processing %s ------", converter.getSimpleName()));
@@ -150,6 +150,9 @@ public class ConverterProcessor extends BaseProcessor {
             .addParameter(mString, "group")
             .addParameter(mRegisterType, "register")
             .addStatement("$T converter = mMap.get(group)", mConverter)
+            .beginControlFlow("if(converter == null)")
+            .addStatement("converter = mMap.get($S)", "default")
+            .endControlFlow()
             .beginControlFlow("if(converter != null)")
             .addStatement("register.setConverter(converter)")
             .endControlFlow()

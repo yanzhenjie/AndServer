@@ -19,8 +19,6 @@ import com.yanzhenjie.andserver.error.NotFoundException;
 import com.yanzhenjie.andserver.server.ProxyServer;
 import com.yanzhenjie.andserver.util.IOUtils;
 
-import org.apache.httpcore.Header;
-import org.apache.httpcore.HeaderIterator;
 import org.apache.httpcore.HttpException;
 import org.apache.httpcore.HttpHeaders;
 import org.apache.httpcore.HttpHost;
@@ -66,14 +64,14 @@ public class ProxyHandler implements HttpRequestHandler {
     private static final int BUFFER = 8 * 1024;
 
     private final static Set<String> HOP_BY_HOP = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
-        HttpHeaders.HOST.toLowerCase(Locale.ROOT),
-        HttpHeaders.CONTENT_LENGTH.toLowerCase(Locale.ROOT),
-        HttpHeaders.TRANSFER_ENCODING.toLowerCase(Locale.ROOT),
-        HttpHeaders.CONNECTION.toLowerCase(Locale.ROOT),
-        HttpHeaders.PROXY_AUTHENTICATE.toLowerCase(Locale.ROOT),
-        HttpHeaders.TE.toLowerCase(Locale.ROOT),
-        HttpHeaders.TRAILER.toLowerCase(Locale.ROOT),
-        HttpHeaders.UPGRADE.toLowerCase(Locale.ROOT)
+        HttpHeaders.HOST,
+        HttpHeaders.CONTENT_LENGTH,
+        HttpHeaders.TRANSFER_ENCODING,
+        HttpHeaders.CONNECTION,
+        HttpHeaders.PROXY_AUTHENTICATE,
+        HttpHeaders.TE,
+        HttpHeaders.TRAILER,
+        HttpHeaders.UPGRADE
     )));
 
     private final Map<String, HttpHost> mHostList;
@@ -106,11 +104,8 @@ public class ProxyHandler implements HttpRequestHandler {
         }
 
         // Remove hop-by-hop headers.
-        for (HeaderIterator it = request.headerIterator(); it.hasNext(); ) {
-            String name = ((Header) it.next()).getName();
-            if (HOP_BY_HOP.contains(name.toLowerCase(Locale.ROOT))) {
-                request.removeHeaders(name);
-            }
+        for (String name: HOP_BY_HOP) {
+            request.removeHeaders(name);
         }
 
         DefaultBHttpClientConnection conn = (DefaultBHttpClientConnection) context.getAttribute(PROXY_CONN_CLIENT);
@@ -127,11 +122,8 @@ public class ProxyHandler implements HttpRequestHandler {
         mHttpExecutor.postProcess(response, mRequestProcessor, context);
 
         // Remove hop-by-hop headers.
-        for (HeaderIterator it = outResponse.headerIterator(); it.hasNext(); ) {
-            String name = ((Header) it.next()).getName();
-            if (HOP_BY_HOP.contains(name.toLowerCase(Locale.ROOT))) {
-                outResponse.removeHeaders(name);
-            }
+        for (String name: HOP_BY_HOP) {
+            outResponse.removeHeaders(name);
         }
 
         response.setStatusLine(outResponse.getStatusLine());

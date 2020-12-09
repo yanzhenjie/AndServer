@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Created by YanZhenjie on 2018/8/7.
+ * Created by Zhenjie Yan on 2018/8/7.
  */
 public class AcceptLanguage {
 

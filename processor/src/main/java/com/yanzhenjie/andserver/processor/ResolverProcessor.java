@@ -99,7 +99,7 @@ public class ResolverProcessor extends BaseProcessor {
         Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(Resolver.class);
         Map<String, TypeElement> resolverMap = new HashMap<>();
 
-        for (Element element : set) {
+        for (Element element: set) {
             if (element instanceof TypeElement) {
                 TypeElement typeElement = (TypeElement) element;
 
@@ -114,7 +114,7 @@ public class ResolverProcessor extends BaseProcessor {
                         typeElement.getQualifiedName()));
                     continue;
                 }
-                for (TypeMirror typeMirror : interfaces) {
+                for (TypeMirror typeMirror: interfaces) {
                     if (mResolver.equals(TypeName.get(typeMirror))) {
                         resolverMap.put(getGroup(typeElement), typeElement);
                         break;
@@ -134,7 +134,7 @@ public class ResolverProcessor extends BaseProcessor {
         FieldSpec mapField = FieldSpec.builder(typeName, "mMap", Modifier.PRIVATE).build();
 
         CodeBlock.Builder rootCode = CodeBlock.builder().addStatement("this.mMap = new $T<>()", HashMap.class);
-        for (Map.Entry<String, TypeElement> entry : resolverMap.entrySet()) {
+        for (Map.Entry<String, TypeElement> entry: resolverMap.entrySet()) {
             String group = entry.getKey();
             TypeElement resolver = entry.getValue();
             mLog.i(String.format("------ Processing %s ------", resolver.getSimpleName()));
@@ -153,6 +153,9 @@ public class ResolverProcessor extends BaseProcessor {
             .addParameter(mString, "group")
             .addParameter(mRegisterType, "register")
             .addStatement("$T resolver = mMap.get(group)", mResolver)
+            .beginControlFlow("if(resolver == null)")
+            .addStatement("resolver = mMap.get($S)", "default")
+            .endControlFlow()
             .beginControlFlow("if(resolver != null)")
             .addStatement("register.setResolver(resolver)")
             .endControlFlow()

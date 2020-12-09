@@ -97,15 +97,8 @@ public class StandardRequest implements HttpRequest {
     @NonNull
     @Override
     public String getURI() {
-        if (isParsedUri) {
-            return mUri.toString();
-        }
-
-        String uriText = mRequestLine.getUri();
-        if (TextUtils.isEmpty(uriText)) {
-            uriText = "/";
-        }
-        return uriText;
+        parseUri();
+        return mUri.toString();
     }
 
     private void parseUri() {
@@ -113,10 +106,13 @@ public class StandardRequest implements HttpRequest {
             return;
         }
 
-        mUri = Uri.newBuilder(getURI()).build();
-        if (isParsedUri) {
-            return;
+        String requestLine = mRequestLine.getUri();
+        if (TextUtils.isEmpty(requestLine)) {
+            requestLine = "/";
         }
+
+        String uri = "scheme://host:ip" + requestLine;
+        mUri = Uri.newBuilder(uri).build();
         isParsedUri = true;
     }
 

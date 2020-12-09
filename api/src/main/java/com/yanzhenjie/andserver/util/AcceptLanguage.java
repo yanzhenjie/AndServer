@@ -18,7 +18,7 @@ package com.yanzhenjie.andserver.util;
 import java.util.Locale;
 
 /**
- * Created by YanZhenjie on 2018/8/7.
+ * Created by Zhenjie Yan on 2018/8/7.
  *
  * @deprecated use {@link com.yanzhenjie.andserver.http.AcceptLanguage} instead.
  */

@@ -69,11 +69,39 @@ public class Merge implements Mapping {
                 for (String cPath: cPaths) {
                     String path = pPath + cPath;
                     paths.add(path);
+
+                    if (path.endsWith("/")) {
+                        if (path.length() > 1) {
+                            String copyPath = path.substring(0, path.length() - 1);
+                            paths.add(copyPath);
+                        }
+                    } else {
+                        String copyPath = path + "/";
+                        paths.add(copyPath);
+                    }
                 }
             }
             mPaths = paths.toArray(new String[0]);
         } else {
-            mPaths = cPaths;
+            if (ArrayUtils.isNotEmpty(cPaths)) {
+                List<String> paths = new ArrayList<>();
+                for (String cPath: cPaths) {
+                    paths.add(cPath);
+
+                    if (cPath.endsWith("/")) {
+                        if (cPath.length() > 1) {
+                            String copyPath = cPath.substring(0, cPath.length() - 1);
+                            paths.add(copyPath);
+                        }
+                    } else {
+                        String copyPath = cPath + "/";
+                        paths.add(copyPath);
+                    }
+                }
+                mPaths = paths.toArray(new String[0]);
+            } else {
+                mPaths = cPaths;
+            }
         }
 
         mPaths = Utils.mergeRepeat(mPaths, null, false);

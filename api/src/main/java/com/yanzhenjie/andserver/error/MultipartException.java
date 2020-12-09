@@ -20,7 +20,7 @@ import com.yanzhenjie.andserver.http.StatusCode;
 /**
  * Created by Zhenjie Yan on 2018/8/9.
  */
-public class MultipartException extends BasicException {
+public class MultipartException extends HttpException {
 
     /**
      * Constructor for MultipartException.

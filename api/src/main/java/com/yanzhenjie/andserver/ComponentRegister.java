@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class ComponentRegister {
 
-    private static final String ANDSERVER_SUFFIX = ".generator.andserver";
+    private static final String ANDSERVER_REGISTER_SUFFIX = ".andserver";
     private static final String PROCESSOR_PACKAGE = ".andserver.processor.generator.";
     private static final List<String> REGISTER_LIST = new ArrayList<>();
 
@@ -48,7 +48,8 @@ public class ComponentRegister {
         this.mContext = context;
     }
 
-    public void register(Register register, String group) {
+    public void register(Register register, String group)
+        throws InstantiationException, IllegalAccessException {
         AssetManager manager = mContext.getAssets();
         String[] pathList = null;
         try {
@@ -62,8 +63,8 @@ public class ComponentRegister {
         }
 
         for (String path: pathList) {
-            if (path.endsWith(ANDSERVER_SUFFIX)) {
-                String packageName = path.substring(0, path.indexOf(ANDSERVER_SUFFIX));
+            if (path.endsWith(ANDSERVER_REGISTER_SUFFIX)) {
+                String packageName = path.substring(0, path.indexOf(ANDSERVER_REGISTER_SUFFIX));
                 for (String clazz: REGISTER_LIST) {
                     String className = String.format("%s%s%s", packageName, PROCESSOR_PACKAGE, clazz);
                     registerClass(register, group, className);
@@ -72,18 +73,15 @@ public class ComponentRegister {
         }
     }
 
-    private void registerClass(Register register, String group, String className) {
+    private void registerClass(Register register, String group, String className)
+        throws InstantiationException, IllegalAccessException {
         try {
             Class<?> clazz = Class.forName(className);
             if (OnRegister.class.isAssignableFrom(clazz)) {
                 OnRegister load = (OnRegister) clazz.newInstance();
                 load.onRegister(mContext, group, register);
             }
-        } catch (ClassNotFoundException e) {
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException ignored) {
         }
     }
 }

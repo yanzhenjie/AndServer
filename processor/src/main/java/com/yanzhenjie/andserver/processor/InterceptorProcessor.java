@@ -100,7 +100,7 @@ public class InterceptorProcessor extends BaseProcessor {
         Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(Interceptor.class);
         Map<String, List<TypeElement>> interceptorMap = new HashMap<>();
 
-        for (Element element : set) {
+        for (Element element: set) {
             if (element instanceof TypeElement) {
                 TypeElement typeElement = (TypeElement) element;
 
@@ -115,7 +115,7 @@ public class InterceptorProcessor extends BaseProcessor {
                         typeElement.getQualifiedName()));
                     continue;
                 }
-                for (TypeMirror typeMirror : interfaces) {
+                for (TypeMirror typeMirror: interfaces) {
                     if (mInterceptor.equals(TypeName.get(typeMirror))) {
                         String group = getGroup(typeElement);
                         List<TypeElement> elementList = interceptorMap.get(group);
@@ -142,13 +142,13 @@ public class InterceptorProcessor extends BaseProcessor {
         FieldSpec mapField = FieldSpec.builder(typeName, "mMap", Modifier.PRIVATE).build();
 
         CodeBlock.Builder rootCode = CodeBlock.builder().addStatement("this.mMap = new $T<>()", HashMap.class);
-        for (Map.Entry<String, List<TypeElement>> entry : interceptorMap.entrySet()) {
+        for (Map.Entry<String, List<TypeElement>> entry: interceptorMap.entrySet()) {
             String group = entry.getKey();
             List<TypeElement> interceptorList = entry.getValue();
 
             CodeBlock.Builder groupCode = CodeBlock.builder()
                 .addStatement("List<$T> $LList = new $T<>()", mInterceptor, group, ArrayList.class);
-            for (TypeElement type : interceptorList) {
+            for (TypeElement type: interceptorList) {
                 mLog.i(String.format("------ Processing %s ------", type.getSimpleName()));
                 groupCode.addStatement("$LList.add(new $T())", group, type);
             }
@@ -169,6 +169,13 @@ public class InterceptorProcessor extends BaseProcessor {
             .addParameter(mString, "group")
             .addParameter(mRegisterType, "register")
             .addStatement("List<$T> list = mMap.get(group)", mInterceptor)
+            .beginControlFlow("if(list == null)")
+            .addStatement("list = new $T<>()", ArrayList.class)
+            .endControlFlow()
+            .addStatement("List<$T> defaultList = mMap.get($S)", mInterceptor, "default")
+            .beginControlFlow("if(defaultList != null && !defaultList.isEmpty())")
+            .addStatement("list.addAll(defaultList)")
+            .endControlFlow()
             .beginControlFlow("if(list != null && !list.isEmpty())")
             .beginControlFlow("for ($T interceptor : list)", mInterceptor)
             .addStatement("register.addInterceptor(interceptor)")

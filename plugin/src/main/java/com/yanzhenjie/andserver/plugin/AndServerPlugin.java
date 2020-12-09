@@ -87,7 +87,7 @@ public class AndServerPlugin implements Plugin<Project> {
                 dir.mkdirs();
             }
 
-            String filename = String.format("%s.generator.andserver", appId);
+            String filename = String.format("%s.andserver", appId);
             File file = new File(dir, filename);
             if (!file.exists()) {
                 try {

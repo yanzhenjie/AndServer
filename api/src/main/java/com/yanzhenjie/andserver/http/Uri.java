@@ -29,7 +29,6 @@ import com.yanzhenjie.andserver.util.UrlCoder;
 import org.apache.commons.io.Charsets;
 
 import java.net.URI;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -82,8 +81,8 @@ public class Uri implements Patterns {
         this.mScheme = builder.mScheme;
         this.mHost = builder.mHost;
         this.mPort = builder.mPort;
-        this.mPath = path(builder.mPath);
-        this.mQuery = query(builder.mQuery);
+        this.mPath = pathsToPath(builder.mPath);
+        this.mQuery = parametersToQuery(builder.mQuery);
         this.mFragment = builder.mFragment;
     }
 
@@ -107,8 +106,8 @@ public class Uri implements Patterns {
     }
 
     @NonNull
-    public List<String> copyPath() {
-        return convertPath(mPath);
+    public List<String> getPaths() {
+        return pathToPaths(mPath);
     }
 
     @NonNull
@@ -118,7 +117,7 @@ public class Uri implements Patterns {
 
     @NonNull
     public MultiValueMap<String, String> getParams() {
-        return convertQuery(mQuery);
+        return queryToParameters(mQuery);
     }
 
     @Nullable
@@ -175,8 +174,8 @@ public class Uri implements Patterns {
                 .setFragment(newUri.getFragment())
                 .build();
         } else if (location.contains("../")) {
-            List<String> oldPathList = convertPath(getPath());
-            List<String> newPathList = convertPath(newUri.getPath());
+            List<String> oldPathList = pathToPaths(getPath());
+            List<String> newPathList = pathToPaths(newUri.getPath());
 
             int start = newPathList.lastIndexOf("..");
             newPathList = newPathList.subList(start + 1, newPathList.size());
@@ -189,8 +188,8 @@ public class Uri implements Patterns {
             String path = TextUtils.join("/", newPathList);
             return builder().setPath(path).setQuery(newUri.getQuery()).setFragment(newUri.getFragment()).build();
         } else {
-            List<String> oldPathList = convertPath(getPath());
-            oldPathList.addAll(convertPath(newUri.getPath()));
+            List<String> oldPathList = pathToPaths(getPath());
+            oldPathList.addAll(pathToPaths(newUri.getPath()));
             String path = TextUtils.join("/", oldPathList);
             return builder().setPath(path).setQuery(newUri.getQuery()).setFragment(newUri.getFragment()).build();
         }
@@ -211,8 +210,10 @@ public class Uri implements Patterns {
             this.mScheme = uri.getScheme();
             this.mHost = uri.getHost();
             this.mPort = uri.getPort();
-            this.mPath = convertPath(uri.getPath());
-            this.mQuery = convertQuery(uri.getQuery());
+            String path = uri.getPath();
+            this.mPath = pathToPaths(path);
+            String query = uri.getQuery();
+            this.mQuery = queryToParameters(query);
             this.mFragment = uri.getFragment();
         }
 
@@ -266,7 +267,7 @@ public class Uri implements Patterns {
         }
 
         public Builder setPath(@NonNull String path) {
-            mPath = convertPath(path);
+            mPath = pathToPaths(path);
             return this;
         }
 
@@ -321,7 +322,7 @@ public class Uri implements Patterns {
         }
 
         public Builder setQuery(@Nullable String query) {
-            mQuery = convertQuery(query);
+            mQuery = queryToParameters(query);
             return this;
         }
 
@@ -350,20 +351,34 @@ public class Uri implements Patterns {
         }
     }
 
-    private static List<String> convertPath(String path) {
-        while (path.startsWith("/")) path = path.substring(1);
-        while (path.endsWith("/")) path = path.substring(0, path.length() - 1);
-
+    public static List<String> pathToPaths(String path) {
         List<String> pathList = new LinkedList<>();
-        if (!TextUtils.isEmpty(path)) {
-            while (path.startsWith("/")) path = path.substring(1);
-            String[] pathArray = path.split("/");
-            Collections.addAll(pathList, pathArray);
+        if (TextUtils.isEmpty(path)) {
+            return pathList;
+        }
+
+        while (path.contains("//")) {
+            path = path.replace("//", "/");
+        }
+
+        while (path.contains("/")) {
+            if (path.startsWith("/")) {
+                pathList.add("");
+                path = path.substring(1);
+            } else {
+                int index = path.indexOf("/");
+                pathList.add(path.substring(0, index));
+                path = path.substring(index + 1);
+            }
+
+            if (!path.contains("/")) {
+                pathList.add(path);
+            }
         }
         return pathList;
     }
 
-    private static MultiValueMap<String, String> convertQuery(String query) {
+    public static MultiValueMap<String, String> queryToParameters(String query) {
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         if (!TextUtils.isEmpty(query)) {
             if (query.startsWith("?")) {
@@ -385,18 +400,24 @@ public class Uri implements Patterns {
         return valueMap;
     }
 
-    private static String path(List<String> pathList) {
+    public static String pathsToPath(List<String> pathList) {
         if (pathList == null || pathList.isEmpty()) {
-            return "/";
+            return "";
         }
+
         StringBuilder builder = new StringBuilder();
         for (String path: pathList) {
             builder.append("/").append(path);
         }
-        return builder.toString();
+
+        String path = builder.toString();
+        while (path.contains("//")) {
+            path = path.replace("//", "/");
+        }
+        return path;
     }
 
-    private static String query(MultiValueMap<String, String> params) {
+    public static String parametersToQuery(MultiValueMap<String, String> params) {
         StringBuilder builder = new StringBuilder();
         Iterator<Map.Entry<String, List<String>>> iterator = params.entrySet().iterator();
         if (iterator.hasNext()) {

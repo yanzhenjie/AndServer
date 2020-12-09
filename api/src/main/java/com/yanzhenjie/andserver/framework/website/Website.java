@@ -63,11 +63,12 @@ public abstract class Website implements HandlerAdapter, ETag, LastModified {
 
             @Override
             public View handle(@NonNull HttpRequest request, @NonNull HttpResponse response) throws Throwable {
-                return new BodyView(getBody(request));
+                return new BodyView(getBody(request, response));
             }
         };
     }
 
     @NonNull
-    public abstract ResponseBody getBody(@NonNull HttpRequest request) throws IOException;
+    public abstract ResponseBody getBody(@NonNull HttpRequest request, @NonNull HttpResponse response)
+        throws IOException;
 }

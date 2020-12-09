@@ -20,7 +20,7 @@ import com.yanzhenjie.andserver.http.StatusCode;
 /**
  * Created by Zhenjie Yan on 2018/9/4.
  */
-public class ServerInternalException extends BasicException {
+public class ServerInternalException extends HttpException {
 
     private static final String MESSAGE = "Server internal error";
 

@@ -21,9 +21,9 @@ import com.yanzhenjie.andserver.http.StatusCode;
 import java.util.List;
 
 /**
- * Created by YanZhenjie on 2018/7/19.
+ * Created by Zhenjie Yan on 2018/7/19.
  */
-public class MethodNotSupportException extends BasicException {
+public class MethodNotSupportException extends HttpException {
 
     private static final String MESSAGE = "The request method [%s] is not supported.";
 

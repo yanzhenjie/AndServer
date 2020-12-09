@@ -75,6 +75,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.activation.MimeType;
 import javax.activation.MimeTypeParseException;
@@ -154,6 +155,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
     private TypeName mStringList = ParameterizedTypeName.get(ClassName.get(List.class), mString);
 
     private List<Integer> mHashCodes = new ArrayList<>();
+
+    private Pattern mBlurredPathPattern = Pattern.compile(PATH_BLURRED_INCLUDE);
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
@@ -418,8 +421,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         }
         if (ArrayUtils.isNotEmpty(paths)) {
             for (String path: paths) {
-                boolean valid = path.matches(PATH_BLURRED);
-                valid = valid || path.matches(PATH);
+                boolean valid = path.matches(PATH_STRICT) || path.matches(PATH_BLURRED_MAYBE);
                 Validate.isTrue(valid, "The format of path [%s] is wrong on %s.", path, host);
             }
         }
@@ -910,7 +912,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
                     boolean isBlurred = false;
                     for (String path: paths) {
-                        if (path.matches(PATH_BLURRED) && !path.matches(PATH)) {
+                        if (path.matches(PATH_BLURRED_MAYBE) && mBlurredPathPattern.matcher(path).find()) {
                             isBlurred = true;
                         }
                     }
@@ -1000,10 +1002,6 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                     boolean isBasicType = isBasicType(typeName);
                     boolean isBasicArrayType = isBasicArrayType(typeName);
 
-                    boolean valid = isFile || isBasicType || isBasicArrayType;
-                    Validate.isTrue(valid, "The RequestParam annotation only supports " +
-                        "[MultipartFile, String, int, long, float, double, boolean] on %s.", host);
-
                     String name = requestParam.name();
                     if (StringUtils.isEmpty(name)) {
                         name = requestParam.value();
@@ -1056,7 +1054,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
                         createBasicParameter(handleCode, typeName, "param", i);
                         assignmentBasicParameter(handleCode, typeName, "param", i);
-                    } else {
+                    } else if (isBasicArrayType) {
                         handleCode.addStatement("$T param$LList = request.getParameters($S)", mStringList, i, name);
                         if (requestParam.required()) {
                             handleCode.beginControlFlow("if (param$LList == null || param$LList.isEmpty())", i, i)
@@ -1074,6 +1072,28 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
                         createBasicArrayParameter(handleCode, typeName, i);
                         assignmentBasicArrayParameter(handleCode, typeName, i);
+                    } else {
+                        handleCode.addStatement("String param$LStr = request.getParameter($S)", i, name);
+
+                        if (requestParam.required()) {
+                            handleCode.beginControlFlow("if ($T.isEmpty(param$LStr))", mTextUtils, i)
+                                .addStatement("throw new $T($S)", mParamMissing, name)
+                                .endControlFlow();
+                        } else {
+                            handleCode.beginControlFlow("if ($T.isEmpty(param$LStr))", mTextUtils, i)
+                                .addStatement("param$LStr = $S", i, requestParam.defaultValue())
+                                .endControlFlow();
+                        }
+
+                        TypeName wrapperType = ParameterizedTypeName.get(mTypeWrapper, typeName);
+                        handleCode.addStatement("$T param$L = null", typeName, i)
+                            .beginControlFlow("if (converter != null && !$T.isEmpty(param$LStr))", mTextUtils, i)
+                            .addStatement("byte[] data = param$LStr.getBytes()", i)
+                            .addStatement("$T stream = new $T(data)", InputStream.class, ByteArrayInputStream.class)
+                            .addStatement("$T mimeType = $T.TEXT_PLAIN", mMediaType, mMediaType)
+                            .addStatement("$T type = new $T(){}.getType()", Type.class, wrapperType)
+                            .addStatement("param$L = converter.convert(stream, mimeType, type)", i)
+                            .endControlFlow();
                     }
 
                     if (paramBuild.length() > 0) {
@@ -1122,8 +1142,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                     } else {
                         TypeName wrapperType = ParameterizedTypeName.get(mTypeWrapper, typeName);
                         handleCode.addStatement("$T param$L = null", typeName, i)
-                            .addStatement("$T param$LType = new $T(){}.getType()", Type.class, i, wrapperType)
                             .beginControlFlow("if (converter != null && multiRequest != null)")
+                            .addStatement("$T param$LType = new $T(){}.getType()", Type.class, i, wrapperType)
                             .addStatement("$T param$LFile = multiRequest.getFile($S)", mMultipartFile, i, name)
                             .beginControlFlow("if (param$LFile != null)", i)
                             .addStatement("$T stream = param$LFile.getStream()", InputStream.class, i)
@@ -1133,8 +1153,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                             .beginControlFlow("if (param$L == null)", i)
                             .addStatement("String param$LStr = multiRequest.getParameter($S)", i, name)
                             .beginControlFlow("if (!$T.isEmpty(param$LStr))", mTextUtils, i)
-                            .addStatement("$T stream = new $T(param$LStr.getBytes())", InputStream.class,
-                                ByteArrayInputStream.class, i)
+                            .addStatement("byte[] data = param$LStr.getBytes()", i)
+                            .addStatement("$T stream = new $T(data)", InputStream.class, ByteArrayInputStream.class)
                             .addStatement("$T mimeType = $T.TEXT_PLAIN", mMediaType, mMediaType)
                             .addStatement("param$L = converter.convert(stream, mimeType, param$LType)", i, i)
                             .endControlFlow()
@@ -1307,6 +1327,13 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
             .addParameter(mString, "group")
             .addParameter(mRegisterType, "register")
             .addStatement("List<$T> list = mMap.get(group)", mAdapter)
+            .beginControlFlow("if(list == null)")
+            .addStatement("list = new $T<>()", ArrayList.class)
+            .endControlFlow()
+            .addStatement("List<$T> defaultList = mMap.get($S)", mAdapter, "default")
+            .beginControlFlow("if(defaultList != null && !defaultList.isEmpty())")
+            .addStatement("list.addAll(defaultList)")
+            .endControlFlow()
             .beginControlFlow("if(list != null && !list.isEmpty())")
             .beginControlFlow("for ($T adapter : list)", mAdapter)
             .addStatement("register.addAdapter(adapter)")

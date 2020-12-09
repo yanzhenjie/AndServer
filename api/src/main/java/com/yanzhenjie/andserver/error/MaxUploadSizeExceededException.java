@@ -20,7 +20,7 @@ import com.yanzhenjie.andserver.http.StatusCode;
 /**
  * Created by Zhenjie Yan on 2018/8/9.
  */
-public class MaxUploadSizeExceededException extends BasicException {
+public class MaxUploadSizeExceededException extends HttpException {
 
     private final long mMaxSize;
 

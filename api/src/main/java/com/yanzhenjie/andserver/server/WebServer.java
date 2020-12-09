@@ -45,7 +45,13 @@ public class WebServer extends BasicServer<WebServer.Builder> {
     protected HttpRequestHandler requestHandler() {
         DispatcherHandler handler = new DispatcherHandler(mContext);
         ComponentRegister register = new ComponentRegister(mContext);
-        register.register(handler, mGroup);
+        try {
+            register.register(handler, mGroup);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
         return handler;
     }
 

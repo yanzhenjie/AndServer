@@ -31,7 +31,7 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 /**
- * Created by YanZhenjie on 2018/7/10.
+ * Created by Zhenjie Yan on 2018/7/10.
  *
  * @deprecated use apache commons-lang instead.
  */

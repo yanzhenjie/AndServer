@@ -18,9 +18,9 @@ package com.yanzhenjie.andserver.error;
 import com.yanzhenjie.andserver.http.StatusCode;
 
 /**
- * Created by YanZhenjie on 2018/9/8.
+ * Created by Zhenjie Yan on 2018/9/8.
  */
-public class ContentNotAcceptableException extends BasicException {
+public class ContentNotAcceptableException extends HttpException {
 
     private static final String MESSAGE = "Could not find acceptable representation.";
 

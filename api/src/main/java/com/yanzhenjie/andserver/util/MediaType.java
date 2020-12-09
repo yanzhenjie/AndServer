@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 /**
- * Created by YanZhenjie on 2018/6/27.
+ * Created by Zhenjie Yan on 2018/6/27.
  */
 public class MediaType extends MimeType implements Serializable {
 

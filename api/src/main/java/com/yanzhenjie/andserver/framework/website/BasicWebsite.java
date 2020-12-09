@@ -21,8 +21,11 @@ import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.util.Assert;
+import com.yanzhenjie.andserver.util.MultiValueMap;
 
 import java.io.File;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Zhenjie Yan on 2018/9/6.
@@ -132,5 +135,30 @@ public abstract class BasicWebsite extends Website {
         target = trimStartSlash(target);
         target = trimEndSlash(target);
         return target;
+    }
+
+    protected String queryString(HttpRequest request) {
+        MultiValueMap<String, String> query = request.getQuery();
+        if (query.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder queryString = new StringBuilder();
+        for (Map.Entry<String, List<String>> entry: query.entrySet()) {
+            String key = entry.getKey();
+            List<String> values = entry.getValue();
+            if (values != null && !values.isEmpty()) {
+                for (int i = 0; i < values.size(); i++) {
+                    queryString.append("&")
+                        .append(key)
+                        .append("=")
+                        .append(values.get(i));
+                }
+            }
+        }
+        if (queryString.length() > 0) {
+            queryString.deleteCharAt(0);
+        }
+        return queryString.toString();
     }
 }

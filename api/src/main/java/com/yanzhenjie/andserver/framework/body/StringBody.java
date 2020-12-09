@@ -15,8 +15,6 @@
  */
 package com.yanzhenjie.andserver.framework.body;
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -43,8 +41,8 @@ public class StringBody implements ResponseBody {
     }
 
     public StringBody(String body, MediaType mediaType) {
-        if (TextUtils.isEmpty(body)) {
-            throw new IllegalArgumentException("The content cannot be null or empty.");
+        if (body == null) {
+            throw new IllegalArgumentException("The content cannot be null.");
         }
 
         this.mMediaType = mediaType;

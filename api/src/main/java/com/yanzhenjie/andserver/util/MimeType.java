@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.TreeSet;
 
 /**
- * Created by YanZhenjie on 2018/6/27.
+ * Created by Zhenjie Yan on 2018/6/27.
  */
 public class MimeType implements Comparable<MimeType>, Serializable {
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Zhenjie Yan.
+ * Copyright 2020 Zhenjie Yan.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,31 +16,22 @@
 package com.yanzhenjie.andserver.error;
 
 /**
- * Created by Zhenjie Yan on 2018/7/19.
+ * Created by Zhenjie Yan on 11/22/20.
+ *
+ * @deprecated use {@link HttpException} instead.
  */
-public class BasicException extends RuntimeException {
-
-    /**
-     * Status code.
-     */
-    private int mStatusCode;
+@Deprecated
+public class BasicException extends HttpException {
 
     public BasicException(int statusCode, String message) {
-        super(message);
-        this.mStatusCode = statusCode;
+        super(statusCode, message);
     }
 
     public BasicException(int statusCode, String message, Throwable cause) {
-        super(message, cause);
-        this.mStatusCode = statusCode;
+        super(statusCode, message, cause);
     }
 
     public BasicException(int statusCode, Throwable cause) {
-        super(cause);
-        this.mStatusCode = statusCode;
-    }
-
-    public int getStatusCode() {
-        return mStatusCode;
+        super(statusCode, cause);
     }
 }

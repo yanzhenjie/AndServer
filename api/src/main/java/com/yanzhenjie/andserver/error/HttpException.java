@@ -15,22 +15,32 @@
  */
 package com.yanzhenjie.andserver.error;
 
-import com.yanzhenjie.andserver.http.StatusCode;
-
 /**
- * Created by Zhenjie Yan on 2018/9/8.
+ * Created by Zhenjie Yan on 2018/7/19.
  */
-public class ParamValidateException extends HttpException {
+public class HttpException extends RuntimeException {
 
-    public ParamValidateException(String message) {
-        super(StatusCode.SC_FORBIDDEN, message);
+    /**
+     * Status code.
+     */
+    private int mStatusCode;
+
+    public HttpException(int statusCode, String message) {
+        super(message);
+        this.mStatusCode = statusCode;
     }
 
-    public ParamValidateException(String message, Throwable cause) {
-        super(StatusCode.SC_FORBIDDEN, message, cause);
+    public HttpException(int statusCode, String message, Throwable cause) {
+        super(message, cause);
+        this.mStatusCode = statusCode;
     }
 
-    public ParamValidateException(Throwable cause) {
-        super(StatusCode.SC_FORBIDDEN, cause);
+    public HttpException(int statusCode, Throwable cause) {
+        super(cause);
+        this.mStatusCode = statusCode;
+    }
+
+    public int getStatusCode() {
+        return mStatusCode;
     }
 }
