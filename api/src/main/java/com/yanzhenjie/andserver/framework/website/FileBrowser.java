@@ -129,14 +129,16 @@ public class FileBrowser extends BasicWebsite implements Patterns {
 
             outputStream.write(FOLDER_HTML_SUFFIX.getBytes("utf-8"));
             IOUtils.closeQuietly(outputStream);
-            
+
             return new FileBody(tempFile) {
                 @Nullable
                 @Override
                 public MediaType contentType() {
                     MediaType mimeType = super.contentType();
                     if (mimeType != null) {
-                        mimeType = new MediaType(mimeType.getType(), mimeType.getSubtype(), Charsets.UTF_8);
+                        mimeType = new MediaType(mimeType.getType(),
+                            mimeType.getSubtype(),
+                            Charsets.toCharset("utf-8"));
                     }
                     return mimeType;
                 }
