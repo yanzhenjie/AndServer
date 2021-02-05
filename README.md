@@ -110,7 +110,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.yanzhenjie.andserver:plugin:2.1.6'
+        classpath 'com.yanzhenjie.andserver:plugin:2.1.7'
         ...
     }
 }
@@ -125,8 +125,8 @@ apply plugin: 'com.yanzhenjie.andserver'
 ...
 
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.1.6'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.6'
+    implementation 'com.yanzhenjie.andserver:api:2.1.7'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.7'
     ...
 }
 ```

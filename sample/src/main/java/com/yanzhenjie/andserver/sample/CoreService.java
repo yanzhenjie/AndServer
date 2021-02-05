@@ -54,6 +54,7 @@ public class CoreService extends Service {
 
                 @Override
                 public void onException(Exception e) {
+                    e.printStackTrace();
                     ServerManager.onServerError(CoreService.this, e.getMessage());
                 }
             })
