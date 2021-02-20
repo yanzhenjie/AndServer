@@ -393,7 +393,7 @@ public class Uri implements Patterns {
                 if (end > 0 && end < element.length() - 1) {
                     String key = element.substring(0, end);
                     String value = element.substring(end + 1);
-                    valueMap.add(key, UrlCoder.urlDecode(value, Charsets.UTF_8));
+                    valueMap.add(key, UrlCoder.urlDecode(value, Charsets.toCharset("utf-8")));
                 }
             }
         }

@@ -162,10 +162,10 @@ public class StandardMultipartResolver implements MultipartResolver {
     private String determineEncoding(HttpRequest request) {
         MediaType mimeType = request.getContentType();
         if (mimeType == null) {
-            return Charsets.UTF_8.name();
+            return Charsets.toCharset("utf-8").name();
         }
         Charset charset = mimeType.getCharset();
-        return charset == null ? Charsets.UTF_8.name() : charset.name();
+        return charset == null ? Charsets.toCharset("utf-8").name() : charset.name();
     }
 
     /**

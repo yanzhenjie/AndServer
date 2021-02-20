@@ -853,14 +853,16 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                     }
                     Validate.isTrue(!StringUtils.isEmpty(name), "The name of param is null on %s.", host);
 
+                    String defaultValue = requestHeader.defaultValue();
+
                     handleCode.add("\n").addStatement("String header$LStr = request.getHeader($S)", i, name);
-                    if (requestHeader.required()) {
+                    if (requestHeader.required() && StringUtils.isEmpty(defaultValue)) {
                         handleCode.beginControlFlow("if ($T.isEmpty(header$LStr))", mTextUtils, i)
                             .addStatement("throw new $T($S)", mHeaderMissing, name)
                             .endControlFlow();
                     } else {
                         handleCode.beginControlFlow("if ($T.isEmpty(header$LStr))", mTextUtils, i)
-                            .addStatement("header$LStr = $S", i, requestHeader.defaultValue())
+                            .addStatement("header$LStr = $S", i, defaultValue)
                             .endControlFlow();
                     }
 
@@ -885,10 +887,16 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                     }
                     Validate.notEmpty(name, "The name of cookie is null on %s.", host);
 
+                    String defaultValue = cookieValue.defaultValue();
+
                     handleCode.add("\n").addStatement("String cookie$L = request.getCookieValue($S)", i, name);
-                    if (cookieValue.required()) {
+                    if (cookieValue.required() && StringUtils.isEmpty(defaultValue)) {
                         handleCode.beginControlFlow("if ($T.isEmpty(cookie$L))", mTextUtils, i)
                             .addStatement("throw new $T($S)", mCookieMissing, name)
+                            .endControlFlow();
+                    } else {
+                        handleCode.beginControlFlow("if ($T.isEmpty(cookie$L))", mTextUtils, i)
+                            .addStatement("cookie$L = $S;", i, defaultValue)
                             .endControlFlow();
                     }
 
@@ -910,6 +918,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                     }
                     Validate.isTrue(!StringUtils.isEmpty(name), "The name of path is null on %s.", host);
 
+                    String defaultValue = pathVariable.defaultValue();
+
                     boolean isBlurred = false;
                     for (String path: paths) {
                         if (path.matches(PATH_BLURRED_MAYBE) && mBlurredPathPattern.matcher(path).find()) {
@@ -921,13 +931,13 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
                     handleCode.add("\n").addStatement("String path$LStr = pathMap.get($S)", i, name);
 
-                    if (pathVariable.required()) {
+                    if (pathVariable.required() && StringUtils.isEmpty(defaultValue)) {
                         handleCode.beginControlFlow("if ($T.isEmpty(path$LStr))", mTextUtils, i)
                             .addStatement("throw new $T($S)", mPathMissing, name)
                             .endControlFlow();
                     } else {
                         handleCode.beginControlFlow("if ($T.isEmpty(path$LStr))", mTextUtils, i)
-                            .addStatement("path$LStr = $S;", i, pathVariable.defaultValue())
+                            .addStatement("path$LStr = $S;", i, defaultValue)
                             .endControlFlow();
                     }
 
@@ -954,15 +964,17 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                     }
                     Validate.isTrue(!StringUtils.isEmpty(name), "The name of param is null on %s.", host);
 
+                    String defaultValue = queryParam.defaultValue();
+
                     if (isBasicType) {
                         handleCode.add("\n").addStatement("String param$LStr = request.getQuery($S)", i, name);
-                        if (queryParam.required()) {
+                        if (queryParam.required() && StringUtils.isEmpty(defaultValue)) {
                             handleCode.beginControlFlow("if ($T.isEmpty(param$LStr))", mTextUtils, i)
                                 .addStatement("throw new $T($S)", mParamMissing, name)
                                 .endControlFlow();
                         } else {
                             handleCode.beginControlFlow("if ($T.isEmpty(param$LStr))", mTextUtils, i)
-                                .addStatement("param$LStr = $S", i, queryParam.defaultValue())
+                                .addStatement("param$LStr = $S", i, defaultValue)
                                 .endControlFlow();
                         }
 
@@ -971,18 +983,15 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                     } else {
                         handleCode.add("\n")
                             .addStatement("$T param$LList = request.getQueries($S)", mStringList, i, name);
-                        if (queryParam.required()) {
+                        if (queryParam.required() && StringUtils.isEmpty(defaultValue)) {
                             handleCode.beginControlFlow("if (param$LList == null || param$LList.isEmpty())", i, i)
                                 .addStatement("throw new $T($S)", mParamMissing, name)
                                 .endControlFlow();
                         } else {
-                            String defaultValue = queryParam.defaultValue();
-                            if (StringUtils.isNotEmpty(defaultValue)) {
-                                handleCode.beginControlFlow("if (param$LList = null || param$LList.isEmpty())", i, i)
-                                    .addStatement("param$LList = new $T<>()", i, TypeName.get(ArrayList.class))
-                                    .addStatement("param$LList.add($S)", i, defaultValue)
-                                    .endControlFlow();
-                            }
+                            handleCode.beginControlFlow("if (param$LList = null || param$LList.isEmpty())", i, i)
+                                .addStatement("param$LList = new $T<>()", i, TypeName.get(ArrayList.class))
+                                .addStatement("param$LList.add($S)", i, defaultValue)
+                                .endControlFlow();
                         }
 
                         createBasicArrayParameter(handleCode, typeName, i);
@@ -1007,6 +1016,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                         name = requestParam.value();
                     }
                     Validate.isTrue(!StringUtils.isEmpty(name), "The name of param is null on %s.", host);
+
+                    String defaultValue = requestParam.defaultValue();
 
                     handleCode.add("\n");
                     if (isFile) {
@@ -1042,13 +1053,13 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                     } else if (isBasicType) {
                         handleCode.addStatement("String param$LStr = request.getParameter($S)", i, name);
 
-                        if (requestParam.required()) {
+                        if (requestParam.required() && StringUtils.isEmpty(defaultValue)) {
                             handleCode.beginControlFlow("if ($T.isEmpty(param$LStr))", mTextUtils, i)
                                 .addStatement("throw new $T($S)", mParamMissing, name)
                                 .endControlFlow();
                         } else {
                             handleCode.beginControlFlow("if ($T.isEmpty(param$LStr))", mTextUtils, i)
-                                .addStatement("param$LStr = $S", i, requestParam.defaultValue())
+                                .addStatement("param$LStr = $S", i, defaultValue)
                                 .endControlFlow();
                         }
 
@@ -1056,18 +1067,16 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                         assignmentBasicParameter(handleCode, typeName, "param", i);
                     } else if (isBasicArrayType) {
                         handleCode.addStatement("$T param$LList = request.getParameters($S)", mStringList, i, name);
-                        if (requestParam.required()) {
+
+                        if (requestParam.required() && StringUtils.isEmpty(defaultValue)) {
                             handleCode.beginControlFlow("if (param$LList == null || param$LList.isEmpty())", i, i)
                                 .addStatement("throw new $T($S)", mParamMissing, name)
                                 .endControlFlow();
                         } else {
-                            String defaultValue = requestParam.defaultValue();
-                            if (StringUtils.isNotEmpty(defaultValue)) {
-                                handleCode.beginControlFlow("if (param$LList == null || param$LList.isEmpty())", i, i)
-                                    .addStatement("param$LList = new $T<>()", i, TypeName.get(ArrayList.class))
-                                    .addStatement("param$LList.add($S)", i, defaultValue)
-                                    .endControlFlow();
-                            }
+                            handleCode.beginControlFlow("if (param$LList == null || param$LList.isEmpty())", i, i)
+                                .addStatement("param$LList = new $T<>()", i, TypeName.get(ArrayList.class))
+                                .addStatement("param$LList.add($S)", i, defaultValue)
+                                .endControlFlow();
                         }
 
                         createBasicArrayParameter(handleCode, typeName, i);
@@ -1075,7 +1084,7 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
                     } else {
                         handleCode.addStatement("String param$LStr = request.getParameter($S)", i, name);
 
-                        if (requestParam.required()) {
+                        if (requestParam.required() && StringUtils.isEmpty(defaultValue)) {
                             handleCode.beginControlFlow("if ($T.isEmpty(param$LStr))", mTextUtils, i)
                                 .addStatement("throw new $T($S)", mParamMissing, name)
                                 .endControlFlow();

@@ -64,7 +64,7 @@ public class ComponentRegister {
 
         for (String path: pathList) {
             if (path.endsWith(ANDSERVER_REGISTER_SUFFIX)) {
-                String packageName = path.substring(0, path.indexOf(ANDSERVER_REGISTER_SUFFIX));
+                String packageName = path.substring(0, path.lastIndexOf(ANDSERVER_REGISTER_SUFFIX));
                 for (String clazz: REGISTER_LIST) {
                     String className = String.format("%s%s%s", packageName, PROCESSOR_PACKAGE, clazz);
                     registerClass(register, group, className);

@@ -88,6 +88,36 @@ public class StandardRequest implements HttpRequest {
         this.mSessionManager = sessionManager;
     }
 
+    @Override
+    public String getLocalName() {
+        return mRequest.getLocalName();
+    }
+
+    @Override
+    public String getLocalAddr() {
+        return mRequest.getLocalAddr();
+    }
+
+    @Override
+    public int getLocalPort() {
+        return mRequest.getLocalPort();
+    }
+
+    @Override
+    public String getRemoteAddr() {
+        return mRequest.getRemoteAddr();
+    }
+
+    @Override
+    public String getRemoteHost() {
+        return mRequest.getRemoteHost();
+    }
+
+    @Override
+    public int getRemotePort() {
+        return mRequest.getRemotePort();
+    }
+
     @NonNull
     @Override
     public HttpMethod getMethod() {
@@ -545,7 +575,7 @@ public class StandardRequest implements HttpRequest {
             if (end > 0 && end < element.length() - 1) {
                 String key = element.substring(0, end);
                 String value = element.substring(end + 1);
-                parameters.add(key, UrlCoder.urlDecode(value, Charsets.UTF_8));
+                parameters.add(key, UrlCoder.urlDecode(value, Charsets.toCharset("utf-8")));
             }
         }
         return parameters;

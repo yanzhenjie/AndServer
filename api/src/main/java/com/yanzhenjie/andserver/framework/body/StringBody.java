@@ -47,12 +47,12 @@ public class StringBody implements ResponseBody {
 
         this.mMediaType = mediaType;
         if (mMediaType == null) {
-            mMediaType = new MediaType(MediaType.TEXT_PLAIN, Charsets.UTF_8);
+            mMediaType = new MediaType(MediaType.TEXT_PLAIN, Charsets.toCharset("utf-8"));
         }
 
         Charset charset = mMediaType.getCharset();
         if (charset == null) {
-            charset = Charsets.UTF_8;
+            charset = Charsets.toCharset("utf-8");
         }
         this.mBody = body.getBytes(charset);
     }
@@ -72,7 +72,7 @@ public class StringBody implements ResponseBody {
     public MediaType contentType() {
         Charset charset = mMediaType.getCharset();
         if (charset == null) {
-            charset = Charsets.UTF_8;
+            charset = Charsets.toCharset("utf-8");
             return new MediaType(mMediaType.getType(), mMediaType.getSubtype(), charset);
         }
         return mMediaType;
