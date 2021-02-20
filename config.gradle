@@ -42,7 +42,7 @@ ext {
         apache : [
             lang       : 'org.apache.commons:commons-lang3:3.9',
             collections: 'org.apache.commons:commons-collections4:4.4',
-            httpcore   : "com.yanzhenjie.apache:httpcore:4.4.13.2",
+            httpcore   : "com.yanzhenjie.apache:httpcore:4.4.14.1",
             fileupload : "com.yanzhenjie.apache:fileupload:1.4",
         ],
 
