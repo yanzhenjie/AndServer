@@ -32,13 +32,6 @@ ext {
             material  : 'com.google.android.material:material:1.1.0',
         ],
 
-        project: [
-            annotation: "${PROJECT_GROUP}:annotation:${PROJECT_VERSION}",
-            api       : "${PROJECT_GROUP}:api:${PROJECT_VERSION}",
-            processor : "${PROJECT_GROUP}:processor:${PROJECT_VERSION}",
-            plugin    : "${PROJECT_GROUP}:plugin:${PROJECT_VERSION}"
-        ],
-
         apache : [
             lang       : 'org.apache.commons:commons-lang3:3.9',
             collections: 'org.apache.commons:commons-collections4:4.4',
