@@ -121,14 +121,20 @@ Add the plugin to your project build script :
 ```gradle
 buildscript {
     repositories {
-        jcenter()
-        mavenCentral()
         google()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'com.yanzhenjie.andserver:plugin:2.1.8'
+        classpath 'com.yanzhenjie.andserver:plugin:2.1.9'
         ...
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
     }
 }
 ...
@@ -142,8 +148,8 @@ apply plugin: 'com.yanzhenjie.andserver'
 ...
 
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.1.8'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.8'
+    implementation 'com.yanzhenjie.andserver:api:2.1.9'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.9'
     ...
 }
 ```
@@ -157,7 +163,7 @@ Before submitting pull requests, contributors must abide by the [agreement](./CO
 ## License
 
 ```text
-Copyright 2020 Zhenjie Yan
+Copyright 2021 Zhenjie Yan
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
