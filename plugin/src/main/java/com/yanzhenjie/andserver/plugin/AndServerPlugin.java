@@ -30,7 +30,6 @@ import org.gradle.api.DomainObjectSet;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,20 +47,21 @@ public class AndServerPlugin implements Plugin<Project> {
         project.getPlugins().all(it -> {
             if (it instanceof AppPlugin) {
                 AppExtension extension = project.getExtensions().getByType(AppExtension.class);
-                configGenerator(project, false, extension.getApplicationVariants());
+                configGenerator(project, extension.getApplicationVariants());
             } else if (it instanceof LibraryPlugin) {
                 LibraryExtension extension = project.getExtensions().getByType(LibraryExtension.class);
-                configGenerator(project, true, extension.getLibraryVariants());
+                configGenerator(project, extension.getLibraryVariants());
             } else if (it instanceof FeaturePlugin) {
                 FeatureExtension extension = project.getExtensions().getByType(FeatureExtension.class);
-                configGenerator(project, true, extension.getFeatureVariants());
+                configGenerator(project, extension.getFeatureVariants());
             }
         });
     }
 
-    private void configGenerator(Project project, boolean library, DomainObjectSet<? extends BaseVariant> variants) {
+    private void configGenerator(Project project, DomainObjectSet<? extends BaseVariant> variants) {
         variants.all(it -> {
-            configTask(project, library, it.getApplicationId(), it.getFlavorName());
+            configTask(it);
+
             File outputDir = new File(project.getBuildDir(), "generated/source/andServer/" + it.getDirName());
             String taskName = String.format("generate%sAppInfo", capitalize(it.getName()));
             Task generate = project.getTasks().create(taskName, AppInfoGenerator.class, generator -> {
@@ -75,20 +75,10 @@ public class AndServerPlugin implements Plugin<Project> {
         });
     }
 
-    private void configTask(Project project, boolean library, String appId, String flavorName) {
+    private void configTask(BaseVariant variant) {
         Action<Task> action = task -> {
-            String taskName = task.getName();
-            String moduleType = String.format("%s_assets", library ? "library" : "merged");
-            String buildType = generateBuildType(taskName, flavorName);
-            String path = String.format("./intermediates/%s/%s/out", moduleType, buildType);
-
-            File dir = new File(project.getBuildDir(), path);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
-            String filename = String.format("%s.andserver", appId);
-            File file = new File(dir, filename);
+            String filename = String.format("%s.andserver", variant.getApplicationId());
+            File file = new File(variant.getMergeAssets().getOutputDir().get().getAsFile(), filename);
             if (!file.exists()) {
                 try {
                     file.createNewFile();
@@ -98,18 +88,7 @@ public class AndServerPlugin implements Plugin<Project> {
                 }
             }
         };
-
-        project.getTasks().getByName(String.format("%s%sReleaseAssets", library ? "package" : "merge", capitalize(flavorName))).doLast(action);
-        project.getTasks().getByName(String.format("%s%sDebugAssets", library ? "package" : "merge", capitalize(flavorName))).doLast(action);
-    }
-
-    @NotNull
-    private String generateBuildType(String taskName, String flavorName) {
-        if (flavorName == null || flavorName.length() == 0) {
-            return taskName.toLowerCase().contains("debug") ? "debug" : "release";
-        }
-
-        return taskName.toLowerCase().contains("debug") ? String.format("%sDebug", flavorName) : String.format("%sRelease", flavorName);
+        variant.getMergeAssets().doLast(action);
     }
 
     public static String capitalize(String text) {
