@@ -1,13 +1,38 @@
 # Website
 
-Website 的原意是网站，在 AndServer 中它被用来部署静态网站，AndServer 提供了`Website`几个默认实现：
+大多数人应该听说过 Tomcat、Nginx、JBoss 等服务器吧，与他们不一样的是，AndServer 没有规定静态文件（网页、文件等）应该放在哪个位置，所以我们需要通过配置的方式告诉 AndServer 静态网站的位置在哪里，我们需要使用到[WebConfig](../class/WebConfig.md)接口和[Config](../annotation/Config.md)注解。
 
-- [AssetsWebsite](AssetsWebsite.md)，基于`asserts`中任意文件夹的网站，支持缓存
-- [StorageWebsite](StorageWebsite.md)，基于 SD 卡任意文件夹的网站，支持缓存，支持热插拔
-- [FileBrowser](FileBrowser.md)，基于 SD 卡的文件浏览器
+```java
+@Config
+public class AppConfig implements WebConfig {
 
-`Website`需要结合[Website](../annotation/Website.md)注解使用，首先需要一个类继承`Website`类，然后在该类上加上`Website`注解即可使用，不需要其他配置。
+    @Override
+    public void onConfig(Context context, Delegate delegate) {
+        // 增加一个位于assets的web目录的网站
+        delegate.addWebsite(new AssetsWebsite(context, "/web/"));
 
-> **注意**：实现类必须提供一个无参构造方法供 AndServer 调用，否则编译不通过。
+        // 增加一个位于/sdcard/Download/AndServer/目录的网站
+        delegate.addWebsite(new StorageWebsite(context, "/sdcard/Download/AndServer/"));
+    }
+}
+```
 
-示例请参考源码中`AssetsWebsite`、`StorageWebsite`、`FileBrowser`的实现。
+此时，我们通过浏览器就可以访问上述两个目录的所有文件了，并且通过上述配置，网站可以无限制添加多个。
+
+> 上述`/web/`目录和`/sdcard/Download/AndServer/`目录就是网站根目录，它们的路径是`http://192.168.1.11:8080/`，例如目录下的`android.apk`文件的路径是`http://192.168.1.11:8080/android.apk`。
+
+有人问了，如果我想在网页中浏览目录，让网页列出目录中的子目录和文件呢？同样的，添加一个网站即可：
+
+```java
+@Config
+public class AppConfig implements WebConfig {
+
+    @Override
+    public void onConfig(Context context, Delegate delegate) {
+        // 添加一个文件浏览器网站
+        delegate.addWebsite(new FileBrowser(context, "/sdcard/"));
+    }
+}
+```
+
+此时，通过浏览器打开网站根目录，就可以看到文件浏览器啦。

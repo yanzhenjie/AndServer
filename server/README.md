@@ -14,8 +14,8 @@ public class ServerManager {
     /**
      * Create server.
      */
-    public ServerManager() {
-        mServer = AndServer.serverBuilder()
+    public ServerManager(Context context) {
+        mServer = AndServer.webServer(context)
             .port(8080)
             .timeout(10, TimeUnit.SECONDS)
             .listener(new Server.ServerListener() {
@@ -52,7 +52,7 @@ public class ServerManager {
      * Stop server.
      */
     public void stopServer() {
-        if (mServer.isRunning) {
+        if (mServer.isRunning()) {
             mServer.shutdown();
         } else {
             Log.w("AndServer", "The server has not started yet.");
