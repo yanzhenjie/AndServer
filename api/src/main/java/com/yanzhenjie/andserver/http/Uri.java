@@ -212,7 +212,7 @@ public class Uri implements Patterns {
             this.mPort = uri.getPort();
             String path = uri.getPath();
             this.mPath = pathToPaths(path);
-            String query = uri.getQuery();
+            String query = uri.getRawQuery();
             this.mQuery = queryToParameters(query);
             this.mFragment = uri.getFragment();
         }
@@ -426,7 +426,7 @@ public class Uri implements Patterns {
             List<String> valueList = param.getValue();
             if (valueList != null && !valueList.isEmpty()) {
                 for (String value: valueList) {
-                    builder.append(key).append("=").append(value);
+                    builder.append(key).append("=").append(UrlCoder.urlEncode(value, "utf-8"));
                 }
             } else {
                 builder.append(key).append("=");
@@ -439,7 +439,7 @@ public class Uri implements Patterns {
             List<String> valueList = param.getValue();
             if (valueList != null && !valueList.isEmpty()) {
                 for (String value: valueList) {
-                    builder.append("&").append(key).append("=").append(value);
+                    builder.append("&").append(key).append("=").append(UrlCoder.urlEncode(value, "utf-8"));
                 }
             } else {
                 builder.append("&").append(key).append("=");

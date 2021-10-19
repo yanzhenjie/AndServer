@@ -70,7 +70,24 @@ GET http://.../user/uid_001?fields=id,name,age
 PUT http://.../user/uid_001
 ```
 
-For documentation and additional information see [the website](https://www.yanzhenjie.com/AndServer).
+Get connection information with the client:
+
+```java
+@GetMapping(path = "/connection")
+void getConnection(HttpRequest request, ...) {
+    request.getLocalAddr();   // HostAddress
+    request.getLocalName();   // HostName
+    request.getLocalPort();   // server's port
+
+    request.getRemoteAddr();  // HostAddress
+    request.getRemoteHost();  // Especially HostName, second HostAddress
+    request.getRemotePort();  // client's port
+
+    ...
+}
+```
+
+For documentation and additional information see [the website](https://yanzhenjie.com/AndServer).
 
 ## Reverse Proxy Server
 
@@ -104,14 +121,20 @@ Add the plugin to your project build script :
 ```gradle
 buildscript {
     repositories {
-        jcenter()
-        mavenCentral()
         google()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'com.yanzhenjie.andserver:plugin:2.1.7'
+        classpath 'com.yanzhenjie.andserver:plugin:2.1.9'
         ...
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
     }
 }
 ...
@@ -125,8 +148,8 @@ apply plugin: 'com.yanzhenjie.andserver'
 ...
 
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.1.7'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.7'
+    implementation 'com.yanzhenjie.andserver:api:2.1.9'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.9'
     ...
 }
 ```
@@ -140,7 +163,7 @@ Before submitting pull requests, contributors must abide by the [agreement](./CO
 ## License
 
 ```text
-Copyright 2020 Zhenjie Yan
+Copyright 2021 Zhenjie Yan
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

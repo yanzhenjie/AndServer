@@ -46,6 +46,36 @@ public class RequestWrapper implements HttpRequest {
         return mRequest;
     }
 
+    @Override
+    public String getLocalName() {
+        return mRequest.getLocalName();
+    }
+
+    @Override
+    public String getLocalAddr() {
+        return mRequest.getLocalAddr();
+    }
+
+    @Override
+    public int getLocalPort() {
+        return mRequest.getLocalPort();
+    }
+
+    @Override
+    public String getRemoteAddr() {
+        return mRequest.getRemoteAddr();
+    }
+
+    @Override
+    public String getRemoteHost() {
+        return mRequest.getRemoteHost();
+    }
+
+    @Override
+    public int getRemotePort() {
+        return mRequest.getRemotePort();
+    }
+
     @NonNull
     @Override
     public HttpMethod getMethod() {
