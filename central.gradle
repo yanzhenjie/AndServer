@@ -71,7 +71,7 @@ afterEvaluate { project ->
     }
 
     signing {
-        required { toRemote && !version.concat('SNAPSHOT') && gradle.taskGraph.hasTask("uploadArchives") }
+        required { gradle.taskGraph.hasTask("uploadArchives") }
         sign configurations.archives
     }
 
