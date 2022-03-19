@@ -6,7 +6,6 @@ ext {
         android       : 'com.android.application',
         androidLibrary: 'com.android.library',
         androidMaven  : 'com.github.dcendents.android-maven',
-        bintray       : 'com.jfrog.bintray',
         andServer     : 'com.yanzhenjie.andserver'
     ]
 

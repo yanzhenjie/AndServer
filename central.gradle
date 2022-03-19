@@ -1,22 +1,118 @@
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-group = PROJECT_GROUP
-version = PROJECT_VERSION
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+group = POM_GROUP_ID
+version = POM_VERSION
 
 def toRemote = project.hasProperty('toRemote') ? Boolean.valueOf("${toRemote}") : false
 println("publish to remote repository：${toRemote}")
 
+def plugins = project.getPlugins()
+
+def getSonatypeUserName() {
+    return hasProperty('SONATYPE_USERNAME') ? SONATYPE_USERNAME : ""
+}
+
+def getSonatypePassword() {
+    return hasProperty('SONATYPE_PASSWORD') ? SONATYPE_PASSWORD : ""
+}
+
+if (plugins.hasPlugin('com.android.library')) {
+    task install(type: Upload, dependsOn: assemble) {
+        repositories.mavenInstaller {
+            configurePom(pom)
+        }
+    }
+
+    task javadoc(type: Javadoc) {
+        source = android.sourceSets.main.java.source
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        failOnError false
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        archiveClassifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from android.sourceSets.main.java.source
+    }
+} else if (plugins.hasPlugin('java-library') || plugins.hasPlugin('java-library')) {
+    install {
+        repositories.mavenInstaller {
+            configurePom(pom)
+        }
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        archiveClassifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        archiveClassifier = 'sources'
+        from sourceSets.main.allSource
+    }
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+signing {
+    required { gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+project.afterEvaluate {
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+                if (toRemote) {
+                    repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                        authentication(userName: getSonatypeUserName(), password: getSonatypePassword())
+                    }
+                    snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                        authentication(userName: getSonatypeUserName(), password: getSonatypePassword())
+                    }
+                } else {
+                    repository(url: mavenLocal().getUrl())
+                }
+
+                configurePom(pom)
+            }
+        }
+    }
+}
+
 def configurePom(pom) {
-    pom.groupId = PROJECT_GROUP
+    pom.groupId = POM_GROUP_ID
     pom.artifactId = POM_ARTIFACT_ID
-    pom.version = PROJECT_VERSION
+    pom.version = POM_VERSION
 
     pom.project {
-        name POM_NAME
-        packaging POM_PACKAGING
-        description POM_DESCRIPTION
-        url POM_URL
+        name = POM_NAME
+        packaging = POM_PACKAGING
+        url = POM_URL
+        description = POM_PACKAGING
 
         scm {
             url POM_URL
@@ -36,96 +132,8 @@ def configurePom(pom) {
             developer {
                 id POM_DEVELOPER_ID
                 name POM_DEVELOPER_NAME
+                email = POM_DEVELOPER_EMAIL
             }
         }
-    }
-}
-
-def getSonatypeUserName() {
-    return hasProperty('SONATYPE_USERNAME') ? SONATYPE_USERNAME : ""
-}
-
-def getSonatypePassword() {
-    return hasProperty('SONATYPE_PASSWORD') ? SONATYPE_PASSWORD : ""
-}
-
-afterEvaluate { project ->
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-                if (toRemote) {
-                    repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-                        authentication(userName: getSonatypeUserName(), password: getSonatypePassword())
-                    }
-                    snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
-                        authentication(userName: getSonatypeUserName(), password: getSonatypePassword())
-                    }
-                } else {
-                    repository(url: mavenLocal().getUrl())
-                }
-                configurePom(pom)
-            }
-        }
-    }
-
-    signing {
-        required { toRemote && !version.concat('SNAPSHOT') && gradle.taskGraph.hasTask("uploadArchives") }
-        sign configurations.archives
-    }
-
-    if (project.getPlugins().hasPlugin('com.android.library')) {
-        task install(type: Upload, dependsOn: assemble) {
-            repositories.mavenInstaller {
-                configuration = configurations.archives
-                configurePom(pom)
-            }
-        }
-
-        task javadoc(type: Javadoc) {
-            source = android.sourceSets.main.java.source
-            classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-            failOnError false
-        }
-
-        task javadocJar(type: Jar, dependsOn: javadoc) {
-            classifier = 'javadoc'
-            from javadoc.destinationDir
-        }
-
-        task sourcesJar(type: Jar) {
-            classifier = 'sources'
-            from android.sourceSets.main.java.source
-        }
-    } else {
-        install {
-            repositories.mavenInstaller {
-                configurePom(pom)
-            }
-        }
-
-        task javadocJar(type: Jar, dependsOn: javadoc) {
-            classifier = 'javadoc'
-            from javadoc.destinationDir
-        }
-
-        task sourcesJar(type: Jar, dependsOn: classes) {
-            classifier = 'sources'
-            from sourceSets.main.allSource
-        }
-    }
-
-    if (JavaVersion.current().isJava8Compatible()) {
-        allprojects {
-            tasks.withType(Javadoc) {
-                options.addStringOption('Xdoclint:none', '-quiet')
-            }
-        }
-    }
-
-    artifacts {
-        archives sourcesJar
-        archives javadocJar
     }
 }

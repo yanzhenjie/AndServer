@@ -57,6 +57,7 @@ import com.yanzhenjie.andserver.processor.mapping.Put;
 import com.yanzhenjie.andserver.processor.util.Constants;
 import com.yanzhenjie.andserver.processor.util.Logger;
 import com.yanzhenjie.andserver.processor.util.Patterns;
+import com.yanzhenjie.andserver.processor.util.Utils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -77,8 +78,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import javax.activation.MimeType;
-import javax.activation.MimeTypeParseException;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
@@ -452,8 +451,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         if (ArrayUtils.isNotEmpty(consumes)) {
             for (String consume: consumes) {
                 try {
-                    new MimeType(consume);
-                } catch (MimeTypeParseException e) {
+                    Utils.parseMimeType(consume);
+                } catch (RuntimeException e) {
                     throw new IllegalArgumentException(
                         String.format("The format of consume [%s] is wrong on %s.", consume, host));
                 }
@@ -464,8 +463,8 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
         if (ArrayUtils.isNotEmpty(produces)) {
             for (String produce: produces) {
                 try {
-                    new MimeType(produce);
-                } catch (MimeTypeParseException e) {
+                    Utils.parseMimeType(produce);
+                } catch (RuntimeException e) {
                     throw new IllegalArgumentException(
                         String.format("The format of produce [%s] is wrong on %s.", produce, host));
                 }

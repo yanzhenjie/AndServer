@@ -78,7 +78,7 @@ public class AndServerPlugin implements Plugin<Project> {
     private void configTask(BaseVariant variant) {
         Action<Task> action = task -> {
             String filename = String.format("%s.andserver", variant.getApplicationId());
-            File file = new File(variant.getMergeAssets().getOutputDir().get().getAsFile(), filename);
+            File file = new File(variant.getMergeAssetsProvider().get().getOutputDir().get().getAsFile(), filename);
             if (!file.exists()) {
                 try {
                     file.createNewFile();
@@ -88,7 +88,7 @@ public class AndServerPlugin implements Plugin<Project> {
                 }
             }
         };
-        variant.getMergeAssets().doLast(action);
+        variant.getMergeAssetsProvider().get().doLast(action);
     }
 
     public static String capitalize(String text) {

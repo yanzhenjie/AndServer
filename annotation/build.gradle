@@ -5,4 +5,4 @@ compileJava {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-apply from: '../bintray.gradle'
+apply from: '../central.gradle'
