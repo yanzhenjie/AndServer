@@ -33,4 +33,4 @@ dependencies {
     compileOnly deps.android.annotation
 }
 
-apply from: '../central.gradle'
+apply from: '../publish.gradle'

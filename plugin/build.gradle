@@ -14,4 +14,4 @@ dependencies {
     implementation deps.poet
 }
 
-apply from: '../central.gradle'
+apply from: '../publish.gradle'

@@ -1,0 +1,135 @@
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+
+configurations.all {
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+group = POM_GROUP_ID
+version = POM_VERSION
+
+def getSonatypeUserName() {
+    return hasProperty('SONATYPE_USERNAME') ? SONATYPE_USERNAME : ''
+}
+
+def getSonatypePassword() {
+    return hasProperty('SONATYPE_PASSWORD') ? SONATYPE_PASSWORD : ''
+}
+
+def plugins = project.getPlugins()
+if (plugins.hasPlugin('com.android.library')) {
+    task javadoc(type: Javadoc) {
+        source = android.sourceSets.main.java.source
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        failOnError false
+    }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        archiveClassifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    task sourcesJar(type: Jar) {
+        archiveClassifier = 'sources'
+        from android.sourceSets.main.java.source
+    }
+} else if (plugins.hasPlugin('java-library')) {
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        archiveClassifier = 'javadoc'
+        from javadoc.destinationDir
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        archiveClassifier = 'sources'
+        from sourceSets.main.allSource
+    }
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+}
+
+afterEvaluate {
+    def cleanTask = project.tasks.findByName('clean')
+    def assembleTask = project.tasks.findByName('assemble')
+    def publishTask = project.tasks.findByName('publish')
+    if (cleanTask && assembleTask && publishTask) {
+        assembleTask.dependsOn(cleanTask)
+        publishTask.dependsOn(assembleTask)
+
+        def publishLocalTask = project.tasks.findByName('publishToMavenLocal')
+        if (publishLocalTask) {
+            publishLocalTask.dependsOn(assembleTask)
+        }
+    }
+
+    publishing {
+        publications {
+            uploadArchives(MavenPublication) {
+                artifacts = [javadocJar, sourcesJar]
+
+                if (components.hasWithName('java')) {
+                    from components.java
+                } else if (components.hasWithName('release')) {
+                    from components.release
+                }
+
+                groupId = POM_GROUP_ID
+                artifactId = POM_ARTIFACT_ID
+                version = POM_VERSION
+
+                pom {
+                    name = POM_NAME
+                    packaging = POM_PACKAGING
+                    url = POM_URL
+                    description = POM_PACKAGING
+
+                    scm {
+                        url = POM_URL
+                        connection = POM_GIT_URL
+                        developerConnection = POM_GIT_URL
+                    }
+
+                    licenses {
+                        license {
+                            name = POM_LICENCE_NAME
+                            url = POM_LICENCE_URL
+                            distribution = POM_LICENCE_DIST
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = POM_DEVELOPER_ID
+                            name = POM_DEVELOPER_NAME
+                            email = POM_DEVELOPER_EMAIL
+                        }
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name 'MavenCentral'
+                def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+                def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
+                url version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+                credentials {
+                    username getSonatypeUserName()
+                    password getSonatypePassword()
+                }
+            }
+        }
+    }
+
+    signing {
+        required { gradle.taskGraph.hasTask("publish") }
+        sign publishing.publications.uploadArchives
+    }
+}
