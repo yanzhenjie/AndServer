@@ -16,26 +16,31 @@
 package com.yanzhenjie.andserver.server;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.yanzhenjie.andserver.AndServer;
 import com.yanzhenjie.andserver.SSLSocketInitializer;
 import com.yanzhenjie.andserver.Server;
 import com.yanzhenjie.andserver.util.Executors;
 
-import org.apache.httpcore.ExceptionLogger;
-import org.apache.httpcore.config.SocketConfig;
-import org.apache.httpcore.impl.bootstrap.HttpServer;
-import org.apache.httpcore.impl.bootstrap.SSLServerSetupHandler;
-import org.apache.httpcore.impl.bootstrap.ServerBootstrap;
-import org.apache.httpcore.protocol.HttpRequestHandler;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.hc.core5.function.Callback;
+import org.apache.hc.core5.http.ExceptionListener;
+import org.apache.hc.core5.http.impl.Http1StreamListener;
+import org.apache.hc.core5.http.impl.bootstrap.HttpServer;
+import org.apache.hc.core5.http.impl.bootstrap.ServerBootstrap;
+import org.apache.hc.core5.http.io.HttpRequestHandler;
+import org.apache.hc.core5.http.io.SocketConfig;
+import org.apache.hc.core5.io.CloseMode;
+import org.apache.hc.core5.util.TimeValue;
+import org.apache.hc.core5.util.Timeout;
 
 import java.net.InetAddress;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLParameters;
 
 /**
  * Created by Zhenjie Yan on 3/7/20.
@@ -45,8 +50,9 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
     static final int BUFFER = 8 * 1024;
 
     protected final InetAddress mInetAddress;
+    protected final String mCanonicalHostName;
     protected final int mPort;
-    protected final int mTimeout;
+    protected final Timeout mTimeout;
     protected final ServerSocketFactory mSocketFactory;
     protected final SSLContext mSSLContext;
     protected final SSLSocketInitializer mSSLSocketInitializer;
@@ -57,6 +63,7 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
 
     BasicServer(T builder) {
         this.mInetAddress = builder.inetAddress;
+        this.mCanonicalHostName = builder.canonicalHostName;
         this.mPort = builder.port;
         this.mTimeout = builder.timeout;
         this.mSocketFactory = builder.mSocketFactory;
@@ -80,7 +87,7 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
             @Override
             public void run() {
                 try {
-                    mHttpServer = ServerBootstrap.bootstrap()
+                    ServerBootstrap bootstrap = ServerBootstrap.bootstrap()
                         .setServerSocketFactory(mSocketFactory)
                         .setSocketConfig(
                             SocketConfig.custom()
@@ -91,17 +98,36 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
                                 .setBacklogSize(BUFFER)
                                 .setRcvBufSize(BUFFER)
                                 .setSndBufSize(BUFFER)
-                                .setSoLinger(0)
+                                .setSoLinger(TimeValue.ZERO_MILLISECONDS)
                                 .build()
                         )
                         .setLocalAddress(mInetAddress)
+                        .setCanonicalHostName(mCanonicalHostName)
                         .setListenerPort(mPort)
                         .setSslContext(mSSLContext)
-                        .setSslSetupHandler(new SSLSetup(mSSLSocketInitializer))
-                        .setServerInfo(AndServer.INFO)
-                        .registerHandler("*", requestHandler())
-                        .setExceptionLogger(ExceptionLogger.NO_OP)
-                        .create();
+                        .setSslSetupHandler(new SSLSetup(mSSLSocketInitializer));
+                    // Register handlers
+                    for (ImmutableTriple<String, String, HttpRequestHandler> triple: requestHandlers()) {
+                        if (triple == null) {
+                            continue;
+                        }
+                        if (triple.left == null){
+                            bootstrap.register(triple.middle, triple.right);
+                        } else {
+                            bootstrap.registerVirtual(triple.left, triple.middle, triple.right);
+                        }
+                    }
+                    // Register StreamListeners
+                    Http1StreamListener http1StreamListener = requestHttp1StreamListener();
+                    if (http1StreamListener != null) {
+                        bootstrap.setStreamListener(http1StreamListener);
+                    }
+                    // Register ExceptionListeners
+                    ExceptionListener exceptionListener = requestExceptionListener();
+                    if (exceptionListener != null) {
+                        bootstrap.setExceptionListener(exceptionListener);
+                    }
+                    mHttpServer = bootstrap.create();
 
                     mHttpServer.start();
                     isRunning = true;
@@ -117,7 +143,7 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
                     Runtime.getRuntime().addShutdownHook(new Thread() {
                         @Override
                         public void run() {
-                            mHttpServer.shutdown(3, TimeUnit.SECONDS);
+                            mHttpServer.close(CloseMode.GRACEFUL);
                         }
                     });
                 } catch (final Exception e) {
@@ -135,9 +161,33 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
     }
 
     /**
-     * Assigns {@link HttpRequestHandler} instance.
+     * Assigns {@link HttpRequestHandler} instances.
+     * @return A {@link Collection} of {@link ImmutableTriple}
+     * Triple definition:
+     * Left: Host name (Nullable)
+     * (null -> canonical hostname / localhost loopback)
+     * (nonnull -> virtual hostname)
+     * Middle: uri pattern (NonNull)
+     * Right: Handler (NonNull)
      */
-    protected abstract HttpRequestHandler requestHandler();
+    @NonNull
+    protected abstract Collection<ImmutableTriple<String, String, HttpRequestHandler>> requestHandlers();
+
+    /**
+     * Assigns {@link Http1StreamListener} instance.
+     */
+    @Nullable
+    protected Http1StreamListener requestHttp1StreamListener() {
+        return null;
+    }
+
+    /**
+     * Assigns {@link ExceptionListener} instance.
+     */
+    @Nullable
+    protected ExceptionListener requestExceptionListener(){
+        return null;
+    }
 
     /**
      * Quit the server.
@@ -152,7 +202,7 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
             @Override
             public void run() {
                 if (mHttpServer != null) {
-                    mHttpServer.shutdown(3, TimeUnit.SECONDS);
+                    mHttpServer.close(CloseMode.GRACEFUL);
                     isRunning = false;
                     Executors.getInstance().post(new Runnable() {
                         @Override
@@ -167,7 +217,7 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
         });
     }
 
-    private static final class SSLSetup implements SSLServerSetupHandler {
+    private static final class SSLSetup implements Callback<SSLParameters> {
 
         private final SSLSocketInitializer mInitializer;
 
@@ -176,8 +226,8 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
         }
 
         @Override
-        public void initialize(SSLServerSocket socket) throws SSLException {
-            mInitializer.onCreated(socket);
+        public void execute(SSLParameters object) {
+            mInitializer.onCreated(object);
         }
     }
 
@@ -200,8 +250,9 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
     protected abstract static class Builder<T extends Builder, S extends BasicServer> {
 
         InetAddress inetAddress;
+        String canonicalHostName;
         int port;
-        int timeout;
+        Timeout timeout;
         ServerSocketFactory mSocketFactory;
         SSLContext sslContext;
         SSLSocketInitializer mSSLSocketInitializer;
@@ -215,6 +266,11 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
             return (T) this;
         }
 
+        public T canonicalHostName(String canonicalHostName) {
+            this.canonicalHostName = canonicalHostName;
+            return (T) this;
+        }
+
         public T port(int port) {
             this.port = port;
             return (T) this;
@@ -222,7 +278,7 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
 
         public T timeout(int timeout, TimeUnit timeUnit) {
             long timeoutMs = timeUnit.toMillis(timeout);
-            this.timeout = (int) Math.min(timeoutMs, Integer.MAX_VALUE);
+            this.timeout = Timeout.ofMicroseconds((int) Math.min(timeoutMs, Integer.MAX_VALUE));
             return (T) this;
         }
 

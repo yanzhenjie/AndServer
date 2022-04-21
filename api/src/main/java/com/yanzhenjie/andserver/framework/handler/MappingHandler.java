@@ -34,7 +34,7 @@ import com.yanzhenjie.andserver.http.HttpMethod;
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
 
-import org.apache.httpcore.HttpStatus;
+import org.apache.hc.core5.http.HttpStatus;
 
 import java.util.Arrays;
 import java.util.Collections;

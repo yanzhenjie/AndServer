@@ -50,6 +50,9 @@ import java.util.Map;
  */
 public class StandardMultipartResolver implements MultipartResolver {
 
+    public static final String SUB_TAG = "StandardMultipartResolver";
+    public static final String TAG = AndServer.genAndServerTag(SUB_TAG);
+
     private DiskFileItemFactory mFileItemFactory;
     private FileUpload mFileUpload;
 
@@ -117,7 +120,7 @@ public class StandardMultipartResolver implements MultipartResolver {
                     }
                 }
             } catch (Throwable ex) {
-                Log.w(AndServer.TAG, "Failed to perform multipart cleanup for servlet request.");
+                Log.w(TAG, "Failed to perform multipart cleanup for servlet request.");
             }
         }
     }

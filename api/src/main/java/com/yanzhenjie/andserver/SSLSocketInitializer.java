@@ -17,13 +17,12 @@ package com.yanzhenjie.andserver;
 
 import androidx.annotation.NonNull;
 
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLParameters;
 
 /**
  * Created by Zhenjie Yan on 2018/9/10.
  */
 public interface SSLSocketInitializer {
 
-    void onCreated(@NonNull SSLServerSocket socket) throws SSLException;
+    void onCreated(@NonNull SSLParameters sslParameters);
 }

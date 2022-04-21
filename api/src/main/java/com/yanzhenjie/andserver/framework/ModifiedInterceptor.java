@@ -31,6 +31,9 @@ import com.yanzhenjie.andserver.http.Modified;
  */
 public class ModifiedInterceptor implements HandlerInterceptor {
 
+    public static final String SUB_TAG = "ModifiedInterceptor";
+    public static final String TAG = AndServer.genAndServerTag(SUB_TAG);
+
     @Override
     public boolean onIntercept(@NonNull HttpRequest request, @NonNull HttpResponse response,
         @NonNull RequestHandler handler) {
@@ -41,13 +44,13 @@ public class ModifiedInterceptor implements HandlerInterceptor {
             try {
                 eTag = handler.getETag(request);
             } catch (Throwable e) {
-                Log.w(AndServer.TAG, e);
+                Log.w(TAG, e);
             }
             long lastModified = -1;
             try {
                 lastModified = handler.getLastModified(request);
             } catch (Throwable e) {
-                Log.w(AndServer.TAG, e);
+                Log.w(TAG, e);
             }
             return new Modified(request, response).process(eTag, lastModified);
         }

@@ -20,7 +20,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.apache.httpcore.Header;
+import org.apache.hc.core5.http.Header;
 
 import java.text.DateFormat;
 import java.text.FieldPosition;

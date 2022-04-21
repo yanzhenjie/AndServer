@@ -17,11 +17,17 @@ package com.yanzhenjie.andserver.server;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.yanzhenjie.andserver.ComponentRegister;
 import com.yanzhenjie.andserver.DispatcherHandler;
 import com.yanzhenjie.andserver.Server;
 
-import org.apache.httpcore.protocol.HttpRequestHandler;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.hc.core5.http.io.HttpRequestHandler;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Zhenjie Yan on 3/7/20.
@@ -41,8 +47,9 @@ public class WebServer extends BasicServer<WebServer.Builder> {
         this.mGroup = builder.group;
     }
 
+    @NonNull
     @Override
-    protected HttpRequestHandler requestHandler() {
+    protected List<ImmutableTriple<String, String, HttpRequestHandler>> requestHandlers() {
         DispatcherHandler handler = new DispatcherHandler(mContext);
         ComponentRegister register = new ComponentRegister(mContext);
         try {
@@ -52,7 +59,7 @@ public class WebServer extends BasicServer<WebServer.Builder> {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        return handler;
+        return Collections.singletonList(new ImmutableTriple<>(null, "*", handler));
     }
 
     public static class Builder extends BasicServer.Builder<Builder, WebServer>

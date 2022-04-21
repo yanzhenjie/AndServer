@@ -35,13 +35,14 @@ import com.yanzhenjie.andserver.util.MultiValueMap;
 import com.yanzhenjie.andserver.util.UrlCoder;
 
 import org.apache.commons.io.Charsets;
-import org.apache.httpcore.Header;
-import org.apache.httpcore.HttpEntity;
-import org.apache.httpcore.HttpEntityEnclosingRequest;
-import org.apache.httpcore.RequestLine;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.HttpEntityContainer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,10 +59,9 @@ public class StandardRequest implements HttpRequest {
 
     private static final CookieProcessor COOKIE_PROCESSOR = new StandardCookieProcessor();
 
-    private org.apache.httpcore.HttpRequest mRequest;
+    private org.apache.hc.core5.http.HttpRequest mRequest;
     private HttpContext mContext;
     private DispatcherHandler mHandler;
-    private RequestLine mRequestLine;
     private SessionManager mSessionManager;
 
     private Uri mUri;
@@ -79,49 +79,18 @@ public class StandardRequest implements HttpRequest {
     private MultiValueMap<String, String> mParameter;
     private boolean isParsedParameter;
 
-    public StandardRequest(org.apache.httpcore.HttpRequest request, HttpContext context, DispatcherHandler handler,
+    public StandardRequest(org.apache.hc.core5.http.HttpRequest request, HttpContext context, DispatcherHandler handler,
                            SessionManager sessionManager) {
         this.mRequest = request;
         this.mContext = context;
         this.mHandler = handler;
-        this.mRequestLine = request.getRequestLine();
         this.mSessionManager = sessionManager;
-    }
-
-    @Override
-    public String getLocalName() {
-        return mRequest.getLocalName();
-    }
-
-    @Override
-    public String getLocalAddr() {
-        return mRequest.getLocalAddr();
-    }
-
-    @Override
-    public int getLocalPort() {
-        return mRequest.getLocalPort();
-    }
-
-    @Override
-    public String getRemoteAddr() {
-        return mRequest.getRemoteAddr();
-    }
-
-    @Override
-    public String getRemoteHost() {
-        return mRequest.getRemoteHost();
-    }
-
-    @Override
-    public int getRemotePort() {
-        return mRequest.getRemotePort();
     }
 
     @NonNull
     @Override
     public HttpMethod getMethod() {
-        return HttpMethod.reverse(mRequestLine.getMethod());
+        return HttpMethod.reverse(mRequest.getMethod());
     }
 
     @NonNull
@@ -136,13 +105,14 @@ public class StandardRequest implements HttpRequest {
             return;
         }
 
-        String requestLine = mRequestLine.getUri();
-        if (TextUtils.isEmpty(requestLine)) {
-            requestLine = "/";
+        try {
+            URI uri = mRequest.getUri();
+            mUri = Uri.newBuilder(uri).build();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            String uri = "scheme://host:ip/";
+            mUri = Uri.newBuilder(uri).build();
         }
-
-        String uri = "scheme://host:ip" + requestLine;
-        mUri = Uri.newBuilder(uri).build();
         isParsedUri = true;
     }
 
@@ -200,7 +170,7 @@ public class StandardRequest implements HttpRequest {
     @NonNull
     @Override
     public List<String> getHeaderNames() {
-        Header[] headers = mRequest.getAllHeaders();
+        Header[] headers = mRequest.getHeaders();
         if (headers == null || headers.length == 0) {
             return Collections.emptyList();
         }
@@ -457,8 +427,8 @@ public class StandardRequest implements HttpRequest {
     @Override
     public RequestBody getBody() {
         if (getMethod().allowBody()) {
-            if (mRequest instanceof HttpEntityEnclosingRequest) {
-                HttpEntityEnclosingRequest request = (HttpEntityEnclosingRequest) mRequest;
+            if (mRequest instanceof HttpEntityContainer) {
+                HttpEntityContainer request = (HttpEntityContainer) mRequest;
                 HttpEntity entity = request.getEntity();
                 if (entity == null) {
                     return null;
@@ -591,8 +561,8 @@ public class StandardRequest implements HttpRequest {
 
         @Override
         public String contentEncoding() {
-            Header encoding = mEntity.getContentType();
-            return encoding == null ? "" : encoding.getValue();
+            String encoding = mEntity.getContentEncoding();
+            return encoding == null ? "" : encoding;
         }
 
         @Override
@@ -603,12 +573,11 @@ public class StandardRequest implements HttpRequest {
         @Nullable
         @Override
         public MediaType contentType() {
-            Header header = mEntity.getContentType();
-            if (header == null) {
+            String contentType = mEntity.getContentType();
+            if (contentType == null) {
                 return null;
             }
 
-            String contentType = header.getValue();
             return MediaType.valueOf(contentType);
         }
 

@@ -15,167 +15,175 @@
  */
 package com.yanzhenjie.andserver.server;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.yanzhenjie.andserver.AndServer;
 import com.yanzhenjie.andserver.ProxyHandler;
-import com.yanzhenjie.andserver.SSLSocketInitializer;
 import com.yanzhenjie.andserver.Server;
-import com.yanzhenjie.andserver.util.Executors;
 
-import org.apache.httpcore.ConnectionClosedException;
-import org.apache.httpcore.HttpException;
-import org.apache.httpcore.HttpHost;
-import org.apache.httpcore.HttpServerConnection;
-import org.apache.httpcore.impl.DefaultBHttpClientConnection;
-import org.apache.httpcore.impl.DefaultBHttpServerConnection;
-import org.apache.httpcore.protocol.BasicHttpContext;
-import org.apache.httpcore.protocol.HttpCoreContext;
-import org.apache.httpcore.protocol.HttpProcessor;
-import org.apache.httpcore.protocol.HttpRequestHandler;
-import org.apache.httpcore.protocol.HttpService;
-import org.apache.httpcore.protocol.ImmutableHttpProcessor;
-import org.apache.httpcore.protocol.ResponseConnControl;
-import org.apache.httpcore.protocol.ResponseContent;
-import org.apache.httpcore.protocol.ResponseDate;
-import org.apache.httpcore.protocol.ResponseServer;
-import org.apache.httpcore.protocol.UriHttpRequestHandlerMapper;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.apache.hc.core5.http.ConnectionClosedException;
+import org.apache.hc.core5.http.ExceptionListener;
+import org.apache.hc.core5.http.HttpConnection;
+import org.apache.hc.core5.http.HttpHost;
+import org.apache.hc.core5.http.HttpRequest;
+import org.apache.hc.core5.http.HttpResponse;
+import org.apache.hc.core5.http.impl.Http1StreamListener;
+import org.apache.hc.core5.http.impl.bootstrap.HttpRequester;
+import org.apache.hc.core5.http.impl.bootstrap.RequesterBootstrap;
+import org.apache.hc.core5.http.io.HttpRequestHandler;
+import org.apache.hc.core5.pool.ConnPoolListener;
+import org.apache.hc.core5.pool.ConnPoolStats;
+import org.apache.hc.core5.pool.PoolStats;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Locale;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.net.ServerSocketFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLServerSocket;
 
 /**
  * Created by Zhenjie Yan on 3/7/20.
  */
 public class ProxyServer extends BasicServer<ProxyServer.Builder> {
 
-    public static final String PROXY_CONN_CLIENT = "http.proxy.conn.client";
-    public static final String PROXY_CONN_ALIVE = "http.proxy.conn.alive";
+    public static final String SUB_TAG = "ProxyServer";
+    public static final String TAG = AndServer.genAndServerTag(SUB_TAG);
 
     public static ProxyServer.Builder newBuilder() {
         return new ProxyServer.Builder();
     }
 
-    private final InetAddress mInetAddress;
-    private final int mPort;
-    private final int mTimeout;
-    private final ServerSocketFactory mSocketFactory;
-    private final SSLContext mSSLContext;
-    private final SSLSocketInitializer mSSLSocketInitializer;
-    private final Server.ServerListener mListener;
-
     private Map<String, HttpHost> mHostList;
 
-    private HttpServer mHttpServer;
-    private boolean isRunning;
+    private HttpRequester mRequester;
 
     private ProxyServer(Builder builder) {
         super(builder);
-        this.mInetAddress = builder.inetAddress;
-        this.mPort = builder.port;
-        this.mTimeout = builder.timeout;
-        this.mSocketFactory = builder.mSocketFactory;
-        this.mSSLContext = builder.sslContext;
-        this.mSSLSocketInitializer = builder.mSSLSocketInitializer;
-        this.mListener = builder.listener;
 
         this.mHostList = builder.mHostList;
     }
 
+    @NonNull
     @Override
-    protected HttpRequestHandler requestHandler() {
-        return new ProxyHandler(mHostList);
+    protected Collection<ImmutableTriple<String, String, HttpRequestHandler>> requestHandlers() {
+        Set<ImmutableTriple<String, String, HttpRequestHandler>> tripleSet = new HashSet<>(mHostList.size());
+        if (mRequester == null) {
+            initializeRequester();
+        }
+        for (String hostname : mHostList.keySet()) {
+            ImmutableTriple<String, String, HttpRequestHandler> triple = new ImmutableTriple<>(hostname, "*", new ProxyHandler(mHostList.get(hostname), mRequester));
+            tripleSet.add(triple);
+        }
+        return tripleSet;
     }
 
+    @NonNull
     @Override
-    public void startup() {
-        if (isRunning) {
-            return;
-        }
+    protected Http1StreamListener requestHttp1StreamListener() {
+        return new Http1StreamListener() {
 
-        Executors.getInstance().execute(new Runnable() {
             @Override
-            public void run() {
-                ServerSocketFactory socketFactory = mSocketFactory;
-                if (socketFactory == null) {
-                    if (mSSLContext != null) {
-                        socketFactory = mSSLContext.getServerSocketFactory();
-                    } else {
-                        socketFactory = ServerSocketFactory.getDefault();
+            public void onRequestHead(final HttpConnection connection, final HttpRequest request) {
+                Log.d(TAG, "[client->proxy] " + Thread.currentThread() + " " +
+                        request.getMethod() + " " + request.getRequestUri());
+            }
+
+            @Override
+            public void onResponseHead(final HttpConnection connection, final HttpResponse response) {
+                Log.d(TAG, "[client<-proxy] " + Thread.currentThread() + " status " + response.getCode());
+            }
+
+            @Override
+            public void onExchangeComplete(final HttpConnection connection, final boolean keepAlive) {
+                Log.d(TAG, "[client<-proxy] " + Thread.currentThread() + " exchange completed; " +
+                        "connection " + (keepAlive ? "kept alive" : "cannot be kept alive"));
+            }
+
+        };
+    }
+
+    @NonNull
+    @Override
+    protected ExceptionListener requestExceptionListener() {
+        return new ExceptionListener() {
+
+            @Override
+            public void onError(final Exception ex) {
+                if (ex instanceof SocketException) {
+                    Log.d(TAG, "[client->proxy] " + Thread.currentThread() + " " + ex.getMessage());
+                } else {
+                    Log.d(TAG, "[client->proxy] " + Thread.currentThread()  + " " + ex.getMessage());
+                    ex.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(final HttpConnection connection, final Exception ex) {
+                if (ex instanceof SocketTimeoutException) {
+                    Log.d(TAG, "[client->proxy] " + Thread.currentThread() + " time out");
+                } else if (ex instanceof SocketException || ex instanceof ConnectionClosedException) {
+                    Log.d(TAG, "[client->proxy] " + Thread.currentThread() + " " + ex.getMessage());
+                } else {
+                    Log.d(TAG, "[client->proxy] " + Thread.currentThread() + " " + ex.getMessage());
+                    ex.printStackTrace();
+                }
+            }
+
+        };
+    }
+
+    private HttpRequester initializeRequester() {
+        mRequester = RequesterBootstrap.bootstrap()
+                .setStreamListener(new Http1StreamListener() {
+
+                    @Override
+                    public void onRequestHead(final HttpConnection connection, final HttpRequest request) {
+                        Log.d(TAG, "[proxy->origin] " + Thread.currentThread()  + " " +
+                                request.getMethod() + " " + request.getRequestUri());
                     }
-                }
 
-                mHttpServer = new HttpServer(mInetAddress,
-                    mPort,
-                    mTimeout,
-                    socketFactory,
-                    mSSLSocketInitializer,
-                    requestHandler());
-                try {
-                    mHttpServer.startServer();
-                    isRunning = true;
+                    @Override
+                    public void onResponseHead(final HttpConnection connection, final HttpResponse response) {
+                        Log.d(TAG, "[proxy<-origin] " + Thread.currentThread()  + " status " + response.getCode());
+                    }
 
-                    Executors.getInstance().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mListener != null) {
-                                mListener.onStarted();
-                            }
-                        }
-                    });
-                    Runtime.getRuntime().addShutdownHook(new Thread() {
-                        @Override
-                        public void run() {
-                            mHttpServer.stopServer();
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+                    @Override
+                    public void onExchangeComplete(final HttpConnection connection, final boolean keepAlive) {
+                        Log.d(TAG, "[proxy<-origin] " + Thread.currentThread() + " exchange completed; " +
+                                "connection " + (keepAlive ? "kept alive" : "cannot be kept alive"));
+                    }
 
-    @Override
-    public void shutdown() {
-        if (!isRunning) {
-            return;
-        }
+                })
+                .setConnPoolListener(new ConnPoolListener<HttpHost>() {
 
-        Executors.getInstance().execute(new Runnable() {
-            @Override
-            public void run() {
-                if (mHttpServer != null) {
-                    mHttpServer.stopServer();
-                    isRunning = false;
-                    Executors.getInstance().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mListener != null) {
-                                mListener.onStopped();
-                            }
-                        }
-                    });
-                }
-            }
-        });
+                    @Override
+                    public void onLease(final HttpHost route, final ConnPoolStats<HttpHost> connPoolStats) {
+                        final StringBuilder buf = new StringBuilder();
+                        buf.append("[proxy->origin] ").append(Thread.currentThread()).append(" connection leased ").append(route);
+                        Log.d(TAG, buf.toString());
+                    }
+
+                    @Override
+                    public void onRelease(final HttpHost route, final ConnPoolStats<HttpHost> connPoolStats) {
+                        final StringBuilder buf = new StringBuilder();
+                        buf.append("[proxy->origin] ").append(Thread.currentThread()).append(" connection released ").append(route);
+                        final PoolStats totals = connPoolStats.getTotalStats();
+                        buf.append("; total kept alive: ").append(totals.getAvailable()).append("; ");
+                        buf.append("total allocated: ").append(totals.getLeased() + totals.getAvailable());
+                        buf.append(" of ").append(totals.getMax());
+                        Log.d(TAG, buf.toString());
+                    }
+
+                })
+                .create();
+        return mRequester;
     }
 
     public static class Builder extends BasicServer.Builder<Builder, ProxyServer>
@@ -187,209 +195,14 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
         }
 
         @Override
-        public Builder addProxy(String hostName, String proxyHost) {
-            mHostList.put(hostName.toLowerCase(Locale.ROOT), HttpHost.create(proxyHost));
+        public Builder addProxy(String hostName, String proxyHost) throws URISyntaxException {
+            mHostList.put(StringUtils.lowerCase(hostName), HttpHost.create(proxyHost));
             return this;
         }
 
         @Override
         public ProxyServer build() {
             return new ProxyServer(this);
-        }
-    }
-
-    private static class HttpServer implements Runnable {
-
-        private final InetAddress mInetAddress;
-        private final int mPort;
-        private final int mTimeout;
-        private final ServerSocketFactory mSocketFactory;
-        private final SSLSocketInitializer mSSLSocketInitializer;
-        private final HttpRequestHandler mHandler;
-
-        private final ThreadPoolExecutor mServerExecutor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
-            new SynchronousQueue<>(), new ThreadFactoryImpl("HTTP-Server-"));
-        private final ThreadGroup mWorkerThreads = new ThreadGroup("HTTP-workers");
-        private final ThreadPoolExecutor mWorkerExecutor = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 1L,
-            TimeUnit.SECONDS, new SynchronousQueue<>(), new ThreadFactoryImpl("HTTP-Handlers-", mWorkerThreads)) {
-            @Override
-            protected void beforeExecute(Thread t, Runnable r) {
-                if (r instanceof Worker) {
-                    mWorkerSet.put((Worker) r, Boolean.TRUE);
-                }
-            }
-
-            @Override
-            protected void afterExecute(Runnable r, Throwable t) {
-                if (r instanceof Worker) {
-                    mWorkerSet.remove(r);
-                }
-            }
-        };
-        private final Map<Worker, Boolean> mWorkerSet = new ConcurrentHashMap<>();
-
-        private HttpService mHttpService;
-        private ServerSocket mServerSocket;
-
-        public HttpServer(InetAddress inetAddress, int port, int timeout, ServerSocketFactory socketFactory,
-            SSLSocketInitializer sslSocketInitializer, HttpRequestHandler handler) {
-            this.mInetAddress = inetAddress;
-            this.mPort = port;
-            this.mTimeout = timeout;
-            this.mSocketFactory = socketFactory;
-            this.mSSLSocketInitializer = sslSocketInitializer;
-            this.mHandler = handler;
-
-            HttpProcessor inProcessor = new ImmutableHttpProcessor(
-                new ResponseDate(),
-                new ResponseServer(AndServer.INFO),
-                new ResponseContent(),
-                new ResponseConnControl());
-
-            UriHttpRequestHandlerMapper mapper = new UriHttpRequestHandlerMapper();
-            mapper.register("*", mHandler);
-
-            this.mHttpService = new HttpService(inProcessor, mapper);
-        }
-
-        public void startServer() throws IOException {
-            mServerSocket = mSocketFactory.createServerSocket();
-            mServerSocket.setReuseAddress(true);
-            mServerSocket.bind(new InetSocketAddress(mInetAddress, mPort), BUFFER);
-            mServerSocket.setReceiveBufferSize(BUFFER);
-            if (mSSLSocketInitializer != null && mServerSocket instanceof SSLServerSocket) {
-                mSSLSocketInitializer.onCreated((SSLServerSocket) mServerSocket);
-            }
-
-            mServerExecutor.execute(this);
-        }
-
-        public void stopServer() {
-            mServerExecutor.shutdown();
-            mWorkerExecutor.shutdown();
-            try {
-                mServerSocket.close();
-            } catch (IOException ignored) {
-            }
-            mWorkerThreads.interrupt();
-
-            try {
-                mWorkerExecutor.awaitTermination(3, TimeUnit.SECONDS);
-            } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-
-            Set<Worker> workers = mWorkerSet.keySet();
-            for (Worker worker : workers) {
-                HttpServerConnection conn = worker.getServerConn();
-                try {
-                    conn.shutdown();
-                } catch (IOException ignored) {
-                }
-            }
-        }
-
-        @Override
-        public void run() {
-            try {
-                while (!Thread.interrupted()) {
-                    Socket socket = mServerSocket.accept();
-                    socket.setSoTimeout(mTimeout);
-                    socket.setKeepAlive(true);
-                    socket.setTcpNoDelay(true);
-                    socket.setReceiveBufferSize(BUFFER);
-                    socket.setSendBufferSize(BUFFER);
-                    socket.setSoLinger(true, 0);
-
-                    DefaultBHttpServerConnection serverConn = new DefaultBHttpServerConnection(BUFFER);
-                    serverConn.bind(socket);
-
-                    DefaultBHttpClientConnection clientConn = new DefaultBHttpClientConnection(BUFFER);
-                    Worker worker = new Worker(mHttpService, serverConn, clientConn);
-
-                    mWorkerExecutor.execute(worker);
-                }
-            } catch (Exception ignored) {
-            }
-        }
-    }
-
-    private static class Worker implements Runnable {
-
-        private final HttpService mHttpService;
-        private final DefaultBHttpServerConnection mServerConn;
-        private final DefaultBHttpClientConnection mClientConn;
-
-        public Worker(HttpService httpservice,
-            DefaultBHttpServerConnection serverConn, DefaultBHttpClientConnection clientConn) {
-            this.mHttpService = httpservice;
-            this.mServerConn = serverConn;
-            this.mClientConn = clientConn;
-        }
-
-        public DefaultBHttpServerConnection getServerConn() {
-            return mServerConn;
-        }
-
-        @Override
-        public void run() {
-            BasicHttpContext localContext = new BasicHttpContext();
-            HttpCoreContext context = HttpCoreContext.adapt(localContext);
-            context.setAttribute(PROXY_CONN_CLIENT, mClientConn);
-
-            try {
-                while (!Thread.interrupted()) {
-                    if (!mServerConn.isOpen()) {
-                        mClientConn.close();
-                        break;
-                    }
-
-                    mHttpService.handleRequest(mServerConn, context);
-
-                    Boolean keepAlive = (Boolean) context.getAttribute(PROXY_CONN_ALIVE);
-                    if (!Boolean.TRUE.equals(keepAlive)) {
-                        mClientConn.close();
-                        mServerConn.close();
-                        break;
-                    }
-                }
-            } catch (ConnectionClosedException ex) {
-                System.err.println("Client closed connection.");
-            } catch (IOException ex) {
-                System.err.println("I/O error: " + ex.getMessage());
-            } catch (HttpException ex) {
-                System.err.println("Unrecoverable HTTP protocol violation: " + ex.getMessage());
-            } finally {
-                try {
-                    mServerConn.shutdown();
-                } catch (IOException ignore) {
-                }
-                try {
-                    mClientConn.shutdown();
-                } catch (IOException ignore) {
-                }
-            }
-        }
-    }
-
-    private static class ThreadFactoryImpl implements ThreadFactory {
-        private final String mPrefix;
-        private final ThreadGroup mGroup;
-        private final AtomicLong mCount;
-
-        ThreadFactoryImpl(String prefix, ThreadGroup group) {
-            this.mPrefix = prefix;
-            this.mGroup = group;
-            this.mCount = new AtomicLong();
-        }
-
-        ThreadFactoryImpl(String mPrefix) {
-            this(mPrefix, null);
-        }
-
-        @Override
-        public Thread newThread(@NonNull Runnable target) {
-            return new Thread(mGroup, target, mPrefix + "-" + mCount.incrementAndGet());
         }
     }
 }

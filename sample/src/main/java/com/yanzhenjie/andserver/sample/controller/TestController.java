@@ -60,12 +60,6 @@ class TestController {
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     Object getConnection(HttpRequest request) {
         Map<String, Object> map = new HashMap<>();
-        map.put("getLocalAddr", request.getLocalAddr());
-        map.put("getLocalName", request.getLocalName());
-        map.put("getLocalPort", request.getLocalPort());
-        map.put("getRemoteAddr", request.getRemoteAddr());
-        map.put("getRemoteHost", request.getRemoteHost());
-        map.put("getRemotePort", request.getRemotePort());
         Logger.i(JSON.toJSONString(map));
         return map;
     }

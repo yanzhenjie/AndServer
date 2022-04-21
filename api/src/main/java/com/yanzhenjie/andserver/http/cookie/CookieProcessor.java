@@ -18,7 +18,7 @@ package com.yanzhenjie.andserver.http.cookie;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.apache.httpcore.Header;
+import org.apache.hc.core5.http.Header;
 
 import java.util.List;
 

@@ -23,9 +23,9 @@ import androidx.annotation.Nullable;
  */
 public class StandardContext implements HttpContext {
 
-    private org.apache.httpcore.protocol.HttpContext mContext;
+    private org.apache.hc.core5.http.protocol.HttpContext mContext;
 
-    public StandardContext(org.apache.httpcore.protocol.HttpContext context) {
+    public StandardContext(org.apache.hc.core5.http.protocol.HttpContext context) {
         this.mContext = context;
     }
 

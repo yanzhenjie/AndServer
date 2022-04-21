@@ -18,6 +18,7 @@ package com.yanzhenjie.andserver;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ServerSocketFactory;
@@ -65,12 +66,17 @@ public interface Server {
      */
     int getPort();
 
-    interface Builder<T extends Builder, S extends Server> {
+    interface Builder<T extends Builder<T, S>, S extends Server> {
 
         /**
          * Specified server need to monitor the ip address.
          */
         T inetAddress(InetAddress inetAddress);
+
+        /**
+         * Specified canonical hostname.
+         */
+        T canonicalHostName(String canonicalHostName);
 
         /**
          * Specify the port on which the server listens.
@@ -108,7 +114,7 @@ public interface Server {
         S build();
     }
 
-    interface ProxyBuilder<T extends ProxyBuilder, S extends Server> {
+    interface ProxyBuilder<T extends ProxyBuilder<T, S>, S extends Server> extends Builder<T, S> {
 
         /**
          * Add host address to proxy.
@@ -116,47 +122,7 @@ public interface Server {
          * @param hostName such as: {@code www.example.com}, {@code api.example.com}, {@code 192.168.1.111}.
          * @param proxyHost such as: {@code http://127.0.0.1:8080}, {@code http://localhost:8181}
          */
-        T addProxy(String hostName, String proxyHost);
-
-        /**
-         * Specified server need to monitor the ip address.
-         */
-        T inetAddress(InetAddress inetAddress);
-
-        /**
-         * Specify the port on which the server listens.
-         */
-        T port(int port);
-
-        /**
-         * Connection and response timeout.
-         */
-        T timeout(int timeout, TimeUnit timeUnit);
-
-        /**
-         * Assigns {@link ServerSocketFactory} instance.
-         */
-        T serverSocketFactory(ServerSocketFactory factory);
-
-        /**
-         * Assigns {@link SSLContext} instance.
-         */
-        T sslContext(SSLContext sslContext);
-
-        /**
-         * Assigns {@link SSLSocketInitializer} instance.
-         */
-        T sslSocketInitializer(SSLSocketInitializer initializer);
-
-        /**
-         * Set the server listener.
-         */
-        T listener(Server.ServerListener listener);
-
-        /**
-         * Create a server.
-         */
-        S build();
+        T addProxy(String hostName, String proxyHost) throws URISyntaxException;
     }
 
     interface ServerListener {

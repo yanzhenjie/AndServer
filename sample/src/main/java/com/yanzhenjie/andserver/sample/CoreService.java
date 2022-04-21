@@ -37,14 +37,16 @@ public class CoreService extends Service {
 
     @Override
     public void onCreate() {
+        InetAddress address = NetUtils.getLocalIPAddress();
+        String hostAddress = address == null ? null : address.getHostAddress();
         mServer = AndServer.webServer(this)
             .port(8080)
+            .canonicalHostName(hostAddress)
             .timeout(10, TimeUnit.SECONDS)
             .listener(new Server.ServerListener() {
                 @Override
                 public void onStarted() {
-                    InetAddress address = NetUtils.getLocalIPAddress();
-                    ServerManager.onServerStart(CoreService.this, address.getHostAddress());
+                    ServerManager.onServerStart(CoreService.this, hostAddress);
                 }
 
                 @Override

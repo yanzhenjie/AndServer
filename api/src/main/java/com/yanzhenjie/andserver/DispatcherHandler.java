@@ -52,7 +52,10 @@ import com.yanzhenjie.andserver.http.session.StandardSessionManager;
 import com.yanzhenjie.andserver.register.Register;
 import com.yanzhenjie.andserver.util.Assert;
 
-import org.apache.httpcore.protocol.HttpRequestHandler;
+import org.apache.hc.core5.http.ClassicHttpRequest;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.HttpException;
+import org.apache.hc.core5.http.io.HttpRequestHandler;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,6 +66,9 @@ import java.util.List;
  * Created by Zhenjie Yan on 2018/8/8.
  */
 public class DispatcherHandler implements HttpRequestHandler, Register {
+
+    public static final String SUB_TAG = "DispatcherHandler";
+    public static final String TAG = AndServer.genAndServerTag(SUB_TAG);
 
     private final Context mContext;
 
@@ -121,11 +127,13 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
     }
 
     @Override
-    public void handle(org.apache.httpcore.HttpRequest req, org.apache.httpcore.HttpResponse res,
-                       org.apache.httpcore.protocol.HttpContext con) {
-        HttpRequest request = new StandardRequest(req, new StandardContext(con), this, mSessionManager);
-        HttpResponse response = new StandardResponse(res);
-        handle(request, response);
+    public void handle(ClassicHttpRequest request,
+                       ClassicHttpResponse response,
+                       org.apache.hc.core5.http.protocol.HttpContext context) throws HttpException, IOException {
+        HttpRequest requestWrapped = new StandardRequest(request, new StandardContext(context),
+              this, mSessionManager);
+        HttpResponse responseWrapped = new StandardResponse(response);
+        handle(requestWrapped, responseWrapped);
     }
 
     private void handle(HttpRequest request, HttpResponse response) {
@@ -264,7 +272,7 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
             try {
                 mSessionManager.add(session);
             } catch (IOException e) {
-                Log.e(AndServer.TAG, "Session persistence failed.", e);
+                Log.e(TAG, "Session persistence failed.", e);
             }
 
             Cookie cookie = new Cookie(HttpRequest.SESSION_NAME, session.getId());

@@ -29,6 +29,17 @@ public class AndServer {
 
     public static final String TAG = "AndServer";
     public static final String INFO = String.format("AndServer/%1$s", BuildConfig.PROJECT_VERSION);
+    public static final String TAG_TEMPLATE = TAG + "/%1$s";
+
+    /**
+     * Generate logging tag for AndServer components
+     *
+     * @return Tag.
+     */
+    @NonNull
+    public static String genAndServerTag(@NonNull String subTag) {
+        return String.format(TAG_TEMPLATE, subTag);
+    }
 
     /**
      * Create a builder for the web server.
@@ -36,7 +47,7 @@ public class AndServer {
      * @return {@link Server.Builder}.
      */
     @NonNull
-    public static Server.Builder webServer(@NonNull Context context) {
+    public static Server.Builder<?, ?> webServer(@NonNull Context context) {
         return WebServer.newBuilder(context, "default");
     }
 
@@ -48,7 +59,7 @@ public class AndServer {
      * @return {@link Server.Builder}.
      */
     @NonNull
-    public static Server.Builder webServer(@NonNull Context context,
+    public static Server.Builder<?, ?> webServer(@NonNull Context context,
         @NonNull String group) {
         return WebServer.newBuilder(context, group);
     }
@@ -59,7 +70,7 @@ public class AndServer {
      * @return {@link Server.ProxyBuilder}.
      */
     @NonNull
-    public static Server.ProxyBuilder proxyServer() {
+    public static Server.ProxyBuilder<?, ?> proxyServer() {
         return ProxyServer.newBuilder();
     }
 
@@ -68,7 +79,7 @@ public class AndServer {
      */
     @NonNull
     @Deprecated
-    public static Server.Builder serverBuilder(@NonNull Context context) {
+    public static Server.Builder<?, ?> serverBuilder(@NonNull Context context) {
         return webServer(context);
     }
 
@@ -77,7 +88,7 @@ public class AndServer {
      */
     @NonNull
     @Deprecated
-    public static Server.Builder serverBuilder(@NonNull Context context, @NonNull String group) {
+    public static Server.Builder<?, ?> serverBuilder(@NonNull Context context, @NonNull String group) {
         return webServer(context, group);
     }
 }

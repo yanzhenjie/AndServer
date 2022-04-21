@@ -28,6 +28,7 @@ android {
 dependencies {
     api project(':annotation')
 
+    implementation deps.apache.lang
     implementation deps.apache.httpcore
     implementation deps.apache.fileupload
     compileOnly deps.android.annotation

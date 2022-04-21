@@ -70,6 +70,10 @@ public class Uri implements Patterns {
         return new Builder(uri);
     }
 
+    public static Builder newBuilder(URI uri) {
+        return new Builder(uri);
+    }
+
     private final String mScheme;
     private final String mHost;
     private final int mPort;
@@ -204,9 +208,7 @@ public class Uri implements Patterns {
         private MultiValueMap<String, String> mQuery;
         private String mFragment;
 
-        private Builder(@NonNull String url) {
-            URI uri = URI.create(url);
-
+        private Builder(@NonNull URI uri) {
             this.mScheme = uri.getScheme();
             this.mHost = uri.getHost();
             this.mPort = uri.getPort();
@@ -215,6 +217,10 @@ public class Uri implements Patterns {
             String query = uri.getRawQuery();
             this.mQuery = queryToParameters(query);
             this.mFragment = uri.getFragment();
+        }
+
+        private Builder(@NonNull String url) {
+            this(URI.create(url));
         }
 
         public Builder setScheme(@Nullable String scheme) {

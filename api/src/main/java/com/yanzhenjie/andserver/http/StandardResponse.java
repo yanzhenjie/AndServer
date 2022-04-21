@@ -24,9 +24,10 @@ import com.yanzhenjie.andserver.http.cookie.StandardCookieProcessor;
 import com.yanzhenjie.andserver.util.HttpDateFormat;
 import com.yanzhenjie.andserver.util.MediaType;
 
-import org.apache.httpcore.Header;
-import org.apache.httpcore.HttpEntity;
-import org.apache.httpcore.message.BasicHeader;
+import org.apache.hc.core5.function.Supplier;
+import org.apache.hc.core5.http.ClassicHttpResponse;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpEntity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Zhenjie Yan on 2018/6/12.
@@ -42,20 +44,20 @@ public class StandardResponse implements HttpResponse {
 
     private static final CookieProcessor COOKIE_PROCESSOR = new StandardCookieProcessor();
 
-    private org.apache.httpcore.HttpResponse mResponse;
+    private ClassicHttpResponse mResponse;
 
-    public StandardResponse(org.apache.httpcore.HttpResponse response) {
+    public StandardResponse(ClassicHttpResponse response) {
         this.mResponse = response;
     }
 
     @Override
     public void setStatus(int sc) {
-        mResponse.setStatusCode(sc);
+        mResponse.setCode(sc);
     }
 
     @Override
     public int getStatus() {
-        return mResponse.getStatusLine().getStatusCode();
+        return mResponse.getCode();
     }
 
     @Override
@@ -118,7 +120,7 @@ public class StandardResponse implements HttpResponse {
     @NonNull
     @Override
     public List<String> getHeaderNames() {
-        Header[] headers = mResponse.getAllHeaders();
+        Header[] headers = mResponse.getHeaders();
         if (headers == null || headers.length == 0) {
             return Collections.emptyList();
         }
@@ -165,21 +167,26 @@ public class StandardResponse implements HttpResponse {
         }
 
         @Override
+        public Set<String> getTrailerNames() {
+            return null;
+        }
+
+        @Override
         public long getContentLength() {
             return mBody.contentLength();
         }
 
         @Override
-        public Header getContentType() {
+        public String getContentType() {
             MediaType mimeType = mBody.contentType();
             if (mimeType == null) {
                 return null;
             }
-            return new BasicHeader(CONTENT_TYPE, mimeType.toString());
+            return mimeType.toString();
         }
 
         @Override
-        public Header getContentEncoding() {
+        public String getContentEncoding() {
             return null;
         }
 
@@ -199,7 +206,13 @@ public class StandardResponse implements HttpResponse {
         }
 
         @Override
-        public void consumeContent() {
+        public Supplier<List<? extends Header>> getTrailers() {
+            return null;
+        }
+
+        @Override
+        public void close() throws IOException {
+
         }
     }
 }
