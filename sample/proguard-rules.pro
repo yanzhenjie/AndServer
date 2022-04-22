@@ -41,16 +41,16 @@
     public *** get*(***);
     public *** get*();
 }
--keep class android.support.annotation.Keep
--keep @android.support.annotation.Keep class * {*;}
+-keep class androidx.annotation.Keep
+-keep @androidx.annotation.Keep class * {*;}
 -keepclasseswithmembers class * {
-    @android.support.annotation.Keep <methods>;
+    @androidx.annotation.Keep <methods>;
 }
 -keepclasseswithmembers class * {
-    @android.support.annotation.Keep <fields>;
+    @androidx.annotation.Keep <fields>;
 }
 -keepclasseswithmembers class * {
-    @android.support.annotation.Keep <init>(...);
+    @androidx.annotation.Keep <init>(...);
 }
 -keep public class * implements android.os.Parcelable{*;}
 -keepclasseswithmembers class * implements android.os.Parcelable {
