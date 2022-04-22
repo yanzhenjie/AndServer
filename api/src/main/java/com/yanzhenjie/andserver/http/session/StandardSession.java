@@ -37,13 +37,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class StandardSession implements Session {
 
-    private static final String EMPTY_ARRAY[] = new String[0];
+    private static final String[] EMPTY_ARRAY = new String[0];
 
     private String id;
     private long createdTime;
     private long lastAccessedTime;
     private int maxInactiveInterval = -1;
-    private Map<String, Object> mAttributes = new ConcurrentHashMap<>();
+    private final Map<String, Object> mAttributes = new ConcurrentHashMap<>();
     private boolean isNew;
     private boolean isValid;
 
@@ -173,8 +173,6 @@ public class StandardSession implements Session {
             if (timeIdle >= maxInactiveInterval) {
                 isValid = false;
             }
-        } else {
-            isValid = true;
         }
 
         return isValid;
@@ -195,10 +193,10 @@ public class StandardSession implements Session {
         stream.writeBoolean(isNew);
         stream.writeBoolean(isValid);
         stream.writeInt(mAttributes.size());
-        String keys[] = mAttributes.keySet().toArray(EMPTY_ARRAY);
+        String[] keys = mAttributes.keySet().toArray(EMPTY_ARRAY);
         for (String key: keys) {
             Object value = mAttributes.get(key);
-            if (value != null && value instanceof Serializable) {
+            if (value instanceof Serializable) {
                 stream.writeObject(key);
                 stream.writeObject(value);
             }

@@ -23,7 +23,7 @@ import androidx.annotation.Nullable;
  */
 public class StandardContext implements HttpContext {
 
-    private org.apache.hc.core5.http.protocol.HttpContext mContext;
+    private final org.apache.hc.core5.http.protocol.HttpContext mContext;
 
     public StandardContext(org.apache.hc.core5.http.protocol.HttpContext context) {
         this.mContext = context;
@@ -36,7 +36,7 @@ public class StandardContext implements HttpContext {
     }
 
     @Override
-    public void setAttribute(@NonNull String id, @NonNull Object obj) {
+    public void setAttribute(@NonNull String id, @Nullable Object obj) {
         mContext.setAttribute(id, obj);
     }
 

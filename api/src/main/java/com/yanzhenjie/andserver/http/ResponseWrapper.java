@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class ResponseWrapper implements HttpResponse {
 
-    private HttpResponse mResponse;
+    private final HttpResponse mResponse;
 
     public ResponseWrapper(HttpResponse response) {
         this.mResponse = response;

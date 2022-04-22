@@ -72,8 +72,8 @@ public class ServerManager extends BroadcastReceiver {
         context.sendBroadcast(broadcast);
     }
 
-    private MainActivity mActivity;
-    private Intent mService;
+    private final MainActivity mActivity;
+    private final Intent mService;
 
     public ServerManager(MainActivity activity) {
         this.mActivity = activity;

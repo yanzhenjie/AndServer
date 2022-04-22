@@ -38,8 +38,8 @@ public class WebServer extends BasicServer<WebServer.Builder> {
         return new Builder(context, group);
     }
 
-    private Context mContext;
-    private String mGroup;
+    private final Context mContext;
+    private final String mGroup;
 
     private WebServer(Builder builder) {
         super(builder);
@@ -54,19 +54,17 @@ public class WebServer extends BasicServer<WebServer.Builder> {
         ComponentRegister register = new ComponentRegister(mContext);
         try {
             register.register(handler, mGroup);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
         return Collections.singletonList(new ImmutableTriple<>(null, "*", handler));
     }
 
     public static class Builder extends BasicServer.Builder<Builder, WebServer>
-        implements Server.Builder<Builder, WebServer> {
+            implements Server.Builder<Builder, WebServer> {
 
-        private Context context;
-        private String group;
+        private final Context context;
+        private final String group;
 
         private Builder(Context context, String group) {
             this.context = context;

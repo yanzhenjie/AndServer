@@ -15,6 +15,8 @@
  */
 package com.yanzhenjie.andserver.util;
 
+import androidx.annotation.NonNull;
+
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -43,11 +45,7 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Cloneable
 
     @Override
     public void add(K key, V value) {
-        List<V> values = mSource.get(key);
-        if (values == null) {
-            values = new LinkedList<>();
-            mSource.put(key, values);
-        }
+        List<V> values = mSource.computeIfAbsent(key, k -> new LinkedList<>());
         values.add(value);
     }
 
@@ -140,6 +138,7 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Cloneable
         return mSource.entrySet();
     }
 
+    @NonNull
     @Override
     public LinkedMultiValueMap<K, V> clone() {
         return new LinkedMultiValueMap<>(this);
@@ -147,6 +146,9 @@ public class LinkedMultiValueMap<K, V> implements MultiValueMap<K, V>, Cloneable
 
     @Override
     public boolean equals(Object obj) {
+        if (!(obj instanceof Map)) {
+            return false;
+        }
         return mSource.equals(obj);
     }
 

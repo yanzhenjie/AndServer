@@ -20,6 +20,8 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.Serializable;
 import java.util.Locale;
 
@@ -30,7 +32,7 @@ public class Cookie implements Cloneable, Serializable {
 
     private static final String TSPECIALS = "/()<>@,;:\\\"[]?={} \t";
 
-    private String name;  // NAME= ... "$Name" style is reserved.
+    private final String name;  // NAME= ... "$Name" style is reserved.
     private String value;  // value of NAME.
 
     private String comment;  // ;Comment=VALUE ... describes cookie's use.
@@ -117,8 +119,8 @@ public class Cookie implements Cloneable, Serializable {
      * @see #getDomain()
      */
     public void setDomain(@Nullable String domain) {
-        if (!TextUtils.isEmpty(domain)) {
-            this.domain = domain.toLowerCase(Locale.ENGLISH); // IE allegedly needs this.
+        if (!StringUtils.isEmpty(domain)) {
+            this.domain = StringUtils.lowerCase(domain, Locale.ENGLISH); // IE allegedly needs this.
         } else {
             this.domain = null;
         }
@@ -306,6 +308,7 @@ public class Cookie implements Cloneable, Serializable {
         return true;
     }
 
+    @NonNull
     @Override
     public Object clone() {
         try {

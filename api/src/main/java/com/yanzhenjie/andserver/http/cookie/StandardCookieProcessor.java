@@ -15,11 +15,10 @@
  */
 package com.yanzhenjie.andserver.http.cookie;
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.Header;
 
 import java.text.DateFormat;
@@ -93,7 +92,7 @@ public class StandardCookieProcessor implements CookieProcessor {
             int valueIndex = split + 1;
             if (split > 0 && valueIndex < segment.length()) {
                 String name = segment.substring(0, split).trim();
-                String value = segment.substring(valueIndex, segment.length()).trim();
+                String value = segment.substring(valueIndex).trim();
                 cookieList.add(new Cookie(name, value));
             }
         }
@@ -107,7 +106,7 @@ public class StandardCookieProcessor implements CookieProcessor {
         header.append(cookie.getName());
         header.append('=');
         String value = cookie.getValue();
-        if (!TextUtils.isEmpty(value)) {
+        if (!StringUtils.isEmpty(value)) {
             validateCookieValue(value);
             header.append(value);
         }
@@ -182,7 +181,7 @@ public class StandardCookieProcessor implements CookieProcessor {
 
     private void validateDomain(String domain) {
         int i = 0;
-        int prev = -1;
+        int prev;
         int cur = -1;
         char[] chars = domain.toCharArray();
         while (i < chars.length) {
@@ -215,8 +214,7 @@ public class StandardCookieProcessor implements CookieProcessor {
     private void validatePath(String path) {
         char[] chars = path.toCharArray();
 
-        for (int i = 0; i < chars.length; i++) {
-            char ch = chars[i];
+        for (char ch : chars) {
             if (ch < 0x20 || ch > 0x7E || ch == ';') {
                 String message = String.format("The cookie's path [%1$s] is invalid.", path);
                 throw new IllegalArgumentException(message);

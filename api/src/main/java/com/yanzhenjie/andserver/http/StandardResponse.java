@@ -44,7 +44,7 @@ public class StandardResponse implements HttpResponse {
 
     private static final CookieProcessor COOKIE_PROCESSOR = new StandardCookieProcessor();
 
-    private ClassicHttpResponse mResponse;
+    private final ClassicHttpResponse mResponse;
 
     public StandardResponse(ClassicHttpResponse response) {
         this.mResponse = response;
@@ -150,7 +150,7 @@ public class StandardResponse implements HttpResponse {
 
     private static class BodyToEntity implements HttpEntity {
 
-        private ResponseBody mBody;
+        private final ResponseBody mBody;
 
         private BodyToEntity(ResponseBody body) {
             this.mBody = body;

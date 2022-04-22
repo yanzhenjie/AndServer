@@ -31,7 +31,7 @@ import java.util.Locale;
  */
 public class RequestWrapper implements HttpRequest {
 
-    private HttpRequest mRequest;
+    private final HttpRequest mRequest;
 
     public RequestWrapper(HttpRequest request) {
         this.mRequest = request;
@@ -240,7 +240,7 @@ public class RequestWrapper implements HttpRequest {
     }
 
     @Override
-    public void setAttribute(@NonNull String id, @NonNull Object obj) {
+    public void setAttribute(@NonNull String id, @Nullable Object obj) {
         mRequest.setAttribute(id, obj);
     }
 

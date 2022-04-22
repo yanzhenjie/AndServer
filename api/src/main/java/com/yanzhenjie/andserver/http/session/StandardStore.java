@@ -35,7 +35,7 @@ import java.io.ObjectOutputStream;
  */
 public class StandardStore implements Store {
 
-    private File mDirectory;
+    private final File mDirectory;
 
     public StandardStore(File directory) {
         this.mDirectory = directory;

@@ -28,7 +28,7 @@ public enum RequestMethod {
     OPTIONS("OPTIONS"),
     TRACE("TRACE");
 
-    private String value;
+    private final String value;
 
     RequestMethod(String value) {
         this.value = value;

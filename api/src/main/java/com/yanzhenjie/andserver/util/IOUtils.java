@@ -442,11 +442,11 @@ public class IOUtils {
 
         String line1 = br1.readLine();
         String line2 = br2.readLine();
-        while ((line1 != null) && (line2 != null) && (line1.equals(line2))) {
+        while ((line1 != null) && (line1.equals(line2))) {
             line1 = br1.readLine();
             line2 = br2.readLine();
         }
-        return line1 != null && (line2 == null || line1.equals(line2));
+        return line1 != null && line2 == null;
     }
 
     /**
@@ -466,6 +466,7 @@ public class IOUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             return stat.getBlockSizeLong() * stat.getAvailableBlocksLong();
         } else {
+            //noinspection deprecation
             return (long) stat.getBlockSize() * (long) stat.getAvailableBlocks();
         }
     }
@@ -642,7 +643,7 @@ public class IOUtils {
         if (file == null || !file.exists()) {
             // do nothing
         } else if (file.isFile()) {
-            file.delete();
+            return file.delete();
         } else if (file.isDirectory()) {
             File[] files = file.listFiles();
             if (files != null) {
@@ -650,7 +651,7 @@ public class IOUtils {
                     delFileOrFolder(sonFile);
                 }
             }
-            file.delete();
+            return file.delete();
         }
         return true;
     }

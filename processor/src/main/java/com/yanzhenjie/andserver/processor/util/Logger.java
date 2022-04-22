@@ -25,7 +25,7 @@ import javax.tools.Diagnostic;
  */
 public class Logger {
 
-    private Messager mMessager;
+    private final Messager mMessager;
 
     public Logger(Messager messager) {
         this.mMessager = messager;

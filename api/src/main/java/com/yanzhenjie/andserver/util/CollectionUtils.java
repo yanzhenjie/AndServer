@@ -35,6 +35,7 @@ import java.util.Set;
  * @deprecated use apache commons-collection instead.
  */
 @Deprecated
+@SuppressWarnings("deprecation")
 public abstract class CollectionUtils {
 
     /**
@@ -73,7 +74,7 @@ public abstract class CollectionUtils {
      *
      * @return the converted List result.
      */
-    public static List arrayToList(Object source) {
+    public static List<Object> arrayToList(Object source) {
         return Arrays.asList(ObjectUtils.toObjectArray(source));
     }
 
@@ -212,14 +213,13 @@ public abstract class CollectionUtils {
      *
      * @return the first present object, or {@code null} if not found.
      */
-    @SuppressWarnings("unchecked")
     public static <E> E findFirstMatch(Collection<?> source, Collection<E> candidates) {
         if (isEmpty(source) || isEmpty(candidates)) {
             return null;
         }
-        for (Object candidate: candidates) {
+        for (E candidate : candidates) {
             if (source.contains(candidate)) {
-                return (E) candidate;
+                return candidate;
             }
         }
         return null;
@@ -420,11 +420,7 @@ public abstract class CollectionUtils {
 
         @Override
         public void add(K key, V value) {
-            List<V> values = this.mMap.get(key);
-            if (values == null) {
-                values = new LinkedList<>();
-                this.mMap.put(key, values);
-            }
+            List<V> values = this.mMap.computeIfAbsent(key, k -> new LinkedList<>());
             values.add(value);
         }
 
@@ -519,6 +515,9 @@ public abstract class CollectionUtils {
 
         @Override
         public boolean equals(Object other) {
+            if (!(other instanceof CollectionUtils) && !(other instanceof Map)) {
+                return false;
+            }
             if (this == other) {
                 return true;
             }

@@ -25,8 +25,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class MergeCrossOrigin {
 
-    private CrossOriginImpl mParent;
-    private CrossOriginImpl mChild;
+    private final CrossOriginImpl mParent;
+    private final CrossOriginImpl mChild;
 
     private String[] mOrigins;
     private String[] mAllowedHeaders;

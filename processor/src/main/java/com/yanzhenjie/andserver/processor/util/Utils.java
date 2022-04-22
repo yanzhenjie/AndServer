@@ -51,10 +51,10 @@ public class Utils {
         int semIndex = rawdata.indexOf(59);
         if (slashIndex < 0 && semIndex < 0) {
             throw new RuntimeException("Unable to find a sub type.");
-        } else if (slashIndex < 0 && semIndex >= 0) {
+        } else if (slashIndex < 0) {
             throw new RuntimeException("Unable to find a sub type.");
         } else {
-            if (slashIndex >= 0 && semIndex < 0) {
+            if (semIndex < 0) {
                 primaryType = rawdata.substring(0, slashIndex).trim().toLowerCase(Locale.ENGLISH);
                 subType = rawdata.substring(slashIndex + 1).trim().toLowerCase(Locale.ENGLISH);
             } else {

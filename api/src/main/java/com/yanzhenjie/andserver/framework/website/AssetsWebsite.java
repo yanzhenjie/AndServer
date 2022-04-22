@@ -156,12 +156,7 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
         }
 
         String indexPath = addEndSlash(targetPath) + getIndexFileName();
-        InputStream indexStream = mAssetsReader.getInputStream(indexPath);
-        if (indexStream != null) {
-            return indexStream;
-        }
-
-        return null;
+        return mAssetsReader.getInputStream(indexPath);
     }
 
     public static class AssetsReader {
@@ -169,7 +164,7 @@ public class AssetsWebsite extends BasicWebsite implements Patterns {
         /**
          * {@link AssetManager}.
          */
-        private AssetManager mAssetManager;
+        private final AssetManager mAssetManager;
 
         /**
          * Create {@link AssetsReader}.

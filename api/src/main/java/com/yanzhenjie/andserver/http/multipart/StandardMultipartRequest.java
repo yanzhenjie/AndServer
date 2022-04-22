@@ -36,11 +36,11 @@ import java.util.Map;
  */
 public class StandardMultipartRequest extends RequestWrapper implements MultipartRequest {
 
-    private HttpRequest mRequest;
+    private final HttpRequest mRequest;
 
-    private MultiValueMap<String, MultipartFile> mMultipartFiles;
-    private MultiValueMap<String, String> mMultipartParameters;
-    private Map<String, String> mMultipartContentTypes;
+    private final MultiValueMap<String, MultipartFile> mMultipartFiles;
+    private final MultiValueMap<String, String> mMultipartParameters;
+    private final Map<String, String> mMultipartContentTypes;
 
     public StandardMultipartRequest(@NonNull HttpRequest request, @NonNull MultiValueMap<String, MultipartFile> mpFiles,
                                     @NonNull MultiValueMap<String, String> mpParams,

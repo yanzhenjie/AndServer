@@ -247,7 +247,16 @@ public abstract class ObjectUtils {
         if (length == 0) {
             return new Object[0];
         }
-        Class<?> wrapperType = Array.get(source, 0).getClass();
+        Class<?> wrapperType = null;
+        for (int i = 0; i < length; i++) {
+            Object obj = Array.get(source, i);
+            if (obj != null) {
+                wrapperType = obj.getClass();
+            }
+        }
+        if (wrapperType == null) {
+            return new Object[0];
+        }
         Object[] newArray = (Object[]) Array.newInstance(wrapperType, length);
         for (int i = 0; i < length; i++) {
             newArray[i] = Array.get(source, i);
@@ -689,7 +698,7 @@ public abstract class ObjectUtils {
             } else {
                 sb.append(ARRAY_ELEMENT_SEPARATOR);
             }
-            sb.append(String.valueOf(array[i]));
+            sb.append(array[i]);
         }
         sb.append(ARRAY_END);
         return sb.toString();

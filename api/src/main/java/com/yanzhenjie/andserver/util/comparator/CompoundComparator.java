@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class CompoundComparator<T> implements Comparator<T>, Serializable {
 
-    private final List<InvertibleComparator> comparators;
+    private final List<InvertibleComparator<T>> comparators;
 
 
     /**
@@ -44,14 +44,13 @@ public class CompoundComparator<T> implements Comparator<T>, Serializable {
      * <p>All Comparators will default to ascending sort order, unless they are InvertibleComparators.
      *
      * @param comparators the comparators to build into a compound comparator
-     *
      * @see InvertibleComparator
      */
     @SuppressWarnings("unchecked")
-    public CompoundComparator(Comparator... comparators) {
+    public CompoundComparator(Comparator<T>... comparators) {
         Assert.notNull(comparators, "Comparators must not be null");
         this.comparators = new ArrayList<>(comparators.length);
-        for (Comparator comparator : comparators) {
+        for (Comparator<T> comparator : comparators) {
             addComparator(comparator);
         }
     }
@@ -64,12 +63,11 @@ public class CompoundComparator<T> implements Comparator<T>, Serializable {
      *
      * @param comparator the Comparator to add to the end of the chain.
      */
-    @SuppressWarnings("unchecked")
-    public void addComparator(Comparator<? extends T> comparator) {
+    public void addComparator(Comparator<T> comparator) {
         if (comparator instanceof InvertibleComparator) {
-            this.comparators.add((InvertibleComparator) comparator);
+            this.comparators.add((InvertibleComparator<T>) comparator);
         } else {
-            this.comparators.add(new InvertibleComparator(comparator));
+            this.comparators.add(new InvertibleComparator<>(comparator));
         }
     }
 
@@ -77,28 +75,25 @@ public class CompoundComparator<T> implements Comparator<T>, Serializable {
      * Add a Comparator to the end of the chain using the provided sort order.
      *
      * @param comparator the Comparator to add to the end of the chain
-     * @param ascending the sort order: ascending (true) or descending (false)
+     * @param ascending  the sort order: ascending (true) or descending (false)
      */
-    @SuppressWarnings("unchecked")
-    public void addComparator(Comparator<? extends T> comparator, boolean ascending) {
-        this.comparators.add(new InvertibleComparator(comparator, ascending));
+    public void addComparator(Comparator<T> comparator, boolean ascending) {
+        this.comparators.add(new InvertibleComparator<>(comparator, ascending));
     }
 
     /**
      * Replace the Comparator at the given index. <p>The Comparator will default to ascending sort order, unless it is a
      * InvertibleComparator.
      *
-     * @param index the index of the Comparator to replace
+     * @param index      the index of the Comparator to replace
      * @param comparator the Comparator to place at the given index
-     *
      * @see InvertibleComparator
      */
-    @SuppressWarnings("unchecked")
-    public void setComparator(int index, Comparator<? extends T> comparator) {
+    public void setComparator(int index, Comparator<T> comparator) {
         if (comparator instanceof InvertibleComparator) {
-            this.comparators.set(index, (InvertibleComparator) comparator);
+            this.comparators.set(index, (InvertibleComparator<T>) comparator);
         } else {
-            this.comparators.set(index, new InvertibleComparator(comparator));
+            this.comparators.set(index, new InvertibleComparator<>(comparator));
         }
     }
 
@@ -117,7 +112,7 @@ public class CompoundComparator<T> implements Comparator<T>, Serializable {
      * Invert the sort order of each sort definition contained by this compound comparator.
      */
     public void invertOrder() {
-        for (InvertibleComparator comparator : this.comparators) {
+        for (InvertibleComparator<T> comparator : this.comparators) {
             comparator.invertOrder();
         }
     }
@@ -156,12 +151,11 @@ public class CompoundComparator<T> implements Comparator<T>, Serializable {
         return this.comparators.size();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public int compare(T o1, T o2) {
         String message = "No sort definitions have been added to this CompoundComparator to compare";
         Assert.state(this.comparators.size() > 0, message);
-        for (InvertibleComparator comparator : this.comparators) {
+        for (InvertibleComparator<T> comparator : this.comparators) {
             int result = comparator.compare(o1, o2);
             if (result != 0) {
                 return result;

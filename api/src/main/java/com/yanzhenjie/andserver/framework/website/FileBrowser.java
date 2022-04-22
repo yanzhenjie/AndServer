@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Created by Zhenjie Yan on 2018/9/7.
@@ -113,7 +114,7 @@ public class FileBrowser extends BasicWebsite implements Patterns {
 
             String folderName = file.getName();
             String prefix = String.format(FOLDER_HTML_PREFIX, folderName, folderName);
-            outputStream.write(prefix.getBytes("utf-8"));
+            outputStream.write(prefix.getBytes(StandardCharsets.UTF_8));
 
             File[] children = file.listFiles();
             if (children != null && children.length > 0) {
@@ -123,11 +124,11 @@ public class FileBrowser extends BasicWebsite implements Patterns {
                     String subHttpPath = filePath.substring(rootIndex + mRootPath.length());
                     subHttpPath = addStartSlash(subHttpPath);
                     String fileItem = String.format(FOLDER_ITEM, subHttpPath, child.getName());
-                    outputStream.write(fileItem.getBytes("utf-8"));
+                    outputStream.write(fileItem.getBytes(StandardCharsets.UTF_8));
                 }
             }
 
-            outputStream.write(FOLDER_HTML_SUFFIX.getBytes("utf-8"));
+            outputStream.write(FOLDER_HTML_SUFFIX.getBytes(StandardCharsets.UTF_8));
             IOUtils.closeQuietly(outputStream);
 
             return new FileBody(tempFile) {

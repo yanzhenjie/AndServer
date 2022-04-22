@@ -23,8 +23,8 @@ import com.yanzhenjie.andserver.annotation.RequestMethod;
  */
 public class Put implements Mapping {
 
-    private PutMapping mMapping;
-    private boolean isRest;
+    private final PutMapping mMapping;
+    private final boolean isRest;
 
     public Put(PutMapping mapping, boolean rest) {
         this.mMapping = mapping;

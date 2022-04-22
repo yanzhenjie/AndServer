@@ -109,7 +109,7 @@ public class MimeType implements Comparable<MimeType>, Serializable {
      * @throws IllegalArgumentException if any of the parameters contains illegal characters
      */
     public MimeType(String type, String subtype) {
-        this(type, subtype, Collections.<String, String>emptyMap());
+        this(type, subtype, Collections.emptyMap());
     }
 
     /**
@@ -293,6 +293,77 @@ public class MimeType implements Comparable<MimeType>, Serializable {
     }
 
     /**
+     * Parse the given string value into a {@code Mime} object.
+     */
+    public static MimeType valueOf(String mimeType) {
+        if (TextUtils.isEmpty(mimeType)) {
+            throw new InvalidMimeTypeException(mimeType, "[mimeType] must not be empty");
+        }
+
+        int index = mimeType.indexOf(';');
+        String fullType = (index >= 0 ? mimeType.substring(0, index) : mimeType).trim();
+        if (fullType.isEmpty()) {
+            throw new InvalidMimeTypeException(mimeType, "'contentType' must not be empty");
+        }
+
+        // java.net.HttpURLConnection returns a *; q=.2 Accept header
+        if (MimeType.WILDCARD_TYPE.equals(fullType)) {
+            fullType = "*/*";
+        }
+        int subIndex = fullType.indexOf('/');
+        if (subIndex == -1) {
+            throw new InvalidMimeTypeException(mimeType, "does not contain '/'");
+        }
+        if (subIndex == fullType.length() - 1) {
+            throw new InvalidMimeTypeException(mimeType, "does not contain subtype after '/'");
+        }
+        String type = fullType.substring(0, subIndex);
+        String subtype = fullType.substring(subIndex + 1);
+        if (MimeType.WILDCARD_TYPE.equals(type) && !MimeType.WILDCARD_TYPE.equals(subtype)) {
+            throw new InvalidMimeTypeException(mimeType, "wildcard type is legal only in '*/*' (all mime " + "types)");
+        }
+
+        Map<String, String> parameters = null;
+        do {
+            int nextIndex = index + 1;
+            boolean quoted = false;
+            while (nextIndex < mimeType.length()) {
+                char ch = mimeType.charAt(nextIndex);
+                if (ch == ';') {
+                    if (!quoted) {
+                        break;
+                    }
+                } else if (ch == '"') {
+                    quoted = !quoted;
+                }
+                nextIndex++;
+            }
+            String parameter = mimeType.substring(index + 1, nextIndex).trim();
+            if (parameter.length() > 0) {
+                if (parameters == null) {
+                    parameters = new LinkedHashMap<>(4);
+                }
+                int eqIndex = parameter.indexOf('=');
+                if (eqIndex >= 0) {
+                    String attribute = parameter.substring(0, eqIndex);
+                    String value = parameter.substring(eqIndex + 1);
+                    parameters.put(attribute, value);
+                }
+            }
+            index = nextIndex;
+        }
+        while (index < mimeType.length());
+
+        try {
+            return new MimeType(type, subtype, parameters);
+        } catch (UnsupportedCharsetException ex) {
+            throw new InvalidMimeTypeException(mimeType, "unsupported charset '" + ex.getCharsetName() + "'");
+        } catch (IllegalArgumentException ex) {
+            throw new InvalidMimeTypeException(mimeType, ex.getMessage());
+        }
+    }
+
+    /**
      * Indicate whether this {@code MediaType} includes the given media type.
      *
      * <p>For instance, {@code text/*} includes {@code text/plain} and {@code text/html}, and {@code application/*+xml}
@@ -325,9 +396,7 @@ public class MimeType implements Comparable<MimeType>, Serializable {
                         String thisSubtypeNoSuffix = getSubtype().substring(0, thisPlusIdx);
                         String thisSubtypeSuffix = getSubtype().substring(thisPlusIdx + 1);
                         String otherSubtypeSuffix = other.getSubtype().substring(otherPlusIdx + 1);
-                        if (thisSubtypeSuffix.equals(otherSubtypeSuffix) && WILDCARD_TYPE.equals(thisSubtypeNoSuffix)) {
-                            return true;
-                        }
+                        return thisSubtypeSuffix.equals(otherSubtypeSuffix) && WILDCARD_TYPE.equals(thisSubtypeNoSuffix);
                     }
                 }
             }
@@ -370,24 +439,12 @@ public class MimeType implements Comparable<MimeType>, Serializable {
                     String thisSubtypeSuffix = getSubtype().substring(thisPlusIdx + 1);
                     String otherSubtypeSuffix = other.getSubtype().substring(otherPlusIdx + 1);
 
-                    if (thisSubtypeSuffix.equals(otherSubtypeSuffix) &&
-                        (WILDCARD_TYPE.equals(thisSubtypeNoSuffix) || WILDCARD_TYPE.equals(otherSubtypeNoSuffix))) {
-                        return true;
-                    }
+                    return thisSubtypeSuffix.equals(otherSubtypeSuffix) &&
+                            (WILDCARD_TYPE.equals(thisSubtypeNoSuffix) || WILDCARD_TYPE.equals(otherSubtypeNoSuffix));
                 }
             }
         }
         return false;
-    }
-
-
-    @Override
-    public boolean equals(Object other) {
-        if (!equalsExcludeParameter(other)) {
-            return false;
-        }
-        MimeType otherType = (MimeType) other;
-        return parametersAreEqual(otherType);
     }
 
     public boolean equalsExcludeParameter(Object other) {
@@ -401,38 +458,13 @@ public class MimeType implements Comparable<MimeType>, Serializable {
         return (this.type.equalsIgnoreCase(otherType.type) && this.subtype.equalsIgnoreCase(otherType.subtype));
     }
 
-    /**
-     * Determine if the parameters in this {@code Mime} and the supplied {@code Mime} are equal, performing
-     * case-insensitive comparisons for charsets.
-     */
-    private boolean parametersAreEqual(MimeType other) {
-        if (this.parameters.size() != other.parameters.size()) {
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof MimeType) || !equalsExcludeParameter(other)) {
             return false;
         }
-
-        for (String key: this.parameters.keySet()) {
-            if (!other.parameters.containsKey(key)) {
-                return false;
-            }
-
-            if (PARAM_CHARSET.equals(key)) {
-                Charset mCharset = getCharset();
-                Charset oCharset = other.getCharset();
-                if (mCharset == null || !mCharset.equals(oCharset)) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-
-            String mValue = this.parameters.get(key);
-            String oValue = other.parameters.get(key);
-            if (mValue == null || !mValue.equals(oValue)) {
-                return false;
-            }
-        }
-
-        return true;
+        MimeType otherType = (MimeType) other;
+        return parametersAreEqual(otherType);
     }
 
     @Override
@@ -511,76 +543,34 @@ public class MimeType implements Comparable<MimeType>, Serializable {
         return 0;
     }
 
-
     /**
-     * Parse the given string value into a {@code Mime} object.
+     * Determine if the parameters in this {@code Mime} and the supplied {@code Mime} are equal, performing
+     * case-insensitive comparisons for charsets.
      */
-    public static MimeType valueOf(String mimeType) {
-        if (TextUtils.isEmpty(mimeType)) {
-            throw new InvalidMimeTypeException(mimeType, "[mimeType] must not be empty");
+    private boolean parametersAreEqual(MimeType other) {
+        if (this.parameters.size() != other.parameters.size()) {
+            return false;
         }
 
-        int index = mimeType.indexOf(';');
-        String fullType = (index >= 0 ? mimeType.substring(0, index) : mimeType).trim();
-        if (fullType.isEmpty()) {
-            throw new InvalidMimeTypeException(mimeType, "'contentType' must not be empty");
-        }
-
-        // java.net.HttpURLConnection returns a *; q=.2 Accept header
-        if (MimeType.WILDCARD_TYPE.equals(fullType)) {
-            fullType = "*/*";
-        }
-        int subIndex = fullType.indexOf('/');
-        if (subIndex == -1) {
-            throw new InvalidMimeTypeException(mimeType, "does not contain '/'");
-        }
-        if (subIndex == fullType.length() - 1) {
-            throw new InvalidMimeTypeException(mimeType, "does not contain subtype after '/'");
-        }
-        String type = fullType.substring(0, subIndex);
-        String subtype = fullType.substring(subIndex + 1, fullType.length());
-        if (MimeType.WILDCARD_TYPE.equals(type) && !MimeType.WILDCARD_TYPE.equals(subtype)) {
-            throw new InvalidMimeTypeException(mimeType, "wildcard type is legal only in '*/*' (all mime " + "types)");
-        }
-
-        Map<String, String> parameters = null;
-        do {
-            int nextIndex = index + 1;
-            boolean quoted = false;
-            while (nextIndex < mimeType.length()) {
-                char ch = mimeType.charAt(nextIndex);
-                if (ch == ';') {
-                    if (!quoted) {
-                        break;
-                    }
-                } else if (ch == '"') {
-                    quoted = !quoted;
-                }
-                nextIndex++;
+        for (String key : this.parameters.keySet()) {
+            if (!other.parameters.containsKey(key)) {
+                return false;
             }
-            String parameter = mimeType.substring(index + 1, nextIndex).trim();
-            if (parameter.length() > 0) {
-                if (parameters == null) {
-                    parameters = new LinkedHashMap<>(4);
-                }
-                int eqIndex = parameter.indexOf('=');
-                if (eqIndex >= 0) {
-                    String attribute = parameter.substring(0, eqIndex);
-                    String value = parameter.substring(eqIndex + 1, parameter.length());
-                    parameters.put(attribute, value);
-                }
-            }
-            index = nextIndex;
-        }
-        while (index < mimeType.length());
 
-        try {
-            return new MimeType(type, subtype, parameters);
-        } catch (UnsupportedCharsetException ex) {
-            throw new InvalidMimeTypeException(mimeType, "unsupported charset '" + ex.getCharsetName() + "'");
-        } catch (IllegalArgumentException ex) {
-            throw new InvalidMimeTypeException(mimeType, ex.getMessage());
+            if (PARAM_CHARSET.equals(key)) {
+                Charset mCharset = getCharset();
+                Charset oCharset = other.getCharset();
+                return mCharset != null && mCharset.equals(oCharset);
+            }
+
+            String mValue = this.parameters.get(key);
+            String oValue = other.parameters.get(key);
+            if (mValue == null || !mValue.equals(oValue)) {
+                return false;
+            }
         }
+
+        return true;
     }
 
     /**

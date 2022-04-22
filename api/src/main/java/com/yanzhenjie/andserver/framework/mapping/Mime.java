@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class Mime {
 
-    private List<Rule> mRuleList = new LinkedList<>();
+    private final List<Rule> mRuleList = new LinkedList<>();
 
     public Mime() {
     }

@@ -34,6 +34,7 @@ import com.yanzhenjie.andserver.http.HttpMethod;
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.HttpStatus;
 
 import java.util.Arrays;
@@ -157,7 +158,7 @@ public abstract class MappingHandler implements MethodHandler {
     @Override
     public View handle(@NonNull HttpRequest request, @NonNull HttpResponse response) throws Throwable {
         String origin = request.getHeader(HttpHeaders.ORIGIN);
-        if (!TextUtils.isEmpty(origin) && mCrossOrigin != null) {
+        if (!StringUtils.isEmpty(origin) && mCrossOrigin != null) {
             HttpMethod method = request.getMethod();
 
             List<HttpMethod> allowMethods = Arrays.asList(mCrossOrigin.getMethods());

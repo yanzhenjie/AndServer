@@ -194,6 +194,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
         return this.mSource.entrySet();
     }
 
+    @NonNull
     @Override
     public LinkedCaseInsensitiveMap<V> clone() {
         return new LinkedCaseInsensitiveMap<>(this);
@@ -201,6 +202,9 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
 
     @Override
     public boolean equals(Object obj) {
+        if (!(obj instanceof LinkedHashMap)) {
+            return false;
+        }
         return this.mSource.equals(obj);
     }
 
@@ -249,6 +253,7 @@ public class LinkedCaseInsensitiveMap<V> implements Map<String, V>, Serializable
      *
      * @see LinkedHashMap#removeEldestEntry(Entry)
      */
+    @SuppressWarnings("JavadocReference")
     protected boolean removeEldestEntry(Map.Entry<String, V> eldest) {
         return false;
     }

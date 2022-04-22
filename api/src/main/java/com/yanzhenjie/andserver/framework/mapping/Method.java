@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class Method {
 
-    private List<HttpMethod> mRuleList = new LinkedList<>();
+    private final List<HttpMethod> mRuleList = new LinkedList<>();
 
     public Method() {
     }

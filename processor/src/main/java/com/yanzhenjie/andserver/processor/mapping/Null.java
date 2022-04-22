@@ -20,7 +20,7 @@ package com.yanzhenjie.andserver.processor.mapping;
  */
 public class Null implements Mapping {
 
-    private boolean isRest;
+    private final boolean isRest;
 
     public Null() {
         this(false);

@@ -32,6 +32,7 @@ import com.yanzhenjie.andserver.http.HttpMethod;
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -48,11 +49,11 @@ public class OptionsHandler implements MethodHandler {
 
     public static final String INVALID_CORS_REQUEST = "Invalid CORS request.";
 
-    private List<Mapping> mMappings;
-    private Map<Mapping, RequestHandler> mMappingMap;
+    private final List<Mapping> mMappings;
+    private final Map<Mapping, RequestHandler> mMappingMap;
 
     private Mapping mMapping;
-    private MethodHandler mHandler;
+    private final MethodHandler mHandler;
 
     public OptionsHandler(HttpRequest optionsRequest, List<Mapping> mappings, Map<Mapping, RequestHandler> mappingMap) {
         this.mMappings = mappings;
@@ -71,7 +72,7 @@ public class OptionsHandler implements MethodHandler {
         mHandler = (MethodHandler) mMappingMap.get(mMapping);
     }
 
-    @Nullable
+    @NonNull
     @Override
     public Addition getAddition() {
         return mHandler.getAddition();
@@ -92,12 +93,12 @@ public class OptionsHandler implements MethodHandler {
     @Override
     public View handle(@NonNull HttpRequest request, @NonNull HttpResponse response) throws Throwable {
         String requestOrigin = request.getHeader(HttpHeaders.ORIGIN);
-        if (TextUtils.isEmpty(requestOrigin)) {
+        if (StringUtils.isEmpty(requestOrigin)) {
             return invalidCORS(response);
         }
 
         String requestMethodText = request.getHeader(HttpHeaders.Access_Control_Request_Method);
-        if (TextUtils.isEmpty(requestMethodText)) {
+        if (StringUtils.isEmpty(requestMethodText)) {
             return invalidCORS(response);
         }
 

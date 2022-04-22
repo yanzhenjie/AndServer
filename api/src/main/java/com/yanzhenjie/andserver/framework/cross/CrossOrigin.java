@@ -70,7 +70,6 @@ public class CrossOrigin {
         this.methods = methods;
     }
 
-    @NonNull
     public boolean isAllowCredentials() {
         return allowCredentials;
     }
@@ -79,7 +78,6 @@ public class CrossOrigin {
         this.allowCredentials = allowCredentials;
     }
 
-    @NonNull
     public long getMaxAge() {
         return maxAge;
     }

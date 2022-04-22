@@ -25,8 +25,8 @@ import org.apache.commons.lang3.ArrayUtils;
  */
 public class Any implements Mapping {
 
-    private RequestMapping mMapping;
-    private boolean isRest;
+    private final RequestMapping mMapping;
+    private final boolean isRest;
 
     public Any(RequestMapping mapping, boolean rest) {
         this.mMapping = mapping;

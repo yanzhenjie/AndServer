@@ -25,7 +25,7 @@ import com.yanzhenjie.andserver.http.ResponseBody;
  */
 public class BodyView implements View {
 
-    private ResponseBody mBody;
+    private final ResponseBody mBody;
 
     public BodyView(@NonNull ResponseBody body) {
         this.mBody = body;

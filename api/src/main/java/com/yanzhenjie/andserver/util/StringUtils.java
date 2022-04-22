@@ -36,6 +36,7 @@ import java.util.TimeZone;
  * @deprecated use apache commons-lang instead.
  */
 @Deprecated
+@SuppressWarnings("deprecation")
 public abstract class StringUtils {
 
     private static final String FOLDER_SEPARATOR = "/";
@@ -641,7 +642,7 @@ public abstract class StringUtils {
         }
 
         String[] pathArray = delimitedListToStringArray(pathToUse, FOLDER_SEPARATOR);
-        List<String> pathElements = new LinkedList<String>();
+        List<String> pathElements = new LinkedList<>();
         int tops = 0;
 
         for (int i = pathArray.length - 1; i >= 0; i--) {
@@ -821,8 +822,7 @@ public abstract class StringUtils {
             return array1;
         }
 
-        List<String> result = new ArrayList<String>();
-        result.addAll(Arrays.asList(array1));
+        List<String> result = new ArrayList<>(Arrays.asList(array1));
         for (String str: array2) {
             if (!result.contains(str)) {
                 result.add(str);
@@ -860,7 +860,7 @@ public abstract class StringUtils {
             return null;
         }
 
-        return collection.toArray(new String[collection.size()]);
+        return collection.toArray(new String[0]);
     }
 
     /**
@@ -877,7 +877,7 @@ public abstract class StringUtils {
         }
 
         List<String> list = Collections.list(enumeration);
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
     /**
@@ -914,10 +914,7 @@ public abstract class StringUtils {
             return array;
         }
 
-        Set<String> set = new LinkedHashSet<>();
-        for (String element: array) {
-            set.add(element);
-        }
+        Set<String> set = new LinkedHashSet<>(Arrays.asList(array));
         return toStringArray(set);
     }
 
@@ -1101,7 +1098,7 @@ public abstract class StringUtils {
             return new String[] {str};
         }
 
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         if ("".equals(delimiter)) {
             for (int i = 0; i < str.length(); i++) {
                 result.add(deleteAny(str.substring(i, i + 1), charsToDelete));
@@ -1144,12 +1141,8 @@ public abstract class StringUtils {
      * @see #removeDuplicateStrings(String[])
      */
     public static Set<String> commaDelimitedListToSet(String str) {
-        Set<String> set = new LinkedHashSet<String>();
         String[] tokens = commaDelimitedListToStringArray(str);
-        for (String token: tokens) {
-            set.add(token);
-        }
-        return set;
+        return new LinkedHashSet<>(Arrays.asList(tokens));
     }
 
     /**

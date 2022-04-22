@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class Path implements Patterns {
 
-    private List<Rule> mRuleList = new LinkedList<>();
+    private final List<Rule> mRuleList = new LinkedList<>();
 
     public Path() {
     }
@@ -114,7 +114,7 @@ public class Path implements Patterns {
 
     @NonNull
     public static String listToPath(@NonNull List<Segment> segments) {
-        StringBuilder builder = new StringBuilder("");
+        StringBuilder builder = new StringBuilder();
         if (segments.isEmpty()) {
             builder.append("/");
         }

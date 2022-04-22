@@ -45,7 +45,7 @@ import javax.net.ssl.SSLParameters;
 /**
  * Created by Zhenjie Yan on 3/7/20.
  */
-public abstract class BasicServer<T extends BasicServer.Builder> implements Server {
+public abstract class BasicServer<T extends BasicServer.Builder<?, ?>> implements Server {
 
     static final int BUFFER = 8 * 1024;
 
@@ -83,79 +83,70 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
             return;
         }
 
-        Executors.getInstance().execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    ServerBootstrap bootstrap = ServerBootstrap.bootstrap()
+        Executors.getInstance().execute(() -> {
+            try {
+                ServerBootstrap bootstrap = ServerBootstrap.bootstrap()
                         .setServerSocketFactory(mSocketFactory)
                         .setSocketConfig(
-                            SocketConfig.custom()
-                                .setSoKeepAlive(true)
-                                .setSoReuseAddress(true)
-                                .setTcpNoDelay(true)
-                                .setSoTimeout(mTimeout)
-                                .setBacklogSize(BUFFER)
-                                .setRcvBufSize(BUFFER)
-                                .setSndBufSize(BUFFER)
-                                .setSoLinger(TimeValue.ZERO_MILLISECONDS)
-                                .build()
+                                SocketConfig.custom()
+                                        .setSoKeepAlive(true)
+                                        .setSoReuseAddress(true)
+                                        .setTcpNoDelay(true)
+                                        .setSoTimeout(mTimeout)
+                                        .setBacklogSize(BUFFER)
+                                        .setRcvBufSize(BUFFER)
+                                        .setSndBufSize(BUFFER)
+                                        .setSoLinger(TimeValue.ZERO_MILLISECONDS)
+                                        .build()
                         )
                         .setLocalAddress(mInetAddress)
                         .setCanonicalHostName(mCanonicalHostName)
                         .setListenerPort(mPort)
                         .setSslContext(mSSLContext)
                         .setSslSetupHandler(new SSLSetup(mSSLSocketInitializer));
-                    // Register handlers
-                    for (ImmutableTriple<String, String, HttpRequestHandler> triple: requestHandlers()) {
-                        if (triple == null) {
-                            continue;
-                        }
-                        if (triple.left == null){
-                            bootstrap.register(triple.middle, triple.right);
-                        } else {
-                            bootstrap.registerVirtual(triple.left, triple.middle, triple.right);
-                        }
+                // Register handlers
+                for (ImmutableTriple<String, String, HttpRequestHandler> triple : requestHandlers()) {
+                    if (triple == null) {
+                        continue;
                     }
-                    // Register StreamListeners
-                    Http1StreamListener http1StreamListener = requestHttp1StreamListener();
-                    if (http1StreamListener != null) {
-                        bootstrap.setStreamListener(http1StreamListener);
+                    if (triple.left == null) {
+                        bootstrap.register(triple.middle, triple.right);
+                    } else {
+                        bootstrap.registerVirtual(triple.left, triple.middle, triple.right);
                     }
-                    // Register ExceptionListeners
-                    ExceptionListener exceptionListener = requestExceptionListener();
-                    if (exceptionListener != null) {
-                        bootstrap.setExceptionListener(exceptionListener);
-                    }
-                    mHttpServer = bootstrap.create();
-
-                    mHttpServer.start();
-                    isRunning = true;
-
-                    Executors.getInstance().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mListener != null) {
-                                mListener.onStarted();
-                            }
-                        }
-                    });
-                    Runtime.getRuntime().addShutdownHook(new Thread() {
-                        @Override
-                        public void run() {
-                            mHttpServer.close(CloseMode.GRACEFUL);
-                        }
-                    });
-                } catch (final Exception e) {
-                    Executors.getInstance().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mListener != null) {
-                                mListener.onException(e);
-                            }
-                        }
-                    });
                 }
+                // Register StreamListeners
+                Http1StreamListener http1StreamListener = requestHttp1StreamListener();
+                if (http1StreamListener != null) {
+                    bootstrap.setStreamListener(http1StreamListener);
+                }
+                // Register ExceptionListeners
+                ExceptionListener exceptionListener = requestExceptionListener();
+                if (exceptionListener != null) {
+                    bootstrap.setExceptionListener(exceptionListener);
+                }
+                mHttpServer = bootstrap.create();
+
+                mHttpServer.start();
+                isRunning = true;
+
+                Executors.getInstance().post(() -> {
+                    if (mListener != null) {
+                        mListener.onStarted();
+                    }
+                });
+                Runtime.getRuntime().addShutdownHook(new Thread() {
+                    @Override
+                    public void run() {
+                        mHttpServer.close(CloseMode.GRACEFUL);
+                    }
+                });
+            } catch (final Exception e) {
+                Executors.getInstance().post(() -> {
+                    if (mListener != null) {
+                        mListener.onException(e);
+                    }
+                });
             }
         });
     }
@@ -198,21 +189,15 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
             return;
         }
 
-        Executors.getInstance().execute(new Runnable() {
-            @Override
-            public void run() {
-                if (mHttpServer != null) {
-                    mHttpServer.close(CloseMode.GRACEFUL);
-                    isRunning = false;
-                    Executors.getInstance().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mListener != null) {
-                                mListener.onStopped();
-                            }
-                        }
-                    });
-                }
+        Executors.getInstance().execute(() -> {
+            if (mHttpServer != null) {
+                mHttpServer.close(CloseMode.GRACEFUL);
+                isRunning = false;
+                Executors.getInstance().post(() -> {
+                    if (mListener != null) {
+                        mListener.onStopped();
+                    }
+                });
             }
         });
     }
@@ -247,7 +232,7 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
         throw new IllegalStateException("The server has not been started yet.");
     }
 
-    protected abstract static class Builder<T extends Builder, S extends BasicServer> {
+    protected abstract static class Builder<T extends Builder<?, ?>, S extends BasicServer<?>> {
 
         InetAddress inetAddress;
         String canonicalHostName;
@@ -263,42 +248,50 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
 
         public T inetAddress(InetAddress inetAddress) {
             this.inetAddress = inetAddress;
+            //noinspection unchecked
             return (T) this;
         }
 
         public T canonicalHostName(String canonicalHostName) {
             this.canonicalHostName = canonicalHostName;
+            //noinspection unchecked
             return (T) this;
         }
 
         public T port(int port) {
             this.port = port;
+            //noinspection unchecked
             return (T) this;
         }
 
         public T timeout(int timeout, TimeUnit timeUnit) {
             long timeoutMs = timeUnit.toMillis(timeout);
             this.timeout = Timeout.ofMicroseconds((int) Math.min(timeoutMs, Integer.MAX_VALUE));
+            //noinspection unchecked
             return (T) this;
         }
 
         public T serverSocketFactory(ServerSocketFactory factory) {
             this.mSocketFactory = factory;
+            //noinspection unchecked
             return (T) this;
         }
 
         public T sslContext(SSLContext sslContext) {
             this.sslContext = sslContext;
+            //noinspection unchecked
             return (T) this;
         }
 
         public T sslSocketInitializer(SSLSocketInitializer initializer) {
             this.mSSLSocketInitializer = initializer;
+            //noinspection unchecked
             return (T) this;
         }
 
         public T listener(Server.ServerListener listener) {
             this.listener = listener;
+            //noinspection unchecked
             return (T) this;
         }
 

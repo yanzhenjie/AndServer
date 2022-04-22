@@ -98,7 +98,6 @@ import javax.lang.model.util.Elements;
 public class ControllerProcessor extends BaseProcessor implements Patterns {
 
     private Filer mFiler;
-    private Elements mElements;
     private Logger mLog;
 
     private TypeName mContext;
@@ -117,7 +116,6 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
 
     private TypeName mAdapter;
     private TypeName mMappingAdapter;
-    private TypeName mHandler;
     private TypeName mMappingHandler;
     private TypeName mView;
     private TypeName mViewObject;
@@ -127,7 +125,6 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
     private TypeName mMultipartRequest;
     private TypeName mResponse;
     private TypeName mHttpMethod;
-    private TypeName mHttpHeaders;
     private TypeName mSession;
     private TypeName mRequestBody;
     private TypeName mMultipartFile;
@@ -143,68 +140,68 @@ public class ControllerProcessor extends BaseProcessor implements Patterns {
     private TypeName mPathMapping;
     private TypeName mMappingList;
 
-    private TypeName mString = TypeName.get(String.class);
-    private ArrayTypeName mStringArray = ArrayTypeName.of(String.class);
-    private ArrayTypeName mIntArray = ArrayTypeName.of(int.class);
-    private ArrayTypeName mLongArray = ArrayTypeName.of(long.class);
-    private ArrayTypeName mFloatArray = ArrayTypeName.of(float.class);
-    private ArrayTypeName mDoubleArray = ArrayTypeName.of(double.class);
-    private ArrayTypeName mBooleanArray = ArrayTypeName.of(boolean.class);
+    private final TypeName mString = TypeName.get(String.class);
+    private final ArrayTypeName mStringArray = ArrayTypeName.of(String.class);
+    private final ArrayTypeName mIntArray = ArrayTypeName.of(int.class);
+    private final ArrayTypeName mLongArray = ArrayTypeName.of(long.class);
+    private final ArrayTypeName mFloatArray = ArrayTypeName.of(float.class);
+    private final ArrayTypeName mDoubleArray = ArrayTypeName.of(double.class);
+    private final ArrayTypeName mBooleanArray = ArrayTypeName.of(boolean.class);
 
-    private TypeName mStringList = ParameterizedTypeName.get(ClassName.get(List.class), mString);
+    private final TypeName mStringList = ParameterizedTypeName.get(ClassName.get(List.class), mString);
 
-    private List<Integer> mHashCodes = new ArrayList<>();
+    private final List<Integer> mHashCodes = new ArrayList<>();
 
-    private Pattern mBlurredPathPattern = Pattern.compile(PATH_BLURRED_INCLUDE);
+    private final Pattern mBlurredPathPattern = Pattern.compile(PATH_BLURRED_INCLUDE);
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         mFiler = processingEnv.getFiler();
-        mElements = processingEnv.getElementUtils();
+        Elements elements = processingEnv.getElementUtils();
         mLog = new Logger(processingEnv.getMessager());
 
-        mContext = TypeName.get(mElements.getTypeElement(Constants.CONTEXT_TYPE).asType());
-        mTextUtils = TypeName.get(mElements.getTypeElement(Constants.TEXT_UTILS_TYPE).asType());
-        mTypeWrapper = ClassName.get(mElements.getTypeElement(Constants.TYPE_WRAPPER_TYPE));
-        mMediaType = TypeName.get(mElements.getTypeElement(Constants.MEDIA_TYPE).asType());
-        mOnRegisterType = TypeName.get(mElements.getTypeElement(Constants.ON_REGISTER_TYPE).asType());
-        mRegisterType = TypeName.get(mElements.getTypeElement(Constants.REGISTER_TYPE).asType());
+        mContext = TypeName.get(elements.getTypeElement(Constants.CONTEXT_TYPE).asType());
+        mTextUtils = TypeName.get(elements.getTypeElement(Constants.TEXT_UTILS_TYPE).asType());
+        mTypeWrapper = ClassName.get(elements.getTypeElement(Constants.TYPE_WRAPPER_TYPE));
+        mMediaType = TypeName.get(elements.getTypeElement(Constants.MEDIA_TYPE).asType());
+        mOnRegisterType = TypeName.get(elements.getTypeElement(Constants.ON_REGISTER_TYPE).asType());
+        mRegisterType = TypeName.get(elements.getTypeElement(Constants.REGISTER_TYPE).asType());
 
-        mBodyMissing = TypeName.get(mElements.getTypeElement(Constants.BODY_MISSING).asType());
-        mCookieMissing = TypeName.get(mElements.getTypeElement(Constants.COOKIE_MISSING).asType());
-        mParamMissing = TypeName.get(mElements.getTypeElement(Constants.PARAM_MISSING).asType());
-        mHeaderMissing = TypeName.get(mElements.getTypeElement(Constants.HEADER_MISSING).asType());
-        mPathMissing = TypeName.get(mElements.getTypeElement(Constants.PATH_MISSING).asType());
-        mParamError = TypeName.get(mElements.getTypeElement(Constants.PARAM_ERROR).asType());
+        mBodyMissing = TypeName.get(elements.getTypeElement(Constants.BODY_MISSING).asType());
+        mCookieMissing = TypeName.get(elements.getTypeElement(Constants.COOKIE_MISSING).asType());
+        mParamMissing = TypeName.get(elements.getTypeElement(Constants.PARAM_MISSING).asType());
+        mHeaderMissing = TypeName.get(elements.getTypeElement(Constants.HEADER_MISSING).asType());
+        mPathMissing = TypeName.get(elements.getTypeElement(Constants.PATH_MISSING).asType());
+        mParamError = TypeName.get(elements.getTypeElement(Constants.PARAM_ERROR).asType());
 
-        mConverter = TypeName.get(mElements.getTypeElement(Constants.CONVERTER_TYPE).asType());
-        mAdapter = TypeName.get(mElements.getTypeElement(Constants.ADAPTER_TYPE).asType());
-        mMappingAdapter = TypeName.get(mElements.getTypeElement(Constants.MAPPING_ADAPTER_TYPE).asType());
-        mHandler = TypeName.get(mElements.getTypeElement(Constants.HANDLER_TYPE).asType());
-        mMappingHandler = TypeName.get(mElements.getTypeElement(Constants.MAPPING_HANDLER_TYPE).asType());
-        mView = TypeName.get(mElements.getTypeElement(Constants.VIEW_TYPE).asType());
-        mViewObject = TypeName.get(mElements.getTypeElement(Constants.VIEW_TYPE_OBJECT).asType());
+        mConverter = TypeName.get(elements.getTypeElement(Constants.CONVERTER_TYPE).asType());
+        mAdapter = TypeName.get(elements.getTypeElement(Constants.ADAPTER_TYPE).asType());
+        mMappingAdapter = TypeName.get(elements.getTypeElement(Constants.MAPPING_ADAPTER_TYPE).asType());
+        TypeName handler = TypeName.get(elements.getTypeElement(Constants.HANDLER_TYPE).asType());
+        mMappingHandler = TypeName.get(elements.getTypeElement(Constants.MAPPING_HANDLER_TYPE).asType());
+        mView = TypeName.get(elements.getTypeElement(Constants.VIEW_TYPE).asType());
+        mViewObject = TypeName.get(elements.getTypeElement(Constants.VIEW_TYPE_OBJECT).asType());
 
-        mRequest = TypeName.get(mElements.getTypeElement(Constants.REQUEST_TYPE).asType());
-        mMultipartRequest = TypeName.get(mElements.getTypeElement(Constants.MULTIPART_REQUEST_TYPE).asType());
-        mResponse = TypeName.get(mElements.getTypeElement(Constants.RESPONSE_TYPE).asType());
-        mHttpMethod = TypeName.get(mElements.getTypeElement(Constants.HTTP_METHOD_TYPE).asType());
-        mHttpHeaders = TypeName.get(mElements.getTypeElement(Constants.HTTP_HEADERS_TYPE).asType());
-        mSession = TypeName.get(mElements.getTypeElement(Constants.SESSION_TYPE).asType());
-        mRequestBody = TypeName.get(mElements.getTypeElement(Constants.REQUEST_BODY_TYPE).asType());
-        mMultipartFile = TypeName.get(mElements.getTypeElement(Constants.MULTIPART_FILE_TYPE).asType());
+        mRequest = TypeName.get(elements.getTypeElement(Constants.REQUEST_TYPE).asType());
+        mMultipartRequest = TypeName.get(elements.getTypeElement(Constants.MULTIPART_REQUEST_TYPE).asType());
+        mResponse = TypeName.get(elements.getTypeElement(Constants.RESPONSE_TYPE).asType());
+        mHttpMethod = TypeName.get(elements.getTypeElement(Constants.HTTP_METHOD_TYPE).asType());
+        TypeName httpHeaders = TypeName.get(elements.getTypeElement(Constants.HTTP_HEADERS_TYPE).asType());
+        mSession = TypeName.get(elements.getTypeElement(Constants.SESSION_TYPE).asType());
+        mRequestBody = TypeName.get(elements.getTypeElement(Constants.REQUEST_BODY_TYPE).asType());
+        mMultipartFile = TypeName.get(elements.getTypeElement(Constants.MULTIPART_FILE_TYPE).asType());
         mMultipartFileArray = ArrayTypeName.of(mMultipartFile);
         mMultipartFileList = ParameterizedTypeName.get(ClassName.get(List.class), mMultipartFile);
 
-        mAddition = TypeName.get(mElements.getTypeElement(Constants.ADDITION_TYPE).asType());
-        mCrossOrigin = TypeName.get(mElements.getTypeElement(Constants.CROSS_ORIGIN_TYPE).asType());
-        mMapping = TypeName.get(mElements.getTypeElement(Constants.MAPPING_TYPE).asType());
-        mMimeTypeMapping = TypeName.get(mElements.getTypeElement(Constants.MIME_MAPPING_TYPE).asType());
-        mMethodMapping = TypeName.get(mElements.getTypeElement(Constants.METHOD_MAPPING_TYPE).asType());
-        mPairMapping = TypeName.get(mElements.getTypeElement(Constants.PAIR_MAPPING_TYPE).asType());
-        mPathMapping = TypeName.get(mElements.getTypeElement(Constants.PATH_MAPPING_TYPE).asType());
-        mMappingList = ParameterizedTypeName.get(ClassName.get(Map.class), mMapping, mHandler);
+        mAddition = TypeName.get(elements.getTypeElement(Constants.ADDITION_TYPE).asType());
+        mCrossOrigin = TypeName.get(elements.getTypeElement(Constants.CROSS_ORIGIN_TYPE).asType());
+        mMapping = TypeName.get(elements.getTypeElement(Constants.MAPPING_TYPE).asType());
+        mMimeTypeMapping = TypeName.get(elements.getTypeElement(Constants.MIME_MAPPING_TYPE).asType());
+        mMethodMapping = TypeName.get(elements.getTypeElement(Constants.METHOD_MAPPING_TYPE).asType());
+        mPairMapping = TypeName.get(elements.getTypeElement(Constants.PAIR_MAPPING_TYPE).asType());
+        mPathMapping = TypeName.get(elements.getTypeElement(Constants.PATH_MAPPING_TYPE).asType());
+        mMappingList = ParameterizedTypeName.get(ClassName.get(Map.class), mMapping, handler);
     }
 
     @Override

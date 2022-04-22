@@ -23,7 +23,7 @@ public class HttpException extends RuntimeException {
     /**
      * Status code.
      */
-    private int mStatusCode;
+    private final int mStatusCode;
 
     public HttpException(int statusCode, String message) {
         super(message);

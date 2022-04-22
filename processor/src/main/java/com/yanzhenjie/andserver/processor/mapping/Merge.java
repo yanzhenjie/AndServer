@@ -35,8 +35,8 @@ public class Merge implements Mapping {
     private String[] mConsumes;
     private String[] mProduces;
 
-    private Mapping mParent;
-    private Mapping mChild;
+    private final Mapping mParent;
+    private final Mapping mChild;
 
     public Merge(Mapping parent, Mapping child) {
         this.mParent = parent;

@@ -280,18 +280,35 @@ public class MediaType extends MimeType implements Serializable {
     }
 
     /**
-     * Create a new {@code MediaType} for the given primary type and subtype.
-     *
-     * <p>The parameters are empty.
-     *
-     * @param type the primary type.
-     * @param subtype the subtype.
-     *
-     * @throws IllegalArgumentException if any of the parameters contain illegal characters.
+     * Comparator used by {@link #sortByQualityValue(List)}.
      */
-    public MediaType(String type, String subtype) {
-        super(type, subtype, Collections.<String, String>emptyMap());
-    }
+    public static final Comparator<MediaType> QUALITY_VALUE_COMPARATOR = (mediaType1, mediaType2) -> {
+        double quality1 = mediaType1.getQualityValue();
+        double quality2 = mediaType2.getQualityValue();
+        int qualityComparison = Double.compare(quality2, quality1);
+        if (qualityComparison != 0) {
+            return qualityComparison;  // audio/*;q=0.7 < audio/*;q=0.3
+        } else if (mediaType1.isWildcardType() && !mediaType2.isWildcardType()) { // */* < audio/*
+            return 1;
+        } else if (mediaType2.isWildcardType() && !mediaType1.isWildcardType()) { // audio/* > */*
+            return -1;
+        } else if (!mediaType1.getType().equals(mediaType2.getType())) { // audio/basic == text/html
+            return 0;
+        } else { // mediaType1.getType().equals(mediaType2.getType())
+            if (mediaType1.isWildcardSubtype() && !mediaType2.isWildcardSubtype()) { // audio/* < audio/basic
+                return 1;
+            } else if (mediaType2.isWildcardSubtype() && !mediaType1.isWildcardSubtype()) { // audio/basic > audio/*
+                return -1;
+            } else if (!mediaType1.getSubtype().equals(mediaType2.getSubtype())) { // audio/basic == audio/wave
+                return 0;
+            } else {
+                int paramsSize1 = mediaType1.getParameters().size();
+                int paramsSize2 = mediaType2.getParameters().size();
+                // audio/basic;level=1 < audio/basic
+                return (Integer.compare(paramsSize2, paramsSize1));
+            }
+        }
+    };
 
     /**
      * Create a new {@code MediaType} for the given type, subtype, and character set.
@@ -499,10 +516,23 @@ public class MediaType extends MimeType implements Serializable {
         }
 
         List<MediaType> result = new ArrayList<>(tokens.size());
-        for (String token: tokens) {
+        for (String token : tokens) {
             result.add(parseMediaType(token));
         }
         return result;
+    }
+
+    /**
+     * Create a new {@code MediaType} for the given primary type and subtype.
+     *
+     * <p>The parameters are empty.
+     *
+     * @param type    the primary type.
+     * @param subtype the subtype.
+     * @throws IllegalArgumentException if any of the parameters contain illegal characters.
+     */
+    public MediaType(String type, String subtype) {
+        super(type, subtype, Collections.emptyMap());
     }
 
     /**
@@ -523,7 +553,7 @@ public class MediaType extends MimeType implements Serializable {
             return parseMediaTypes(mediaTypes.get(0));
         } else {
             List<MediaType> result = new ArrayList<>(8);
-            for (String mediaType: mediaTypes) {
+            for (String mediaType : mediaTypes) {
                 result.addAll(parseMediaTypes(mediaType));
             }
             return result;
@@ -557,7 +587,7 @@ public class MediaType extends MimeType implements Serializable {
     public static void sortBySpecificity(List<MediaType> mediaTypes) {
         Assert.notNull(mediaTypes, "'mediaTypes' must not be null");
         if (mediaTypes.size() > 1) {
-            Collections.sort(mediaTypes, SPECIFICITY_COMPARATOR);
+            mediaTypes.sort(SPECIFICITY_COMPARATOR);
         }
     }
 
@@ -582,19 +612,7 @@ public class MediaType extends MimeType implements Serializable {
     public static void sortByQualityValue(List<MediaType> mediaTypes) {
         Assert.notNull(mediaTypes, "'mediaTypes' must not be null");
         if (mediaTypes.size() > 1) {
-            Collections.sort(mediaTypes, QUALITY_VALUE_COMPARATOR);
-        }
-    }
-
-    /**
-     * Sorts the given list of {@code MediaType} objects by specificity as the primary criteria and quality value the
-     * secondary.
-     */
-    public static void sortBySpecificityAndQuality(List<MediaType> mediaTypes) {
-        Assert.notNull(mediaTypes, "'mediaTypes' must not be null");
-        if (mediaTypes.size() > 1) {
-            Collections.sort(mediaTypes, new CompoundComparator<MediaType>(MediaType.SPECIFICITY_COMPARATOR,
-                MediaType.QUALITY_VALUE_COMPARATOR));
+            mediaTypes.sort(QUALITY_VALUE_COMPARATOR);
         }
     }
 
@@ -632,39 +650,17 @@ public class MediaType extends MimeType implements Serializable {
     }
 
     /**
-     * Comparator used by {@link #sortByQualityValue(List)}.
+     * Sorts the given list of {@code MediaType} objects by specificity as the primary criteria and quality value the
+     * secondary.
      */
-    public static final Comparator<MediaType> QUALITY_VALUE_COMPARATOR = new Comparator<MediaType>() {
-
-        @Override
-        public int compare(MediaType mediaType1, MediaType mediaType2) {
-            double quality1 = mediaType1.getQualityValue();
-            double quality2 = mediaType2.getQualityValue();
-            int qualityComparison = Double.compare(quality2, quality1);
-            if (qualityComparison != 0) {
-                return qualityComparison;  // audio/*;q=0.7 < audio/*;q=0.3
-            } else if (mediaType1.isWildcardType() && !mediaType2.isWildcardType()) { // */* < audio/*
-                return 1;
-            } else if (mediaType2.isWildcardType() && !mediaType1.isWildcardType()) { // audio/* > */*
-                return -1;
-            } else if (!mediaType1.getType().equals(mediaType2.getType())) { // audio/basic == text/html
-                return 0;
-            } else { // mediaType1.getType().equals(mediaType2.getType())
-                if (mediaType1.isWildcardSubtype() && !mediaType2.isWildcardSubtype()) { // audio/* < audio/basic
-                    return 1;
-                } else if (mediaType2.isWildcardSubtype() && !mediaType1.isWildcardSubtype()) { // audio/basic > audio/*
-                    return -1;
-                } else if (!mediaType1.getSubtype().equals(mediaType2.getSubtype())) { // audio/basic == audio/wave
-                    return 0;
-                } else {
-                    int paramsSize1 = mediaType1.getParameters().size();
-                    int paramsSize2 = mediaType2.getParameters().size();
-                    // audio/basic;level=1 < audio/basic
-                    return (paramsSize2 < paramsSize1 ? -1 : (paramsSize2 == paramsSize1 ? 0 : 1));
-                }
-            }
+    @SuppressWarnings("unchecked")
+    public static void sortBySpecificityAndQuality(List<MediaType> mediaTypes) {
+        Assert.notNull(mediaTypes, "'mediaTypes' must not be null");
+        if (mediaTypes.size() > 1) {
+            mediaTypes.sort(new CompoundComparator<>(MediaType.SPECIFICITY_COMPARATOR,
+                    MediaType.QUALITY_VALUE_COMPARATOR));
         }
-    };
+    }
 
 
     /**

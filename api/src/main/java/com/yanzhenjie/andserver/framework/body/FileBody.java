@@ -33,7 +33,7 @@ import java.io.OutputStream;
  */
 public class FileBody implements ResponseBody {
 
-    private File mBody;
+    private final File mBody;
 
     public FileBody(File body) {
         if (body == null) {

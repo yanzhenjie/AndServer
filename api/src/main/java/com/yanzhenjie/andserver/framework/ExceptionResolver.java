@@ -55,25 +55,22 @@ public interface ExceptionResolver {
         }
     }
 
-    ExceptionResolver DEFAULT = new ExceptionResolver() {
-        @Override
-        public void onResolve(@NonNull HttpRequest request, @NonNull HttpResponse response, @NonNull Throwable e) {
-            if (e instanceof HttpException) {
-                HttpException ex = (HttpException) e;
-                response.setStatus(ex.getStatusCode());
-            } else {
-                response.setStatus(StatusCode.SC_INTERNAL_SERVER_ERROR);
-            }
-            response.setBody(new StringBody(e.getMessage()));
+    ExceptionResolver DEFAULT = (request, response, e) -> {
+        if (e instanceof HttpException) {
+            HttpException ex = (HttpException) e;
+            response.setStatus(ex.getStatusCode());
+        } else {
+            response.setStatus(StatusCode.SC_INTERNAL_SERVER_ERROR);
         }
+        response.setBody(new StringBody(e.getMessage()));
     };
 
     /**
      * Resolve exceptions that occur in the program, replacing the default output information for the exception.
      *
-     * @param request current request.
+     * @param request  current request.
      * @param response current response.
-     * @param e an exception occurred in the program.
+     * @param e        an exception occurred in the program.
      */
     void onResolve(@NonNull HttpRequest request, @NonNull HttpResponse response, @NonNull Throwable e);
 }

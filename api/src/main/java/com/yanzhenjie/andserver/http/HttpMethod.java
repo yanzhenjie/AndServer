@@ -31,7 +31,7 @@ public enum HttpMethod {
     OPTIONS("OPTIONS"),
     TRACE("TRACE");
 
-    private String value;
+    private final String value;
 
     HttpMethod(String value) {
         this.value = value;

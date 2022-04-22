@@ -20,7 +20,7 @@ package com.yanzhenjie.andserver.error;
  */
 public class InvalidMediaTypeException extends IllegalArgumentException {
 
-    private String mMediaType;
+    private final String mMediaType;
 
     /**
      * Create a new InvalidMediaTypeException for the given media type.

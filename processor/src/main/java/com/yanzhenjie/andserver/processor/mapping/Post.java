@@ -23,8 +23,8 @@ import com.yanzhenjie.andserver.annotation.RequestMethod;
  */
 public class Post implements Mapping {
 
-    private PostMapping mMapping;
-    private boolean isRest;
+    private final PostMapping mMapping;
+    private final boolean isRest;
 
     public Post(PostMapping mapping, boolean rest) {
         this.mMapping = mapping;

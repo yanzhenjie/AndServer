@@ -27,6 +27,7 @@ import com.yanzhenjie.andserver.util.Patterns;
 import com.yanzhenjie.andserver.util.UrlCoder;
 
 import org.apache.commons.io.Charsets;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URI;
 import java.util.Iterator;
@@ -163,7 +164,7 @@ public class Uri implements Patterns {
 
     @Nullable
     public Uri location(@Nullable String location) {
-        if (TextUtils.isEmpty(location)) {
+        if (StringUtils.isEmpty(location)) {
             return null;
         }
 

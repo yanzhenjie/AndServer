@@ -23,8 +23,8 @@ import com.yanzhenjie.andserver.annotation.RequestMethod;
  */
 public class Delete implements Mapping {
 
-    private DeleteMapping mMapping;
-    private boolean isRest;
+    private final DeleteMapping mMapping;
+    private final boolean isRest;
 
     public Delete(DeleteMapping mapping, boolean rest) {
         this.mMapping = mapping;

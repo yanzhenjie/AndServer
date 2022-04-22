@@ -32,9 +32,9 @@ import java.io.OutputStream;
  */
 public class StreamBody implements ResponseBody {
 
-    private InputStream mStream;
+    private final InputStream mStream;
     private long mLength;
-    private MediaType mMediaType;
+    private final MediaType mMediaType;
 
     public StreamBody(InputStream stream) {
         this(stream, MediaType.APPLICATION_OCTET_STREAM);

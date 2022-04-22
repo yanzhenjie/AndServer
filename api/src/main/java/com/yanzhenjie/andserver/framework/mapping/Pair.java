@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class Pair implements Patterns {
 
-    private List<Rule> mRuleList = new LinkedList<>();
+    private final List<Rule> mRuleList = new LinkedList<>();
 
     public Pair() {
     }

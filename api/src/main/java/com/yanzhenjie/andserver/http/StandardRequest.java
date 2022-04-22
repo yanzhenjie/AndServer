@@ -35,6 +35,7 @@ import com.yanzhenjie.andserver.util.MultiValueMap;
 import com.yanzhenjie.andserver.util.UrlCoder;
 
 import org.apache.commons.io.Charsets;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpEntityContainer;
@@ -59,10 +60,10 @@ public class StandardRequest implements HttpRequest {
 
     private static final CookieProcessor COOKIE_PROCESSOR = new StandardCookieProcessor();
 
-    private org.apache.hc.core5.http.HttpRequest mRequest;
-    private HttpContext mContext;
-    private DispatcherHandler mHandler;
-    private SessionManager mSessionManager;
+    private final org.apache.hc.core5.http.HttpRequest mRequest;
+    private final HttpContext mContext;
+    private final DispatcherHandler mHandler;
+    private final SessionManager mSessionManager;
 
     private Uri mUri;
     private boolean isParsedUri;
@@ -474,16 +475,14 @@ public class StandardRequest implements HttpRequest {
             }
         }
 
-        if (TextUtils.isEmpty(sessionId)) {
+        if (StringUtils.isEmpty(sessionId)) {
             return null;
         }
 
         Session session = null;
         try {
             session = mSessionManager.findSession(sessionId);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -553,7 +552,7 @@ public class StandardRequest implements HttpRequest {
 
     private static class EntityToBody implements RequestBody {
 
-        private HttpEntity mEntity;
+        private final HttpEntity mEntity;
 
         private EntityToBody(HttpEntity entity) {
             this.mEntity = entity;

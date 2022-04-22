@@ -25,7 +25,7 @@ public class StandardIdGenerator implements IdGenerator {
 
     private static final int ID_LENGTH = 30;
 
-    private SecureRandom mRandom;
+    private final SecureRandom mRandom;
 
     public StandardIdGenerator() {
         this.mRandom = createSecureRandom();
@@ -34,7 +34,7 @@ public class StandardIdGenerator implements IdGenerator {
     @NonNull
     @Override
     public String generateId() {
-        byte random[] = new byte[16];
+        byte[] random = new byte[16];
 
         // Render the result as a String of hexadecimal digits.
         // Start with enough space for sessionIdLength and medium route size.

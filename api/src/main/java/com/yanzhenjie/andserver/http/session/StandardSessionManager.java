@@ -28,8 +28,8 @@ import java.io.IOException;
  */
 public class StandardSessionManager implements SessionManager {
 
-    private IdGenerator mIdGenerator;
-    private Store mStore;
+    private final IdGenerator mIdGenerator;
+    private final Store mStore;
 
     public StandardSessionManager(Context context) {
         this.mIdGenerator = new StandardIdGenerator();

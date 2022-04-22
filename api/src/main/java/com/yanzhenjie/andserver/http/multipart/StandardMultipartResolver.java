@@ -53,8 +53,8 @@ public class StandardMultipartResolver implements MultipartResolver {
     public static final String SUB_TAG = "StandardMultipartResolver";
     public static final String TAG = AndServer.genAndServerTag(SUB_TAG);
 
-    private DiskFileItemFactory mFileItemFactory;
-    private FileUpload mFileUpload;
+    private final DiskFileItemFactory mFileItemFactory;
+    private final FileUpload mFileUpload;
 
     public StandardMultipartResolver() {
         this.mFileItemFactory = new DiskFileItemFactory();

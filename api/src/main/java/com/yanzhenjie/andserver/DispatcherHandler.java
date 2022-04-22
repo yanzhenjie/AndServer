@@ -54,7 +54,6 @@ import com.yanzhenjie.andserver.util.Assert;
 
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ClassicHttpResponse;
-import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.io.HttpRequestHandler;
 
 import java.io.File;
@@ -72,14 +71,14 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
 
     private final Context mContext;
 
-    private SessionManager mSessionManager;
+    private final SessionManager mSessionManager;
     private MessageConverter mConverter;
     private ViewResolver mViewResolver;
     private ExceptionResolver mResolver;
     private Multipart mMultipart;
 
-    private List<HandlerAdapter> mAdapterList = new LinkedList<>();
-    private List<HandlerInterceptor> mInterceptorList = new LinkedList<>();
+    private final List<HandlerAdapter> mAdapterList = new LinkedList<>();
+    private final List<HandlerInterceptor> mInterceptorList = new LinkedList<>();
 
     public DispatcherHandler(Context context) {
         this.mContext = context;
@@ -129,9 +128,9 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
     @Override
     public void handle(ClassicHttpRequest request,
                        ClassicHttpResponse response,
-                       org.apache.hc.core5.http.protocol.HttpContext context) throws HttpException, IOException {
+                       org.apache.hc.core5.http.protocol.HttpContext context) {
         HttpRequest requestWrapped = new StandardRequest(request, new StandardContext(context),
-              this, mSessionManager);
+                this, mSessionManager);
         HttpResponse responseWrapped = new StandardResponse(response);
         handle(requestWrapped, responseWrapped);
     }
@@ -257,12 +256,7 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
             throw new NotFoundException(request.getPath());
         }
 
-        return new RequestDispatcher() {
-            @Override
-            public void forward(@NonNull HttpRequest request, @NonNull HttpResponse response) {
-                handle(request, response);
-            }
-        };
+        return this::handle;
     }
 
     private void processSession(HttpRequest request, HttpResponse response) {

@@ -30,7 +30,7 @@ public class Delegate implements WebConfig.Delegate {
     }
 
     private Multipart mMultipart;
-    private List<Website> mWebsites;
+    private final List<Website> mWebsites;
 
     private Delegate() {
         mWebsites = new ArrayList<>();

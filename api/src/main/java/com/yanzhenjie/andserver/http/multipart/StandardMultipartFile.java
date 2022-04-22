@@ -75,7 +75,7 @@ public class StandardMultipartFile implements MultipartFile, Serializable {
         // Check for Windows-style path.
         int winSep = filename.lastIndexOf("\\");
         // Cut off at latest possible point.
-        int pos = (winSep > unixSep ? winSep : unixSep);
+        int pos = (Math.max(winSep, unixSep));
         if (pos != -1) {
             // Any sort of path separator found...
             return filename.substring(pos + 1);
@@ -142,13 +142,11 @@ public class StandardMultipartFile implements MultipartFile, Serializable {
             fileItem.write(dest);
         } catch (FileUploadException ex) {
             throw new IllegalStateException(ex.getMessage(), ex);
-        } catch (IllegalStateException ex) {
+        } catch (IllegalStateException | IOException ex) {
             // Pass through when coming from FileItem directly.
             throw ex;
-        } catch (IOException ex) {
-            // From I/O operations within FileItem.write.
-            throw ex;
-        } catch (Exception ex) {
+        } // From I/O operations within FileItem.write.
+        catch (Exception ex) {
             throw new IOException("File transfer failed", ex);
         }
     }

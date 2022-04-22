@@ -23,8 +23,8 @@ import com.yanzhenjie.andserver.annotation.RequestMethod;
  */
 public class Patch implements Mapping {
 
-    private PatchMapping mMapping;
-    private boolean isRest;
+    private final PatchMapping mMapping;
+    private final boolean isRest;
 
     public Patch(PatchMapping mapping, boolean rest) {
         this.mMapping = mapping;

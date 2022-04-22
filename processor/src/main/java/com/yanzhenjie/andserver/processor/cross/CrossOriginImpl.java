@@ -25,7 +25,7 @@ import org.apache.commons.lang3.ArrayUtils;
  */
 public class CrossOriginImpl {
 
-    private CrossOrigin mCrossOrigin;
+    private final CrossOrigin mCrossOrigin;
 
     public CrossOriginImpl(CrossOrigin crossOrigin) {
         this.mCrossOrigin = crossOrigin;

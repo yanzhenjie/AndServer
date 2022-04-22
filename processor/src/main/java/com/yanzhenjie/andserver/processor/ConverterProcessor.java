@@ -53,7 +53,6 @@ import javax.lang.model.util.Elements;
 public class ConverterProcessor extends BaseProcessor {
 
     private Filer mFiler;
-    private Elements mElements;
     private Logger mLog;
 
     private TypeName mContext;
@@ -66,14 +65,14 @@ public class ConverterProcessor extends BaseProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         mFiler = processingEnv.getFiler();
-        mElements = processingEnv.getElementUtils();
+        Elements elements = processingEnv.getElementUtils();
         mLog = new Logger(processingEnv.getMessager());
 
-        mContext = TypeName.get(mElements.getTypeElement(Constants.CONTEXT_TYPE).asType());
-        mOnRegisterType = TypeName.get(mElements.getTypeElement(Constants.ON_REGISTER_TYPE).asType());
-        mRegisterType = TypeName.get(mElements.getTypeElement(Constants.REGISTER_TYPE).asType());
+        mContext = TypeName.get(elements.getTypeElement(Constants.CONTEXT_TYPE).asType());
+        mOnRegisterType = TypeName.get(elements.getTypeElement(Constants.ON_REGISTER_TYPE).asType());
+        mRegisterType = TypeName.get(elements.getTypeElement(Constants.REGISTER_TYPE).asType());
 
-        mConverter = TypeName.get(mElements.getTypeElement(Constants.CONVERTER_TYPE).asType());
+        mConverter = TypeName.get(elements.getTypeElement(Constants.CONVERTER_TYPE).asType());
 
         mString = TypeName.get(String.class);
     }

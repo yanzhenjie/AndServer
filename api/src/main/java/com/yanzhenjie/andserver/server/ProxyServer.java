@@ -60,7 +60,7 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
         return new ProxyServer.Builder();
     }
 
-    private Map<String, HttpHost> mHostList;
+    private final Map<String, HttpHost> mHostList;
 
     private HttpRequester mRequester;
 
@@ -165,9 +165,7 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
 
                     @Override
                     public void onLease(final HttpHost route, final ConnPoolStats<HttpHost> connPoolStats) {
-                        final StringBuilder buf = new StringBuilder();
-                        buf.append("[proxy->origin] ").append(Thread.currentThread()).append(" connection leased ").append(route);
-                        Log.d(TAG, buf.toString());
+                        Log.d(TAG, "[proxy->origin] " + Thread.currentThread() + " connection leased " + route);
                     }
 
                     @Override
@@ -189,7 +187,7 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
     public static class Builder extends BasicServer.Builder<Builder, ProxyServer>
         implements Server.ProxyBuilder<Builder, ProxyServer> {
 
-        private Map<String, HttpHost> mHostList = new HashMap<>();
+        private final Map<String, HttpHost> mHostList = new HashMap<>();
 
         public Builder() {
         }

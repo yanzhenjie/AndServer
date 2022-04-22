@@ -23,8 +23,8 @@ import com.yanzhenjie.andserver.annotation.RequestMethod;
  */
 public class Get implements Mapping {
 
-    private GetMapping mMapping;
-    private boolean isRest;
+    private final GetMapping mMapping;
+    private final boolean isRest;
 
     public Get(GetMapping mapping, boolean rest) {
         this.mMapping = mapping;

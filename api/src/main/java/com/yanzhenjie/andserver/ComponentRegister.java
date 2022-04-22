@@ -42,7 +42,7 @@ public class ComponentRegister {
         REGISTER_LIST.add("ResolverRegister");
     }
 
-    private Context mContext;
+    private final Context mContext;
 
     public ComponentRegister(Context context) {
         this.mContext = context;

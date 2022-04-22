@@ -33,7 +33,7 @@ import java.nio.charset.Charset;
  */
 public class StringBody implements ResponseBody {
 
-    private byte[] mBody;
+    private final byte[] mBody;
     private MediaType mMediaType;
 
     public StringBody(String body) {

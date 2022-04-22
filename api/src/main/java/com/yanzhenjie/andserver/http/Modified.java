@@ -15,16 +15,18 @@
  */
 package com.yanzhenjie.andserver.http;
 
+import static com.yanzhenjie.andserver.util.HttpDateFormat.parseDate;
+
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.yanzhenjie.andserver.util.HttpDateFormat.parseDate;
 
 /**
  * Created by Zhenjie Yan on 2018/8/29.
@@ -33,8 +35,8 @@ public class Modified implements HttpHeaders {
 
     private static final Pattern ETAG_PATTERN = Pattern.compile("\\*|\\s*((W\\/)?(\"[^\"]*\"))\\s*,?");
 
-    private HttpRequest mRequest;
-    private HttpResponse mResponse;
+    private final HttpRequest mRequest;
+    private final HttpResponse mResponse;
 
     private boolean isNotModified;
 
@@ -181,7 +183,7 @@ public class Modified implements HttpHeaders {
             dateValue = mRequest.getDateHeader(headerName);
         } catch (IllegalStateException ex) {
             String headerValue = mRequest.getHeader(headerName);
-            if (TextUtils.isEmpty(headerValue)) {
+            if (StringUtils.isEmpty(headerValue)) {
                 return -1;
             }
             // Possibly an IE 10 style value: "Wed, 09 Apr 2014 09:57:42 GMT; length=13774"

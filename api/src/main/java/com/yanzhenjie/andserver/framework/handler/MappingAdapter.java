@@ -151,10 +151,7 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
             return false;
         }
 
-        if (Path.listToPath(segments).equals(Path.listToPath(httpSegments))) {
-            return true;
-        }
-        return false;
+        return Path.listToPath(segments).equals(Path.listToPath(httpSegments));
     }
 
     private List<Mapping> getBlurredMappings(List<Path.Segment> httpSegments) {
