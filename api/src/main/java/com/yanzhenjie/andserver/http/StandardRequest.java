@@ -1,5 +1,6 @@
 /*
- * Copyright 2018 Zhenjie Yan.
+ * Copyright (C) 2018 Zhenjie Yan
+ *               2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.yanzhenjie.andserver.DispatcherHandler;
+import com.yanzhenjie.andserver.handler.DispatcherHandler;
 import com.yanzhenjie.andserver.http.cookie.Cookie;
 import com.yanzhenjie.andserver.http.cookie.CookieProcessor;
 import com.yanzhenjie.andserver.http.cookie.StandardCookieProcessor;
@@ -64,6 +65,7 @@ public class StandardRequest implements HttpRequest {
     private final HttpContext mContext;
     private final DispatcherHandler mHandler;
     private final SessionManager mSessionManager;
+    private final HttpEntity mEntity;
 
     private Uri mUri;
     private boolean isParsedUri;
@@ -82,10 +84,33 @@ public class StandardRequest implements HttpRequest {
 
     public StandardRequest(org.apache.hc.core5.http.HttpRequest request, HttpContext context, DispatcherHandler handler,
                            SessionManager sessionManager) {
+        this(request, null, context, handler, sessionManager);
+    }
+
+    public StandardRequest(org.apache.hc.core5.http.HttpRequest request, HttpEntity entity, HttpContext context, DispatcherHandler handler,
+                           SessionManager sessionManager) {
         this.mRequest = request;
+        this.mEntity = entity;
         this.mContext = context;
         this.mHandler = handler;
         this.mSessionManager = sessionManager;
+    }
+
+    @NonNull
+    private static MultiValueMap<String, String> parseParameters(@NonNull String input) {
+        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        StringTokenizer tokenizer = new StringTokenizer(input, "&");
+        while (tokenizer.hasMoreElements()) {
+            String element = tokenizer.nextToken();
+            int end = element.indexOf("=");
+
+            if (end > 0 && end < element.length() - 1) {
+                String key = element.substring(0, end);
+                String value = element.substring(end + 1);
+                parameters.add(key, UrlCoder.urlDecode(value, Charsets.toCharset("utf-8")));
+            }
+        }
+        return parameters;
     }
 
     @NonNull
@@ -117,16 +142,16 @@ public class StandardRequest implements HttpRequest {
         isParsedUri = true;
     }
 
-    public void setPath(String path) {
-        parseUri();
-        mUri = mUri.builder().setPath(path).build();
-    }
-
     @NonNull
     @Override
     public String getPath() {
         parseUri();
         return mUri.getPath();
+    }
+
+    public void setPath(String path) {
+        parseUri();
+        mUri = mUri.builder().setPath(path).build();
     }
 
     @NonNull
@@ -177,7 +202,7 @@ public class StandardRequest implements HttpRequest {
         }
 
         List<String> nameList = new ArrayList<>();
-        for (Header header: headers) {
+        for (Header header : headers) {
             nameList.add(header.getName());
         }
         return nameList;
@@ -199,7 +224,7 @@ public class StandardRequest implements HttpRequest {
         }
 
         List<String> valueList = new ArrayList<>();
-        for (Header header: headers) {
+        for (Header header : headers) {
             valueList.add(header.getValue());
         }
         return valueList;
@@ -259,7 +284,7 @@ public class StandardRequest implements HttpRequest {
         mAccepts = new ArrayList<>();
         Header[] headers = mRequest.getHeaders(ACCEPT);
         if (headers != null && headers.length > 0) {
-            for (Header header: headers) {
+            for (Header header : headers) {
                 List<MediaType> mediaTypes = MediaType.parseMediaTypes(header.getValue());
                 mAccepts.addAll(mediaTypes);
             }
@@ -292,9 +317,9 @@ public class StandardRequest implements HttpRequest {
         mLocales = new ArrayList<>();
         Header[] headers = mRequest.getHeaders(ACCEPT_LANGUAGE);
         if (headers != null && headers.length > 0) {
-            for (Header header: headers) {
+            for (Header header : headers) {
                 List<AcceptLanguage> acceptLanguages = AcceptLanguage.parse(header.getValue());
-                for (AcceptLanguage acceptLanguage: acceptLanguages) {
+                for (AcceptLanguage acceptLanguage : acceptLanguages) {
                     mLocales.add(acceptLanguage.getLocale());
                 }
             }
@@ -324,7 +349,7 @@ public class StandardRequest implements HttpRequest {
             return null;
         }
 
-        for (Cookie cookie: cookies) {
+        for (Cookie cookie : cookies) {
             if (name.equalsIgnoreCase(cookie.getName())) {
                 return cookie;
             }
@@ -427,7 +452,8 @@ public class StandardRequest implements HttpRequest {
     @Nullable
     @Override
     public RequestBody getBody() {
-        if (getMethod().allowBody()) {
+        if (mEntity != null) return new EntityToBody(mEntity);
+        else if (getMethod().allowBody()) {
             if (mRequest instanceof HttpEntityContainer) {
                 HttpEntityContainer request = (HttpEntityContainer) mRequest;
                 HttpEntity entity = request.getEntity();
@@ -468,7 +494,7 @@ public class StandardRequest implements HttpRequest {
         }
 
         String sessionId = null;
-        for (Cookie cookie: cookies) {
+        for (Cookie cookie : cookies) {
             if (SESSION_NAME.equalsIgnoreCase(cookie.getName())) {
                 sessionId = cookie.getValue();
                 break;
@@ -531,23 +557,6 @@ public class StandardRequest implements HttpRequest {
     @Override
     public Object removeAttribute(@NonNull String id) {
         return mContext.removeAttribute(id);
-    }
-
-    @NonNull
-    private static MultiValueMap<String, String> parseParameters(@NonNull String input) {
-        MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-        StringTokenizer tokenizer = new StringTokenizer(input, "&");
-        while (tokenizer.hasMoreElements()) {
-            String element = tokenizer.nextToken();
-            int end = element.indexOf("=");
-
-            if (end > 0 && end < element.length() - 1) {
-                String key = element.substring(0, end);
-                String value = element.substring(end + 1);
-                parameters.add(key, UrlCoder.urlDecode(value, Charsets.toCharset("utf-8")));
-            }
-        }
-        return parameters;
     }
 
     private static class EntityToBody implements RequestBody {

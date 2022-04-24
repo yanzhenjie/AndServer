@@ -1,5 +1,6 @@
 /*
- * Copyright 2018 Zhenjie Yan.
+ * Copyright (C) 2018 Zhenjie Yan
+ *               2020 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +20,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.http.ResponseBody;
-import com.yanzhenjie.andserver.util.IOUtils;
 import com.yanzhenjie.andserver.util.MediaType;
 
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.FileEntity;
+import org.apache.hc.core5.http.nio.AsyncEntityProducer;
+import org.apache.hc.core5.http.nio.entity.FileEntityProducer;
+
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Created by Zhenjie Yan on 2018/8/6.
@@ -42,26 +44,29 @@ public class FileBody implements ResponseBody {
         this.mBody = body;
     }
 
-    @Override
-    public boolean isRepeatable() {
-        return true;
-    }
-
-    @Override
-    public long contentLength() {
-        return mBody.length();
+    public String getContentType() {
+        MediaType mimeType = this.getContentTypeMedia();
+        if (mimeType == null) {
+            return null;
+        }
+        return mimeType.toString();
     }
 
     @Nullable
     @Override
-    public MediaType contentType() {
+    public MediaType getContentTypeMedia() {
         return MediaType.getFileMediaType(mBody.getName());
     }
 
+    @NonNull
     @Override
-    public void writeTo(@NonNull OutputStream output) throws IOException {
-        InputStream is = new FileInputStream(mBody);
-        IOUtils.write(is, output);
-        IOUtils.closeQuietly(is);
+    public AsyncEntityProducer toEntityProducer() {
+        return new FileEntityProducer(mBody, ContentType.parse(getContentType()));
+    }
+
+    @NonNull
+    @Override
+    public HttpEntity toEntity() {
+        return new FileEntity(mBody, ContentType.parse(getContentType()));
     }
 }

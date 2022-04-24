@@ -1,5 +1,6 @@
 /*
- * Copyright © 2018 Zhenjie Yan.
+ * Copyright (C) 2018 Zhenjie Yan
+ *               2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +16,13 @@
  */
 package com.yanzhenjie.andserver;
 
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.URISyntaxException;
-import java.util.concurrent.TimeUnit;
+import com.yanzhenjie.andserver.delegate.CharCodingConfigDelegate;
+import com.yanzhenjie.andserver.delegate.ConnectionReuseStrategy;
+import com.yanzhenjie.andserver.delegate.Http1ConfigDelegate;
+import com.yanzhenjie.andserver.delegate.Http1StreamListener;
+import com.yanzhenjie.andserver.delegate.HttpProcessor;
 
-import javax.net.ServerSocketFactory;
-import javax.net.ssl.SSLContext;
+import java.net.URISyntaxException;
 
 /**
  * Created by Zhenjie Yan on 2018/9/10.
@@ -46,80 +46,55 @@ public interface Server {
      */
     void shutdown();
 
-    /**
-     * Get the local address of this server socket.
-     *
-     * @return {@link InetAddress}.
-     *
-     * @throws IllegalStateException if the server is not started, an IllegalStateException is thrown.
-     * @see ServerSocket#getInetAddress()
-     */
-    InetAddress getInetAddress();
-
-    /**
-     * Returns the port number on which this socket is listening.
-     *
-     * @return the local port number to which this socket is bound or -1 if the socket is not bound yet.
-     *
-     * @throws IllegalStateException if the server is not started, an IllegalStateException is thrown.
-     * @see Socket#getLocalPort()
-     */
-    int getPort();
-
-    interface Builder<T extends Builder<T, S>, S extends Server> {
+    interface Builder<T extends Builder<T, S, L>, S extends Server, L extends ServerListener> {
 
         /**
-         * Specified server need to monitor the ip address.
+         * Specify canonical hostname.
          */
-        T inetAddress(InetAddress inetAddress);
+        T setCanonicalHostName(String canonicalHostName);
 
         /**
-         * Specified canonical hostname.
+         * Assigns {@link Http1ConfigDelegate} instance.
          */
-        T canonicalHostName(String canonicalHostName);
+        T setHttp1Config(Http1ConfigDelegate http1Config);
 
         /**
-         * Specify the port on which the server listens.
+         * Assigns {@link CharCodingConfigDelegate} instance.
          */
-        T port(int port);
+        T setCharCodingConfig(CharCodingConfigDelegate charCodingConfig);
 
         /**
-         * Connection and response timeout.
+         * Assigns {@link HttpProcessor} instance.
+         * Will be called before server class defined processor.
          */
-        T timeout(int timeout, TimeUnit timeUnit);
+        T setHttpProcessor(HttpProcessor httpProcessor);
 
         /**
-         * Assigns {@link ServerSocketFactory} instance.
+         * Assigns {@link ConnectionReuseStrategy} instance.
          */
-        T serverSocketFactory(ServerSocketFactory factory);
+        T setConnectionReuseStrategy(ConnectionReuseStrategy connectionReuseStrategy);
 
         /**
-         * Assigns {@link SSLContext} instance.
+         * Assigns {@link Http1StreamListener} instance.
+         * Will be called after server class defined listener.
          */
-        T sslContext(SSLContext sslContext);
-
-        /**
-         * Assigns {@link SSLSocketInitializer} instance.
-         */
-        T sslSocketInitializer(SSLSocketInitializer initializer);
+        T setStreamListener(Http1StreamListener streamListener);
 
         /**
          * Set the server listener.
          */
-        T listener(Server.ServerListener listener);
+        T setListener(L listener);
 
-        /**
-         * Create a server.
-         */
         S build();
     }
 
-    interface ProxyBuilder<T extends ProxyBuilder<T, S>, S extends Server> extends Builder<T, S> {
+    interface ProxyBuilder<T extends ProxyBuilder<T, S, L>, S extends Server,
+            L extends ServerListener> extends Builder<T, S, L> {
 
         /**
          * Add host address to proxy.
          *
-         * @param hostName such as: {@code www.example.com}, {@code api.example.com}, {@code 192.168.1.111}.
+         * @param hostName  such as: {@code www.example.com}, {@code api.example.com}, {@code 192.168.1.111}.
          * @param proxyHost such as: {@code http://127.0.0.1:8080}, {@code http://localhost:8181}
          */
         T addProxy(String hostName, String proxyHost) throws URISyntaxException;

@@ -1,5 +1,6 @@
 /*
- * Copyright 2018 Zhenjie Yan.
+ * Copyright (C) 2018 Zhenjie Yan.
+ *               2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +20,10 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.yanzhenjie.andserver.server.ProxyServer;
-import com.yanzhenjie.andserver.server.WebServer;
+import com.yanzhenjie.andserver.server.async.AsyncReverseProxyServer;
+import com.yanzhenjie.andserver.server.async.AsyncWebServer;
+import com.yanzhenjie.andserver.server.classic.ClassicReverseProxyServer;
+import com.yanzhenjie.andserver.server.classic.ClassicWebServer;
 
 /**
  * Created by Zhenjie Yan on 2018/6/9.
@@ -44,34 +47,65 @@ public class AndServer {
     /**
      * Create a builder for the web server.
      *
-     * @return {@link Server.Builder}.
+     * @return {@link ClassicServer.Builder}.
      */
     @NonNull
-    public static Server.Builder<?, ?> webServer(@NonNull Context context) {
-        return WebServer.newBuilder(context, "default");
+    public static ClassicServer.Builder<?, ?> webServer(@NonNull Context context) {
+        return webServer(context, "default");
     }
 
     /**
      * Create a builder for the web server.
      *
      * @param group group name.
-     *
-     * @return {@link Server.Builder}.
+     * @return {@link ClassicServer.Builder}.
      */
     @NonNull
-    public static Server.Builder<?, ?> webServer(@NonNull Context context,
-        @NonNull String group) {
-        return WebServer.newBuilder(context, group);
+    public static ClassicServer.Builder<?, ?> webServer(@NonNull Context context,
+                                                        @NonNull String group) {
+        return ClassicWebServer.newBuilder(context, group);
+    }
+
+    /**
+     * Create a builder for the asynchronous web server.
+     *
+     * @return {@link AsyncServer.Builder}.
+     */
+    @NonNull
+    public static AsyncServer.Builder<?, ?> webServerAsync(@NonNull Context context) {
+        return webServerAsync(context, "default");
+    }
+
+    /**
+     * Create a builder for the asynchronous web server.
+     *
+     * @param group group name.
+     * @return {@link AsyncServer.Builder}.
+     */
+    @NonNull
+    public static AsyncServer.Builder<?, ?> webServerAsync(@NonNull Context context,
+                                                           @NonNull String group) {
+        return AsyncWebServer.newBuilder(context, group);
     }
 
     /**
      * Create a builder for the reverse proxy server.
      *
-     * @return {@link Server.ProxyBuilder}.
+     * @return {@link ClassicServer.ProxyBuilder}.
      */
     @NonNull
-    public static Server.ProxyBuilder<?, ?> proxyServer() {
-        return ProxyServer.newBuilder();
+    public static ClassicServer.ProxyBuilder<?, ?> proxyServer() {
+        return ClassicReverseProxyServer.newBuilder();
+    }
+
+    /**
+     * Create a builder for the asynchronous reverse proxy server.
+     *
+     * @return {@link AsyncServer.ProxyBuilder}.
+     */
+    @NonNull
+    public static AsyncServer.ProxyBuilder<?, ?> proxyServerAsync() {
+        return AsyncReverseProxyServer.newBuilder();
     }
 
     /**
@@ -79,7 +113,7 @@ public class AndServer {
      */
     @NonNull
     @Deprecated
-    public static Server.Builder<?, ?> serverBuilder(@NonNull Context context) {
+    public static ClassicServer.Builder<?, ?> serverBuilder(@NonNull Context context) {
         return webServer(context);
     }
 
@@ -88,7 +122,7 @@ public class AndServer {
      */
     @NonNull
     @Deprecated
-    public static Server.Builder<?, ?> serverBuilder(@NonNull Context context, @NonNull String group) {
+    public static ClassicServer.Builder<?, ?> serverBuilder(@NonNull Context context, @NonNull String group) {
         return webServer(context, group);
     }
 }

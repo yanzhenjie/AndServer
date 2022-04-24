@@ -1,5 +1,6 @@
 /*
- * Copyright 2018 Zhenjie Yan.
+ * Copyright (C) 2018 Zhenjie Yan
+ *               2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver;
+package com.yanzhenjie.andserver.handler;
 
 import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
 
+import com.yanzhenjie.andserver.AndServer;
 import com.yanzhenjie.andserver.error.NotFoundException;
 import com.yanzhenjie.andserver.error.ServerInternalException;
 import com.yanzhenjie.andserver.framework.ExceptionResolver;
@@ -38,9 +41,7 @@ import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.http.HttpResponse;
 import com.yanzhenjie.andserver.http.RequestDispatcher;
 import com.yanzhenjie.andserver.http.RequestWrapper;
-import com.yanzhenjie.andserver.http.StandardContext;
 import com.yanzhenjie.andserver.http.StandardRequest;
-import com.yanzhenjie.andserver.http.StandardResponse;
 import com.yanzhenjie.andserver.http.StatusCode;
 import com.yanzhenjie.andserver.http.cookie.Cookie;
 import com.yanzhenjie.andserver.http.multipart.MultipartRequest;
@@ -49,38 +50,29 @@ import com.yanzhenjie.andserver.http.multipart.StandardMultipartResolver;
 import com.yanzhenjie.andserver.http.session.Session;
 import com.yanzhenjie.andserver.http.session.SessionManager;
 import com.yanzhenjie.andserver.http.session.StandardSessionManager;
-import com.yanzhenjie.andserver.register.Register;
 import com.yanzhenjie.andserver.util.Assert;
-
-import org.apache.hc.core5.http.ClassicHttpRequest;
-import org.apache.hc.core5.http.ClassicHttpResponse;
-import org.apache.hc.core5.http.io.HttpRequestHandler;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created by Zhenjie Yan on 2018/8/8.
- */
-public class DispatcherHandler implements HttpRequestHandler, Register {
+public class BasicDispatcherHandler implements DispatcherHandler {
 
-    public static final String SUB_TAG = "DispatcherHandler";
+    public static final String SUB_TAG = "BasicDispatcherHandler";
     public static final String TAG = AndServer.genAndServerTag(SUB_TAG);
 
     private final Context mContext;
 
     private final SessionManager mSessionManager;
+    private final List<HandlerAdapter> mAdapterList = new LinkedList<>();
+    private final List<HandlerInterceptor> mInterceptorList = new LinkedList<>();
     private MessageConverter mConverter;
     private ViewResolver mViewResolver;
     private ExceptionResolver mResolver;
     private Multipart mMultipart;
 
-    private final List<HandlerAdapter> mAdapterList = new LinkedList<>();
-    private final List<HandlerInterceptor> mInterceptorList = new LinkedList<>();
-
-    public DispatcherHandler(Context context) {
+    public BasicDispatcherHandler(Context context) {
         this.mContext = context;
         this.mSessionManager = new StandardSessionManager(context);
         this.mViewResolver = new ViewResolver();
@@ -126,16 +118,8 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
     }
 
     @Override
-    public void handle(ClassicHttpRequest request,
-                       ClassicHttpResponse response,
-                       org.apache.hc.core5.http.protocol.HttpContext context) {
-        HttpRequest requestWrapped = new StandardRequest(request, new StandardContext(context),
-                this, mSessionManager);
-        HttpResponse responseWrapped = new StandardResponse(response);
-        handle(requestWrapped, responseWrapped);
-    }
-
-    private void handle(HttpRequest request, HttpResponse response) {
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public void handle(HttpRequest request, HttpResponse response) {
         MultipartResolver multipartResolver = new StandardMultipartResolver();
         try {
             if (multipartResolver.isMultipart(request)) {
@@ -210,11 +194,10 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
      * Return the {@link RequestHandler} for this request.
      *
      * @param request current HTTP request.
-     *
      * @return the {@link RequestHandler}, or {@code null} if no handler could be found.
      */
     private HandlerAdapter getHandlerAdapter(HttpRequest request) {
-        for (HandlerAdapter ha: mAdapterList) {
+        for (HandlerAdapter ha : mAdapterList) {
             if (ha.intercept(request)) {
                 return ha;
             }
@@ -225,14 +208,13 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
     /**
      * Intercept the execution of a handler.
      *
-     * @param request current request.
+     * @param request  current request.
      * @param response current response.
-     * @param handler the corresponding handler of the current request.
-     *
+     * @param handler  the corresponding handler of the current request.
      * @return true if the interceptor has processed the request and responded.
      */
     private boolean preHandle(HttpRequest request, HttpResponse response, RequestHandler handler) throws Exception {
-        for (HandlerInterceptor interceptor: mInterceptorList) {
+        for (HandlerInterceptor interceptor : mInterceptorList) {
             if (interceptor.onIntercept(request, response, handler)) {
                 return true;
             }
@@ -240,6 +222,7 @@ public class DispatcherHandler implements HttpRequestHandler, Register {
         return false;
     }
 
+    @Override
     @Nullable
     public RequestDispatcher getRequestDispatcher(final HttpRequest request, final String path) {
         HttpRequest copyRequest = request;

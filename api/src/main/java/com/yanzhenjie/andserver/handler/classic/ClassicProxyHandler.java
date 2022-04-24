@@ -1,5 +1,6 @@
 /*
- * Copyright 2020 Zhenjie Yan.
+ * Copyright (C) 2020 Zhenjie Yan
+ *               2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver;
+package com.yanzhenjie.andserver.handler.classic;
 
 import androidx.annotation.NonNull;
 
@@ -41,7 +42,7 @@ import java.util.Set;
 /**
  * Created by Zhenjie Yan on 3/7/20.
  */
-public class ProxyHandler implements HttpRequestHandler {
+public class ClassicProxyHandler implements HttpRequestHandler {
 
     private final static Set<String> HOP_BY_HOP = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
             HttpHeaders.HOST.toLowerCase(Locale.ROOT),
@@ -57,14 +58,14 @@ public class ProxyHandler implements HttpRequestHandler {
     private final HttpHost mTargetHost;
     private final HttpRequester mRequester;
 
-    public ProxyHandler(@NonNull HttpHost targetHost, @NonNull HttpRequester requester) {
+    public ClassicProxyHandler(@NonNull HttpHost targetHost, @NonNull HttpRequester requester) {
         this.mTargetHost = targetHost;
         this.mRequester = requester;
     }
 
     @Override
     public void handle(ClassicHttpRequest incomingRequest, ClassicHttpResponse outgoingResponse, HttpContext context)
-        throws HttpException, IOException {
+            throws HttpException, IOException {
 
         final HttpCoreContext clientContext = HttpCoreContext.create();
         final ClassicHttpRequest outgoingRequest = new BasicClassicHttpRequest(

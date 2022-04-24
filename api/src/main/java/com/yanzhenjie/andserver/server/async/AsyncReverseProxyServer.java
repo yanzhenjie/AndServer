@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Zhenjie Yan.
+ * Copyright (C) 2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,72 +13,86 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver.server;
+package com.yanzhenjie.andserver.server.async;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.AndServer;
-import com.yanzhenjie.andserver.ProxyHandler;
-import com.yanzhenjie.andserver.Server;
+import com.yanzhenjie.andserver.AsyncServer;
+import com.yanzhenjie.andserver.handler.async.ProxyIncomingExchangeHandler;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.hc.core5.http.ConnectionClosedException;
-import org.apache.hc.core5.http.ExceptionListener;
+import org.apache.hc.core5.function.Callback;
+import org.apache.hc.core5.function.Supplier;
+import org.apache.hc.core5.http.EntityDetails;
 import org.apache.hc.core5.http.HttpConnection;
 import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.impl.Http1StreamListener;
-import org.apache.hc.core5.http.impl.bootstrap.HttpRequester;
-import org.apache.hc.core5.http.impl.bootstrap.RequesterBootstrap;
-import org.apache.hc.core5.http.io.HttpRequestHandler;
+import org.apache.hc.core5.http.impl.bootstrap.AsyncRequesterBootstrap;
+import org.apache.hc.core5.http.impl.bootstrap.HttpAsyncRequester;
+import org.apache.hc.core5.http.impl.nio.BufferedData;
+import org.apache.hc.core5.http.nio.AsyncClientEndpoint;
+import org.apache.hc.core5.http.nio.AsyncServerExchangeHandler;
+import org.apache.hc.core5.http.nio.CapacityChannel;
+import org.apache.hc.core5.http.nio.DataStreamChannel;
+import org.apache.hc.core5.http.nio.ResponseChannel;
+import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.pool.ConnPoolListener;
 import org.apache.hc.core5.pool.ConnPoolStats;
 import org.apache.hc.core5.pool.PoolStats;
 
+import java.io.IOException;
 import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Created by Zhenjie Yan on 3/7/20.
+ * Created by ISNing on 2022/4/26.
  */
-public class ProxyServer extends BasicServer<ProxyServer.Builder> {
+public class AsyncReverseProxyServer extends BasicAsyncServer<AsyncReverseProxyServer.Builder> {
 
-    public static final String SUB_TAG = "ProxyServer";
+    public static final String SUB_TAG = "AsyncReverseProxyServer";
     public static final String TAG = AndServer.genAndServerTag(SUB_TAG);
 
-    public static ProxyServer.Builder newBuilder() {
-        return new ProxyServer.Builder();
-    }
-
+    private static final int INIT_BUFFER_SIZE = 4096;
+    private static final AtomicLong COUNT = new AtomicLong(0);
     private final Map<String, HttpHost> mHostList;
+    private HttpAsyncRequester mRequester;
 
-    private HttpRequester mRequester;
-
-    private ProxyServer(Builder builder) {
+    private AsyncReverseProxyServer(Builder builder) {
         super(builder);
 
         this.mHostList = builder.mHostList;
     }
 
+    public static AsyncReverseProxyServer.Builder newBuilder() {
+        return new AsyncReverseProxyServer.Builder();
+    }
+
     @NonNull
     @Override
-    protected Collection<ImmutableTriple<String, String, HttpRequestHandler>> requestHandlers() {
-        Set<ImmutableTriple<String, String, HttpRequestHandler>> tripleSet = new HashSet<>(mHostList.size());
+    protected Collection<ImmutableTriple<String, String, Supplier<AsyncServerExchangeHandler>>> requestHandlers() {
+        Set<ImmutableTriple<String, String, Supplier<AsyncServerExchangeHandler>>> tripleSet = new HashSet<>(mHostList.size());
         if (mRequester == null) {
             initializeRequester();
         }
         for (String hostname : mHostList.keySet()) {
-            ImmutableTriple<String, String, HttpRequestHandler> triple = new ImmutableTriple<>(hostname, "*", new ProxyHandler(mHostList.get(hostname), mRequester));
+            ImmutableTriple<String, String, Supplier<AsyncServerExchangeHandler>> triple =
+                    new ImmutableTriple<>(hostname, "*",
+                            () -> new ProxyIncomingExchangeHandler(
+                                    mHostList.get(hostname), mRequester, INIT_BUFFER_SIZE));
             tripleSet.add(triple);
         }
         return tripleSet;
@@ -88,7 +102,6 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
     @Override
     protected Http1StreamListener requestHttp1StreamListener() {
         return new Http1StreamListener() {
-
             @Override
             public void onRequestHead(final HttpConnection connection, final HttpRequest request) {
                 Log.d(TAG, "[client->proxy] " + Thread.currentThread() + " " +
@@ -111,47 +124,43 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
 
     @NonNull
     @Override
-    protected ExceptionListener requestExceptionListener() {
-        return new ExceptionListener() {
-
-            @Override
-            public void onError(final Exception ex) {
-                if (ex instanceof SocketException) {
-                    Log.d(TAG, "[client->proxy] " + Thread.currentThread() + " " + ex.getMessage());
-                } else {
-                    Log.d(TAG, "[client->proxy] " + Thread.currentThread()  + " " + ex.getMessage());
-                    ex.printStackTrace();
-                }
+    protected Callback<Exception> requestExceptionCallback() {
+        return object -> {
+            if (object instanceof SocketException) {
+                Log.e(TAG, "[client->proxy] " + Thread.currentThread() + " " + object.getMessage());
+            } else {
+                Log.e(TAG, "[client->proxy] " + Thread.currentThread() + " " + object.getMessage());
+                object.printStackTrace();
             }
-
-            @Override
-            public void onError(final HttpConnection connection, final Exception ex) {
-                if (ex instanceof SocketTimeoutException) {
-                    Log.d(TAG, "[client->proxy] " + Thread.currentThread() + " time out");
-                } else if (ex instanceof SocketException || ex instanceof ConnectionClosedException) {
-                    Log.d(TAG, "[client->proxy] " + Thread.currentThread() + " " + ex.getMessage());
-                } else {
-                    Log.d(TAG, "[client->proxy] " + Thread.currentThread() + " " + ex.getMessage());
-                    ex.printStackTrace();
-                }
-            }
-
         };
     }
 
-    private HttpRequester initializeRequester() {
-        mRequester = RequesterBootstrap.bootstrap()
-                .setStreamListener(new Http1StreamListener() {
+    @Nullable
+    @Override
+    protected Runnable requestStartupHook() {
+        return this::initializeRequester;
+    }
 
+    @Nullable
+    @Override
+    protected Runnable requestShutdownHook() {
+        return () -> mRequester.close(CloseMode.GRACEFUL);
+    }
+
+    private void initializeRequester() {
+        mRequester = AsyncRequesterBootstrap.bootstrap()
+                .setIOReactorConfig(this.getIOReactorConfig() == null ?
+                        null : this.getIOReactorConfig().getIOReactorConfig())
+                .setStreamListener(new Http1StreamListener() {
                     @Override
                     public void onRequestHead(final HttpConnection connection, final HttpRequest request) {
-                        Log.d(TAG, "[proxy->origin] " + Thread.currentThread()  + " " +
+                        Log.d(TAG, "[proxy->origin] " + Thread.currentThread() + " " +
                                 request.getMethod() + " " + request.getRequestUri());
                     }
 
                     @Override
                     public void onResponseHead(final HttpConnection connection, final HttpResponse response) {
-                        Log.d(TAG, "[proxy<-origin] " + Thread.currentThread()  + " status " + response.getCode());
+                        Log.d(TAG, "[proxy<-origin] " + Thread.currentThread() + " status " + response.getCode());
                     }
 
                     @Override
@@ -159,10 +168,8 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
                         Log.d(TAG, "[proxy<-origin] " + Thread.currentThread() + " exchange completed; " +
                                 "connection " + (keepAlive ? "kept alive" : "cannot be kept alive"));
                     }
-
                 })
                 .setConnPoolListener(new ConnPoolListener<HttpHost>() {
-
                     @Override
                     public void onLease(final HttpHost route, final ConnPoolStats<HttpHost> connPoolStats) {
                         Log.d(TAG, "[proxy->origin] " + Thread.currentThread() + " connection leased " + route);
@@ -178,14 +185,14 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
                         buf.append(" of ").append(totals.getMax());
                         Log.d(TAG, buf.toString());
                     }
-
                 })
                 .create();
-        return mRequester;
+
+        mRequester.start();
     }
 
-    public static class Builder extends BasicServer.Builder<Builder, ProxyServer>
-        implements Server.ProxyBuilder<Builder, ProxyServer> {
+    public static class Builder extends BasicAsyncServer.Builder<Builder, AsyncReverseProxyServer>
+            implements AsyncServer.ProxyBuilder<Builder, AsyncReverseProxyServer> {
 
         private final Map<String, HttpHost> mHostList = new HashMap<>();
 
@@ -199,8 +206,49 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
         }
 
         @Override
-        public ProxyServer build() {
-            return new ProxyServer(this);
+        public AsyncReverseProxyServer build() {
+            return new AsyncReverseProxyServer(this);
+        }
+    }
+
+    public static class ProxyBuffer extends BufferedData {
+
+        public ProxyBuffer(final int bufferSize) {
+            super(bufferSize);
+        }
+
+        public int write(final DataStreamChannel channel) throws IOException {
+            setOutputMode();
+            if (buffer().hasRemaining()) {
+                return channel.write(buffer());
+            }
+            return 0;
+        }
+    }
+
+    public static class ProxyExchangeState {
+
+        public final String id;
+
+        public HttpRequest request;
+        public EntityDetails requestEntityDetails;
+        public DataStreamChannel requestDataChannel;
+        public CapacityChannel requestCapacityChannel;
+        public ProxyBuffer inBuf;
+        public boolean inputEnd;
+
+        public HttpResponse response;
+        public EntityDetails responseEntityDetails;
+        public ResponseChannel responseMessageChannel;
+        public DataStreamChannel responseDataChannel;
+        public CapacityChannel responseCapacityChannel;
+        public ProxyBuffer outBuf;
+        public boolean outputEnd;
+
+        public AsyncClientEndpoint clientEndpoint;
+
+        public ProxyExchangeState() {
+            this.id = String.format(Locale.ROOT, "%010d", COUNT.getAndIncrement());
         }
     }
 }

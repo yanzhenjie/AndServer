@@ -1,5 +1,6 @@
 /*
- * Copyright 2018 Zhenjie Yan.
+ * Copyright (C) 2018 Zhenjie Yan
+ *               2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,20 +23,13 @@ import com.yanzhenjie.andserver.http.cookie.Cookie;
 import com.yanzhenjie.andserver.http.cookie.CookieProcessor;
 import com.yanzhenjie.andserver.http.cookie.StandardCookieProcessor;
 import com.yanzhenjie.andserver.util.HttpDateFormat;
-import com.yanzhenjie.andserver.util.MediaType;
 
-import org.apache.hc.core5.function.Supplier;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.Header;
-import org.apache.hc.core5.http.HttpEntity;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Zhenjie Yan on 2018/6/12.
@@ -44,9 +38,10 @@ public class StandardResponse implements HttpResponse {
 
     private static final CookieProcessor COOKIE_PROCESSOR = new StandardCookieProcessor();
 
-    private final ClassicHttpResponse mResponse;
+    private final org.apache.hc.core5.http.HttpResponse mResponse;
+    private ResponseBody mBody;
 
-    public StandardResponse(ClassicHttpResponse response) {
+    public StandardResponse(org.apache.hc.core5.http.HttpResponse response) {
         this.mResponse = response;
     }
 
@@ -144,75 +139,14 @@ public class StandardResponse implements HttpResponse {
     }
 
     @Override
-    public void setBody(ResponseBody body) {
-        mResponse.setEntity(new BodyToEntity(body));
+    public ResponseBody getBody() {
+        return mBody;
     }
 
-    private static class BodyToEntity implements HttpEntity {
-
-        private final ResponseBody mBody;
-
-        private BodyToEntity(ResponseBody body) {
-            this.mBody = body;
-        }
-
-        @Override
-        public boolean isRepeatable() {
-            return false;
-        }
-
-        @Override
-        public boolean isChunked() {
-            return false;
-        }
-
-        @Override
-        public Set<String> getTrailerNames() {
-            return null;
-        }
-
-        @Override
-        public long getContentLength() {
-            return mBody.contentLength();
-        }
-
-        @Override
-        public String getContentType() {
-            MediaType mimeType = mBody.contentType();
-            if (mimeType == null) {
-                return null;
-            }
-            return mimeType.toString();
-        }
-
-        @Override
-        public String getContentEncoding() {
-            return null;
-        }
-
-        @Override
-        public InputStream getContent() throws IOException {
-            return null;
-        }
-
-        @Override
-        public void writeTo(OutputStream out) throws IOException {
-            mBody.writeTo(out);
-        }
-
-        @Override
-        public boolean isStreaming() {
-            return false;
-        }
-
-        @Override
-        public Supplier<List<? extends Header>> getTrailers() {
-            return null;
-        }
-
-        @Override
-        public void close() throws IOException {
-
-        }
+    @Override
+    public void setBody(ResponseBody body) {
+        if (mResponse instanceof ClassicHttpResponse)
+            ((ClassicHttpResponse) mResponse).setEntity(body.toEntity());
+        mBody = body;
     }
 }

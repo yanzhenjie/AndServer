@@ -1,5 +1,6 @@
 /*
- * Copyright © 2018 Zhenjie Yan.
+ * Copyright (C) 2018 Zhenjie Yan
+ *               2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,5 +119,11 @@ public class ResponseWrapper implements HttpResponse {
     @Override
     public void setBody(ResponseBody body) {
         mResponse.setBody(body);
+    }
+
+
+    @Override
+    public ResponseBody getBody() {
+        return mResponse.getBody();
     }
 }

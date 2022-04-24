@@ -1,5 +1,6 @@
 /*
- * Copyright 2018 Zhenjie Yan.
+ * Copyright (C) 2018 Zhenjie Yan
+ *               2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +21,8 @@ import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.util.MediaType;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.nio.AsyncEntityProducer;
 
 /**
  * Created by Zhenjie Yan on 2018/8/3.
@@ -29,32 +30,22 @@ import java.io.OutputStream;
 public interface ResponseBody {
 
     /**
-     * Can it be reused?
-     *
-     * @return true, otherwise is false.
-     */
-    boolean isRepeatable();
-
-    /**
-     * Get the content-length of the message body, if the length is unknown, return a negative value.
-     *
-     * @return message length.
-     */
-    long contentLength();
-
-    /**
      * Get the content-type of the message body, including charset.
      *
      * @return e.g. {@code application/json; charset=utf-8}.
      */
     @Nullable
-    MediaType contentType();
+    MediaType getContentTypeMedia();
 
     /**
-     * Write the body to the output stream.
-     *
-     * @param output the output stream to write the body.
+     * Convert to {@link AsyncEntityProducer}
      */
-    void writeTo(@NonNull OutputStream output) throws IOException;
+    @NonNull
+    AsyncEntityProducer toEntityProducer();
 
+    /**
+     * Convert to {@link HttpEntity}
+     */
+    @NonNull
+    HttpEntity toEntity();
 }

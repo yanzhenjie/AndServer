@@ -36,7 +36,7 @@ public class JsonBody extends StringBody {
 
     @Nullable
     @Override
-    public MediaType contentType() {
+    public MediaType getContentTypeMedia() {
         return MediaType.APPLICATION_JSON_UTF8;
     }
 }

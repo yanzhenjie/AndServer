@@ -1,5 +1,6 @@
 /*
- * Copyright © 2018 Zhenjie Yan.
+ * Copyright (C) 2018 Zhenjie Yan
+ *               2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -134,12 +135,12 @@ public class FileBrowser extends BasicWebsite implements Patterns {
             return new FileBody(tempFile) {
                 @Nullable
                 @Override
-                public MediaType contentType() {
-                    MediaType mimeType = super.contentType();
+                public MediaType getContentTypeMedia() {
+                    MediaType mimeType = super.getContentTypeMedia();
                     if (mimeType != null) {
                         mimeType = new MediaType(mimeType.getType(),
-                            mimeType.getSubtype(),
-                            Charsets.toCharset("utf-8"));
+                                mimeType.getSubtype(),
+                                Charsets.toCharset("utf-8"));
                     }
                     return mimeType;
                 }

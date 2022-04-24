@@ -1,5 +1,6 @@
 /*
- * Copyright 2018 Zhenjie Yan.
+ * Copyright (C) 2018 Zhenjie Yan
+ *               2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +20,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.http.ResponseBody;
-import com.yanzhenjie.andserver.util.IOUtils;
 import com.yanzhenjie.andserver.util.MediaType;
 
 import org.apache.commons.io.Charsets;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.io.entity.StringEntity;
+import org.apache.hc.core5.http.nio.AsyncEntityProducer;
+import org.apache.hc.core5.http.nio.entity.StringAsyncEntityProducer;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 /**
@@ -33,7 +36,7 @@ import java.nio.charset.Charset;
  */
 public class StringBody implements ResponseBody {
 
-    private final byte[] mBody;
+    private final String mBody;
     private MediaType mMediaType;
 
     public StringBody(String body) {
@@ -50,26 +53,20 @@ public class StringBody implements ResponseBody {
             mMediaType = new MediaType(MediaType.TEXT_PLAIN, Charsets.toCharset("utf-8"));
         }
 
-        Charset charset = mMediaType.getCharset();
-        if (charset == null) {
-            charset = Charsets.toCharset("utf-8");
+        this.mBody = body;
+    }
+
+    public String getContentType() {
+        MediaType mimeType = this.getContentTypeMedia();
+        if (mimeType == null) {
+            return null;
         }
-        this.mBody = body.getBytes(charset);
-    }
-
-    @Override
-    public boolean isRepeatable() {
-        return true;
-    }
-
-    @Override
-    public long contentLength() {
-        return mBody.length;
+        return mimeType.toString();
     }
 
     @Nullable
     @Override
-    public MediaType contentType() {
+    public MediaType getContentTypeMedia() {
         Charset charset = mMediaType.getCharset();
         if (charset == null) {
             charset = Charsets.toCharset("utf-8");
@@ -78,8 +75,15 @@ public class StringBody implements ResponseBody {
         return mMediaType;
     }
 
+    @NonNull
     @Override
-    public void writeTo(@NonNull OutputStream output) throws IOException {
-        IOUtils.write(output, mBody);
+    public AsyncEntityProducer toEntityProducer() {
+        return new StringAsyncEntityProducer(mBody, ContentType.parse(getContentType()));
+    }
+
+    @NonNull
+    @Override
+    public HttpEntity toEntity() {
+        return new StringEntity(mBody, ContentType.parse(getContentType()));
     }
 }

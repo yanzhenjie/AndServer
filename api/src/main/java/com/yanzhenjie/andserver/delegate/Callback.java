@@ -1,5 +1,5 @@
 /*
- * Copyright © 2018 Zhenjie Yan.
+ * Copyright (C) 2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yanzhenjie.andserver;
+package com.yanzhenjie.andserver.delegate;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.RestrictTo;
 
-import javax.net.ssl.SSLParameters;
+public interface Callback<T> {
 
-/**
- * Created by Zhenjie Yan on 2018/9/10.
- */
-public interface SSLSocketInitializer {
+    void execute(T object);
 
-    void onCreated(@NonNull SSLParameters sslParameters);
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    default org.apache.hc.core5.function.Callback<T> wrapped() {
+        return new org.apache.hc.core5.function.Callback<T>() {
+            @Override
+            public void execute(T object) {
+                execute(object);
+            }
+        };
+    }
 }

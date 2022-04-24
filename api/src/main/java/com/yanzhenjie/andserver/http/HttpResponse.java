@@ -1,5 +1,6 @@
 /*
- * Copyright 2018 Zhenjie Yan.
+ * Copyright (C) 2018 Zhenjie Yan
+ *               2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -157,4 +158,6 @@ public interface HttpResponse extends StatusCode, HttpHeaders {
      * @param body write the message content sent to the client.
      */
     void setBody(ResponseBody body);
+
+    ResponseBody getBody();
 }

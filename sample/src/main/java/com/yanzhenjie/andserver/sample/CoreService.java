@@ -1,5 +1,6 @@
 /*
- * Copyright © 2018 Zhenjie Yan.
+ * Copyright (C) 2018 Zhenjie Yan
+ *               2022 ISNing
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,45 +23,58 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.AndServer;
-import com.yanzhenjie.andserver.Server;
+import com.yanzhenjie.andserver.AsyncServer;
+import com.yanzhenjie.andserver.delegate.IOReactorConfigDelegate;
+import com.yanzhenjie.andserver.http.URIScheme;
 import com.yanzhenjie.andserver.sample.util.NetUtils;
 
 import java.net.InetAddress;
-import java.util.concurrent.TimeUnit;
+import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * Created by Zhenjie Yan on 2018/6/9.
  */
 public class CoreService extends Service {
+    private static final String TAG = "CoreService";
 
-    private Server mServer;
+    private AsyncServer mServer;
 
     @Override
     public void onCreate() {
         InetAddress address = NetUtils.getLocalIPAddress();
         String hostAddress = address == null ? null : address.getHostAddress();
-        mServer = AndServer.webServer(this)
-            .port(8080)
-            .canonicalHostName(hostAddress)
-            .timeout(10, TimeUnit.SECONDS)
-            .listener(new Server.ServerListener() {
-                @Override
-                public void onStarted() {
-                    ServerManager.onServerStart(CoreService.this, hostAddress);
-                }
+        mServer = AndServer.webServerAsync(this)
+                .setCanonicalHostName(hostAddress)
+                .setIOReactorConfig(IOReactorConfigDelegate.custom()
+                        .setSoReuseAddress(true)
+                        .setTcpNoDelay(true)
+                        .build())
+                .setListener(new AsyncServer.ServerListener() {
+                    @Override
+                    public void onStarted() {
+                        Future<?> future = mServer.listen(new InetSocketAddress(8080), URIScheme.HTTP);
+                        try {
+                            future.get();
+                        } catch (ExecutionException | InterruptedException e) {
+                            stopServer();
+                            ServerManager.onServerError(CoreService.this, e.getMessage());
+                        }
+                        ServerManager.onServerStart(CoreService.this, hostAddress);
+                    }
 
-                @Override
-                public void onStopped() {
-                    ServerManager.onServerStop(CoreService.this);
-                }
+                    @Override
+                    public void onStopped() {
+                        ServerManager.onServerStop(CoreService.this);
+                    }
 
-                @Override
-                public void onException(Exception e) {
-                    e.printStackTrace();
-                    ServerManager.onServerError(CoreService.this, e.getMessage());
-                }
-            })
-            .build();
+                    @Override
+                    public void onException(Exception e) {
+                        e.printStackTrace();
+                    }
+                })
+                .build();
     }
 
     @Override
