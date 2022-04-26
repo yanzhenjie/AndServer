@@ -53,10 +53,9 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.UUID;
 
 /**
  * Created by ISNing on 2022/4/26.
@@ -67,7 +66,6 @@ public class AsyncReverseProxyServer extends BasicAsyncServer<AsyncReverseProxyS
     public static final String TAG = AndServer.genAndServerTag(SUB_TAG);
 
     private static final int INIT_BUFFER_SIZE = 4096;
-    private static final AtomicLong COUNT = new AtomicLong(0);
     private final Map<String, HttpHost> mHostList;
     private HttpAsyncRequester mRequester;
 
@@ -248,7 +246,7 @@ public class AsyncReverseProxyServer extends BasicAsyncServer<AsyncReverseProxyS
         public AsyncClientEndpoint clientEndpoint;
 
         public ProxyExchangeState() {
-            this.id = String.format(Locale.ROOT, "%010d", COUNT.getAndIncrement());
+            this.id = UUID.randomUUID().toString();
         }
     }
 }
