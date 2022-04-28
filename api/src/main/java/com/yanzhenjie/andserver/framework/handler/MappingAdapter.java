@@ -29,11 +29,14 @@ import com.yanzhenjie.andserver.framework.mapping.Mapping;
 import com.yanzhenjie.andserver.framework.mapping.Mime;
 import com.yanzhenjie.andserver.framework.mapping.Pair;
 import com.yanzhenjie.andserver.framework.mapping.Path;
+import com.yanzhenjie.andserver.http.Header;
 import com.yanzhenjie.andserver.http.HttpContext;
 import com.yanzhenjie.andserver.http.HttpMethod;
 import com.yanzhenjie.andserver.http.HttpRequest;
 import com.yanzhenjie.andserver.util.MediaType;
 import com.yanzhenjie.andserver.util.Patterns;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -217,25 +220,27 @@ public abstract class MappingAdapter implements HandlerAdapter, Patterns {
         List<Pair.Rule> rules = header.getRuleList();
         for (Pair.Rule rule: rules) {
             String key = rule.getKey();
-            List<String> keys = request.getHeaderNames();
+            List<Header> allHeaders = request.getHeaders();
             String value = rule.getValue();
-            List<String> values = request.getHeaders(key);
+            List<Header> headersWithKey = request.getHeaders(key);
             if (rule.isNoKey()) {
-                if (keys.contains(key)) {
-                    throw new HeaderValidateException(String.format("The header [%s] is not allowed.", key));
-                }
+                for (Header h : allHeaders)
+                    if (h.getName().equals(key)) {
+                        throw new HeaderValidateException(String.format("The header [%s] is not allowed.", key));
+                    }
             } else if (rule.isNoValue()) {
-                if (values.contains(value)) {
-                    throw new HeaderValidateException(
-                        String.format("The value of header %s cannot be %s.", key, value));
-                }
-            } else if (!TextUtils.isEmpty(key) && !TextUtils.isEmpty(value) &&
-                (!keys.contains(key) || !values.contains(value))) {
+                for (Header h : headersWithKey)
+                    if (StringUtils.equals(value, h.getValue())) {
+                        throw new HeaderValidateException(
+                                String.format("The value of header %s cannot be %s.", key, value));
+                    }
+            } else p1:if (!StringUtils.isEmpty(key) && !StringUtils.isEmpty(value)) {
+                for (Header h : headersWithKey)
+                    if (StringUtils.equals(value, h.getValue())) break p1;
                 throw new HeaderValidateException(String.format("The value of header %s is missing or wrong.", key));
-            } else if (!TextUtils.isEmpty(key) && TextUtils.isEmpty(value)) {
-                if (!keys.contains(key)) {
-                    throw new HeaderValidateException(String.format("The header %s is missing.", key));
-                }
+            } else p2:if (!StringUtils.isEmpty(key) && StringUtils.isEmpty(value)) {
+                for (Header h : allHeaders) if (h.getName().equals(key)) break p2;
+                throw new HeaderValidateException(String.format("The header %s is missing.", key));
             }
         }
     }

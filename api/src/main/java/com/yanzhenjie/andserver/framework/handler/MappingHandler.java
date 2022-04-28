@@ -29,6 +29,7 @@ import com.yanzhenjie.andserver.framework.mapping.Mapping;
 import com.yanzhenjie.andserver.framework.mapping.Path;
 import com.yanzhenjie.andserver.framework.view.BodyView;
 import com.yanzhenjie.andserver.framework.view.View;
+import com.yanzhenjie.andserver.http.Header;
 import com.yanzhenjie.andserver.http.HttpHeaders;
 import com.yanzhenjie.andserver.http.HttpMethod;
 import com.yanzhenjie.andserver.http.HttpRequest;
@@ -157,7 +158,8 @@ public abstract class MappingHandler implements MethodHandler {
 
     @Override
     public View handle(@NonNull HttpRequest request, @NonNull HttpResponse response) throws Throwable {
-        String origin = request.getHeader(HttpHeaders.ORIGIN);
+        Header header = request.getHeader(HttpHeaders.ORIGIN);
+        String origin = header == null ? null : header.getValue();
         if (!StringUtils.isEmpty(origin) && mCrossOrigin != null) {
             HttpMethod method = request.getMethod();
 

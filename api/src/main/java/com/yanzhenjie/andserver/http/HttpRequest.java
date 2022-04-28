@@ -105,11 +105,11 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
     MultiValueMap<String, String> getQuery();
 
     /**
-     * Returns an {@link List} of all the header names this request contains, or empty {@link List} if the request has
+     * Returns an {@link List} of all the header this request contains, or empty {@link List} if the request has
      * no headers.
      */
     @NonNull
-    List<String> getHeaderNames();
+    List<Header> getHeaders();
 
     /**
      * Returns the value of the specified request header as a {@code String}. If the request did not include a header of
@@ -117,11 +117,10 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
      * method returns the first head in the request.
      *
      * @param name a {@code String} specifying the header name.
-     *
      * @see #getHeaders(String)
      */
     @Nullable
-    String getHeader(@NonNull String name);
+    Header getHeader(@NonNull String name);
 
     /**
      * Returns all the values of the specified request header as an {@link List} of {@code String}.
@@ -134,7 +133,7 @@ public interface HttpRequest extends HttpContext, HttpHeaders {
      * @param name a {@code String} specifying the header name.
      */
     @NonNull
-    List<String> getHeaders(@NonNull String name);
+    List<Header> getHeaders(@NonNull String name);
 
     /**
      * Returns the value of the specified request header as a {@code long} value that represents a {@link Date} object.

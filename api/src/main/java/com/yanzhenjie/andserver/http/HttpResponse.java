@@ -21,7 +21,6 @@ import androidx.annotation.Nullable;
 
 import com.yanzhenjie.andserver.http.cookie.Cookie;
 
-import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -53,6 +52,7 @@ public interface HttpResponse extends StatusCode, HttpHeaders {
      *
      * @see #containsHeader(String)
      * @see #addHeader(String, String)
+     * @see #setHeader(Header)
      */
     void setHeader(@NonNull String name, @NonNull String value);
 
@@ -60,8 +60,27 @@ public interface HttpResponse extends StatusCode, HttpHeaders {
      * Adds a response header with the given name and value. This method allows response headers to have multiple values.
      *
      * @see #setHeader(String, String)
+     * @see #addHeader(Header)
      */
     void addHeader(@NonNull String name, @NonNull String value);
+
+    /**
+     * Sets a response header with the given name and value. If the header had already been set, the new value overwrites
+     * the previous one. The {@link #containsHeader(String)} method can be used to test for the presence of a header before
+     * setting its value.
+     *
+     * @see #containsHeader(String)
+     * @see #setHeader(String, String)
+     */
+    void setHeader(@NonNull Header header);
+
+    /**
+     * Adds a response header with the given name and value. This method allows response headers to have multiple values.
+     *
+     * @see #setHeader(Header)
+     * @see #addHeader(String, String)
+     */
+    void addHeader(@NonNull Header header);
 
     /**
      * Gets the value of the response header with the given name.
@@ -70,12 +89,11 @@ public interface HttpResponse extends StatusCode, HttpHeaders {
      * will be returned.
      *
      * @param name the name of the response header.
-     *
-     * @return the value of the response header with the given name, or {@code null} if no header with the given name has
-     *     been set on this response.
+     * @return the response header with the given name, or {@code null} if no header with the given name has
+     * been set on this response.
      */
     @Nullable
-    String getHeader(@NonNull String name);
+    Header getHeader(@NonNull String name);
 
     /**
      * Sets a response header with the given name and date-value. The date is specified in terms of milliseconds since the
@@ -125,18 +143,18 @@ public interface HttpResponse extends StatusCode, HttpHeaders {
      *
      * @param name the name of the response header.
      *
-     * @return a {@link List} of the values of the response header with the given name.
+     * @return a {@link List} of the response header with the given name.
      */
     @NonNull
-    List<String> getHeaders(@NonNull String name);
+    List<Header> getHeaders(@NonNull String name);
 
     /**
      * Gets the names of the headers of this response.
      *
-     * @return a {@link Enumeration} of the names of the headers of this response.
+     * @return a {@link List} of the headers contained in this response.
      */
     @NonNull
-    List<String> getHeaderNames();
+    List<Header> getHeaders();
 
     /**
      * Adds the specified cookie to the response. This method can be called multiple times to set more than one cookie.

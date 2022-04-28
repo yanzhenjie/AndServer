@@ -90,19 +90,19 @@ public class RequestWrapper implements HttpRequest {
 
     @NonNull
     @Override
-    public List<String> getHeaderNames() {
-        return mRequest.getHeaderNames();
+    public List<Header> getHeaders() {
+        return mRequest.getHeaders();
     }
 
     @Nullable
     @Override
-    public String getHeader(@NonNull String name) {
+    public Header getHeader(@NonNull String name) {
         return mRequest.getHeader(name);
     }
 
     @NonNull
     @Override
-    public List<String> getHeaders(@NonNull String name) {
+    public List<Header> getHeaders(@NonNull String name) {
         return mRequest.getHeaders(name);
     }
 

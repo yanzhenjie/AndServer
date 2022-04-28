@@ -27,7 +27,7 @@ import com.yanzhenjie.andserver.util.HttpDateFormat;
 import org.apache.hc.core5.http.ClassicHttpResponse;
 import org.apache.hc.core5.http.Header;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,11 +65,21 @@ public class StandardResponse implements HttpResponse {
         mResponse.addHeader(name, value);
     }
 
+    @Override
+    public void setHeader(@NonNull com.yanzhenjie.andserver.http.Header header) {
+        mResponse.setHeader(header.wrapped());
+    }
+
+    @Override
+    public void addHeader(@NonNull com.yanzhenjie.andserver.http.Header header) {
+        mResponse.addHeader(header.wrapped());
+    }
+
     @Nullable
     @Override
-    public String getHeader(@NonNull String name) {
+    public com.yanzhenjie.andserver.http.Header getHeader(@NonNull String name) {
         Header header = mResponse.getFirstHeader(name);
-        return header == null ? null : header.getValue();
+        return header == null ? null : new HeaderWrapper(header);
     }
 
     @Override
@@ -99,32 +109,24 @@ public class StandardResponse implements HttpResponse {
 
     @NonNull
     @Override
-    public List<String> getHeaders(@NonNull String name) {
+    public List<com.yanzhenjie.andserver.http.Header> getHeaders(@NonNull String name) {
         Header[] headers = mResponse.getHeaders(name);
         if (headers == null || headers.length == 0) {
             return Collections.emptyList();
         }
 
-        List<String> list = new ArrayList<>();
-        for (Header header: headers) {
-            list.add(header.getValue());
-        }
-        return list;
+        return HeaderWrapper.wrap(Arrays.asList(headers));
     }
 
     @NonNull
     @Override
-    public List<String> getHeaderNames() {
+    public List<com.yanzhenjie.andserver.http.Header> getHeaders() {
         Header[] headers = mResponse.getHeaders();
         if (headers == null || headers.length == 0) {
             return Collections.emptyList();
         }
 
-        List<String> list = new ArrayList<>();
-        for (Header header: headers) {
-            list.add(header.getName());
-        }
-        return list;
+        return HeaderWrapper.wrap(Arrays.asList(headers));
     }
 
     @Override

@@ -27,6 +27,7 @@ import com.yanzhenjie.andserver.framework.mapping.Addition;
 import com.yanzhenjie.andserver.framework.mapping.Mapping;
 import com.yanzhenjie.andserver.framework.view.BodyView;
 import com.yanzhenjie.andserver.framework.view.View;
+import com.yanzhenjie.andserver.http.Header;
 import com.yanzhenjie.andserver.http.HttpHeaders;
 import com.yanzhenjie.andserver.http.HttpMethod;
 import com.yanzhenjie.andserver.http.HttpRequest;
@@ -60,7 +61,8 @@ public class OptionsHandler implements MethodHandler {
         this.mMappingMap = mappingMap;
 
         mMapping = mMappings.get(0);
-        String requestMethod = optionsRequest.getHeader(HttpHeaders.Access_Control_Request_Method);
+        Header header = optionsRequest.getHeader(HttpHeaders.Access_Control_Request_Method);
+        String requestMethod = header == null ? null : header.getValue();
         if (!TextUtils.isEmpty(requestMethod)) {
             HttpMethod method = HttpMethod.reverse(requestMethod);
             Mapping exactMapping = MappingAdapter.findMappingByMethod(mMappings, method);
@@ -92,12 +94,14 @@ public class OptionsHandler implements MethodHandler {
 
     @Override
     public View handle(@NonNull HttpRequest request, @NonNull HttpResponse response) throws Throwable {
-        String requestOrigin = request.getHeader(HttpHeaders.ORIGIN);
+        Header headerOrigin = request.getHeader(HttpHeaders.ORIGIN);
+        String requestOrigin = headerOrigin == null ? null : headerOrigin.getValue();
         if (StringUtils.isEmpty(requestOrigin)) {
             return invalidCORS(response);
         }
 
-        String requestMethodText = request.getHeader(HttpHeaders.Access_Control_Request_Method);
+        Header headerACRM = request.getHeader(HttpHeaders.Access_Control_Request_Method);
+        String requestMethodText = headerACRM == null ? null : headerACRM.getValue();
         if (StringUtils.isEmpty(requestMethodText)) {
             return invalidCORS(response);
         }
@@ -135,7 +139,8 @@ public class OptionsHandler implements MethodHandler {
 
         List<String> allowedHeaders = Arrays.asList(crossOrigin.getAllowedHeaders());
         List<String> outHeaders = new ArrayList<>();
-        String headerHeadersText = request.getHeader(HttpHeaders.Access_Control_Request_Headers);
+        Header header = request.getHeader(HttpHeaders.Access_Control_Request_Headers);
+        String headerHeadersText = header == null ? null : header.getValue();
         List<String> requestHeaders = new ArrayList<>();
         if (!TextUtils.isEmpty(headerHeadersText)) {
             StringTokenizer st = new StringTokenizer(headerHeadersText, ",");

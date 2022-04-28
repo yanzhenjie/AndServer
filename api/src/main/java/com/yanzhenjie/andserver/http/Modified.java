@@ -118,19 +118,19 @@ public class Modified implements HttpHeaders {
             return false;
         }
 
-        List<String> ifNoneMatch = mRequest.getHeaders(IF_NONE_MATCH);
+        List<Header> ifNoneMatch = mRequest.getHeaders(IF_NONE_MATCH);
         if (ifNoneMatch.isEmpty()) {
             return false;
         }
 
         // We will perform this validation...
         eTag = padETagIfNecessary(eTag);
-        for (String clientETags: ifNoneMatch) {
-            Matcher eTagMatcher = ETAG_PATTERN.matcher(clientETags);
+        for (Header clientETags : ifNoneMatch) {
+            Matcher eTagMatcher = ETAG_PATTERN.matcher(clientETags.getValue());
             // Compare weak/strong ETags as per https://tools.ietf.org/html/rfc7232#section-2.3
             while (eTagMatcher.find()) {
                 if (!TextUtils.isEmpty(eTagMatcher.group()) &&
-                    eTag.replaceFirst("^W/", "").equals(eTagMatcher.group(3))) {
+                        eTag.replaceFirst("^W/", "").equals(eTagMatcher.group(3))) {
                     isNotModified = true;
                     break;
                 }
@@ -182,7 +182,8 @@ public class Modified implements HttpHeaders {
         try {
             dateValue = mRequest.getDateHeader(headerName);
         } catch (IllegalStateException ex) {
-            String headerValue = mRequest.getHeader(headerName);
+            Header header = mRequest.getHeader(headerName);
+            String headerValue = header == null ? null : header.getValue();
             if (StringUtils.isEmpty(headerValue)) {
                 return -1;
             }

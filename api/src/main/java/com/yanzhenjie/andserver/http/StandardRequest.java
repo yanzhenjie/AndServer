@@ -47,6 +47,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -195,39 +196,31 @@ public class StandardRequest implements HttpRequest {
 
     @NonNull
     @Override
-    public List<String> getHeaderNames() {
+    public List<com.yanzhenjie.andserver.http.Header> getHeaders() {
         Header[] headers = mRequest.getHeaders();
         if (headers == null || headers.length == 0) {
             return Collections.emptyList();
         }
 
-        List<String> nameList = new ArrayList<>();
-        for (Header header : headers) {
-            nameList.add(header.getName());
-        }
-        return nameList;
+        return HeaderWrapper.wrap(Arrays.asList(headers));
     }
 
     @Nullable
     @Override
-    public String getHeader(@NonNull String name) {
+    public com.yanzhenjie.andserver.http.Header getHeader(@NonNull String name) {
         Header header = mRequest.getFirstHeader(name);
-        return header == null ? null : header.getValue();
+        return header == null ? null : new HeaderWrapper(header);
     }
 
     @NonNull
     @Override
-    public List<String> getHeaders(@NonNull String name) {
+    public List<com.yanzhenjie.andserver.http.Header> getHeaders(@NonNull String name) {
         Header[] headers = mRequest.getHeaders(name);
         if (headers == null || headers.length == 0) {
             return Collections.emptyList();
         }
 
-        List<String> valueList = new ArrayList<>();
-        for (Header header : headers) {
-            valueList.add(header.getValue());
-        }
-        return valueList;
+        return HeaderWrapper.wrap(Arrays.asList(headers));
     }
 
     @Override
@@ -365,7 +358,8 @@ public class StandardRequest implements HttpRequest {
 
     @Override
     public long getContentLength() {
-        String contentLength = getHeader(CONTENT_LENGTH);
+        com.yanzhenjie.andserver.http.Header header = getHeader(CONTENT_LENGTH);
+        String contentLength = header == null ? null : header.getValue();
         if (TextUtils.isEmpty(contentLength)) {
             return -1;
         }
@@ -379,7 +373,8 @@ public class StandardRequest implements HttpRequest {
     @Nullable
     @Override
     public MediaType getContentType() {
-        String contentType = getHeader(CONTENT_TYPE);
+        com.yanzhenjie.andserver.http.Header header = getHeader(CONTENT_TYPE);
+        String contentType = header == null ? null : header.getValue();
         if (TextUtils.isEmpty(contentType)) {
             return null;
         }

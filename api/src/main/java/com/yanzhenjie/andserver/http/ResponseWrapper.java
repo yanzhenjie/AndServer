@@ -63,9 +63,19 @@ public class ResponseWrapper implements HttpResponse {
         mResponse.addHeader(name, value);
     }
 
+    @Override
+    public void setHeader(@NonNull Header header) {
+        mResponse.setHeader(header);
+    }
+
+    @Override
+    public void addHeader(@NonNull Header header) {
+        mResponse.addHeader(header);
+    }
+
     @Nullable
     @Override
-    public String getHeader(@NonNull String name) {
+    public Header getHeader(@NonNull String name) {
         return mResponse.getHeader(name);
     }
 
@@ -96,14 +106,14 @@ public class ResponseWrapper implements HttpResponse {
 
     @NonNull
     @Override
-    public List<String> getHeaders(@NonNull String name) {
+    public List<Header> getHeaders(@NonNull String name) {
         return mResponse.getHeaders(name);
     }
 
     @NonNull
     @Override
-    public List<String> getHeaderNames() {
-        return mResponse.getHeaderNames();
+    public List<Header> getHeaders() {
+        return mResponse.getHeaders();
     }
 
     @Override
