@@ -30,6 +30,7 @@ dependencies {
 
     implementation deps.apache.lang
     implementation deps.apache.httpcore
+    implementation deps.apache.httpcoreH2
     implementation deps.apache.fileupload
     compileOnly deps.android.annotation
 }

@@ -20,8 +20,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 import com.yanzhenjie.andserver.AndServer;
-import com.yanzhenjie.andserver.AsyncServer;
+import com.yanzhenjie.andserver.H2Server;
 import com.yanzhenjie.andserver.delegate.CharCodingConfigDelegate;
+import com.yanzhenjie.andserver.delegate.H2ConfigDelegate;
 import com.yanzhenjie.andserver.delegate.Http1ConfigDelegate;
 import com.yanzhenjie.andserver.delegate.IOReactorConfigDelegate;
 import com.yanzhenjie.andserver.delegate.ListenerEndpoint;
@@ -35,6 +36,7 @@ import org.apache.hc.core5.function.Callback;
 import org.apache.hc.core5.function.Decorator;
 import org.apache.hc.core5.function.Supplier;
 import org.apache.hc.core5.http.ConnectionReuseStrategy;
+import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpConnection;
 import org.apache.hc.core5.http.HttpRequest;
 import org.apache.hc.core5.http.HttpRequestInterceptor;
@@ -43,14 +45,18 @@ import org.apache.hc.core5.http.HttpResponseInterceptor;
 import org.apache.hc.core5.http.config.CharCodingConfig;
 import org.apache.hc.core5.http.config.Http1Config;
 import org.apache.hc.core5.http.impl.Http1StreamListener;
-import org.apache.hc.core5.http.impl.HttpProcessors;
-import org.apache.hc.core5.http.impl.bootstrap.AsyncServerBootstrap;
 import org.apache.hc.core5.http.impl.bootstrap.HttpAsyncServer;
 import org.apache.hc.core5.http.io.HttpRequestHandler;
 import org.apache.hc.core5.http.nio.AsyncServerExchangeHandler;
 import org.apache.hc.core5.http.nio.ssl.TlsStrategy;
 import org.apache.hc.core5.http.protocol.HttpProcessor;
 import org.apache.hc.core5.http.protocol.HttpProcessorBuilder;
+import org.apache.hc.core5.http2.HttpVersionPolicy;
+import org.apache.hc.core5.http2.config.H2Config;
+import org.apache.hc.core5.http2.frame.RawFrame;
+import org.apache.hc.core5.http2.impl.H2Processors;
+import org.apache.hc.core5.http2.impl.nio.H2StreamListener;
+import org.apache.hc.core5.http2.impl.nio.bootstrap.H2ServerBootstrap;
 import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.reactor.IOReactorConfig;
 import org.apache.hc.core5.reactor.IOSession;
@@ -60,6 +66,7 @@ import org.apache.hc.core5.util.Timeout;
 import java.net.SocketAddress;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -67,7 +74,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Zhenjie Yan on 3/7/20.
  */
-public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>> implements AsyncServer {
+public abstract class BasicH2Server<T extends BasicH2Server.Builder<T, ?>> implements H2Server {
 
     @Nullable
     protected final String mCanonicalHostName;
@@ -76,11 +83,13 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
     @Nullable
     protected final Http1Config mHttp1Config;
     @Nullable
+    protected final H2Config mH2Config;
+    @Nullable
     protected final CharCodingConfig mCharCodingConfig;
     @Nullable
-    protected final HttpProcessor mHttpProcessor;
+    protected final HttpVersionPolicy mVersionPolicy;
     @Nullable
-    protected final ConnectionReuseStrategy mConnectionReuseStrategy;
+    protected final HttpProcessor mHttpProcessor;
     @Nullable
     protected final TlsStrategy mTlsStrategy;
     @Nullable
@@ -93,23 +102,27 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
     protected final IOSessionListener mIOSessionListener;
     @Nullable
     protected final Http1StreamListener mHttp1StreamListener;
+    @Nullable
+    protected final H2StreamListener mH2StreamListener;
     protected final ServerListener mListener;
     protected boolean isRunning;
     private HttpAsyncServer mHttpServer;
 
-    BasicAsyncServer(T builder) {
+    BasicH2Server(T builder) {
         this.mCanonicalHostName = builder.canonicalHostName;
         this.mIOReactorConfig = builder.ioReactorConfig;
         this.mHttp1Config = builder.http1Config;
+        this.mH2Config = builder.h2Config;
         this.mCharCodingConfig = builder.charCodingConfig;
-        this.mConnectionReuseStrategy = builder.connectionReuseStrategy;
+        this.mVersionPolicy = builder.versionPolicy;
         this.mTlsStrategy = builder.tlsStrategy;
         this.mTlsHandshakeTimeout = builder.tlsHandshakeTimeout;
         this.mHttpProcessor = builder.httpProcessor;
         this.mIOSessionDecorator = builder.ioSessionDecorator;
         this.mExceptionCallback = builder.exceptionCallback;
         this.mIOSessionListener = builder.ioSessionListener;
-        this.mHttp1StreamListener = builder.streamListener;
+        this.mHttp1StreamListener = builder.http1StreamListener;
+        this.mH2StreamListener = builder.h2StreamListener;
         this.mListener = builder.listener;
     }
 
@@ -117,12 +130,13 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
         try {
             Pair<IOReactorConfig, Boolean> ioReactorConfig = requestIOReactorConfig();
             Pair<Http1Config, Boolean> http1Config = requestHttp1Config();
+            Pair<H2Config, Boolean> h2Config = requestH2Config();
             Pair<CharCodingConfig, Boolean> charCodingConfig = requestCharCodingConfig();
-            Pair<ConnectionReuseStrategy, Boolean> connectionReuseStrategy = requestConnectionReuseStrategy();
+            Pair<HttpVersionPolicy, Boolean> versionPolicy = requestVersionPolicy();
             Pair<TlsStrategy, Boolean> tlsStrategy = requestTlsStrategy();
             Pair<Timeout, Boolean> tlsHandshakeTimeout = requestTlsHandshakeTimeout();
             HttpProcessor httpProcessor = requestHttpProcessor();
-            HttpProcessorBuilder httpProcessorBuilder = HttpProcessors.customServer(AndServer.INFO);
+            HttpProcessorBuilder httpProcessorBuilder = H2Processors.customServer(AndServer.INFO);
             if (httpProcessor != null) {
                 httpProcessorBuilder.add((HttpRequestInterceptor) httpProcessor);
                 httpProcessorBuilder.add((HttpResponseInterceptor) httpProcessor);
@@ -132,14 +146,15 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
                 httpProcessorBuilder.add((HttpResponseInterceptor) mHttpProcessor);
             }
 
-            AsyncServerBootstrap bootstrap = AsyncServerBootstrap.bootstrap()
+            H2ServerBootstrap bootstrap = H2ServerBootstrap.bootstrap()
                     .setCanonicalHostName(mCanonicalHostName)
                     .setIOReactorConfig(ioReactorConfig.getRight() && mIOReactorConfig != null ? mIOReactorConfig : ioReactorConfig.getLeft())
                     .setHttp1Config(http1Config.getRight() && mHttp1Config != null ? mHttp1Config : http1Config.getLeft())
-                    .setCharCodingConfig(charCodingConfig.getRight() && mCharCodingConfig != null ? mCharCodingConfig : charCodingConfig.getLeft())
-                    .setConnectionReuseStrategy(connectionReuseStrategy.getRight() && mConnectionReuseStrategy != null ? mConnectionReuseStrategy : connectionReuseStrategy.getLeft())
+                    .setH2Config(h2Config.getRight() && mH2Config != null ? mH2Config : h2Config.getLeft())
+                    .setCharset(charCodingConfig.getRight() && mCharCodingConfig != null ? mCharCodingConfig : charCodingConfig.getLeft())
+                    .setVersionPolicy(versionPolicy.getRight() && mVersionPolicy != null ? mVersionPolicy : versionPolicy.getLeft())
                     .setTlsStrategy(tlsStrategy.getRight() && mTlsStrategy != null ? mTlsStrategy : tlsStrategy.getLeft())
-                    .setTlsHandshakeTimeout(tlsHandshakeTimeout.getRight() && mTlsHandshakeTimeout != null ? mTlsHandshakeTimeout : tlsHandshakeTimeout.getLeft())
+                    .setHandshakeTimeout(tlsHandshakeTimeout.getRight() && mTlsHandshakeTimeout != null ? mTlsHandshakeTimeout : tlsHandshakeTimeout.getLeft())
                     .setHttpProcessor(httpProcessorBuilder.build())
                     .setIOSessionDecorator(object -> {
                         IOSession ret = object;
@@ -242,6 +257,57 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
                                 listener.onExchangeComplete(connection, keepAlive);
                             if (mHttp1StreamListener != null)
                                 mHttp1StreamListener.onExchangeComplete(connection, keepAlive);
+                        }
+                    })
+                    .setStreamListener(new H2StreamListener() {
+                        private final H2StreamListener listener = requestH2StreamListener();
+
+                        @Override
+                        public void onHeaderInput(HttpConnection connection, int streamId, List<? extends Header> headers) {
+                            if (listener != null)
+                                listener.onHeaderInput(connection, streamId, headers);
+                            if (mH2StreamListener != null)
+                                mH2StreamListener.onHeaderInput(connection, streamId, headers);
+                        }
+
+                        @Override
+                        public void onHeaderOutput(HttpConnection connection, int streamId, List<? extends Header> headers) {
+                            if (listener != null)
+                                listener.onHeaderOutput(connection, streamId, headers);
+                            if (mH2StreamListener != null)
+                                mH2StreamListener.onHeaderOutput(connection, streamId, headers);
+                        }
+
+                        @Override
+                        public void onFrameInput(HttpConnection connection, int streamId, RawFrame frame) {
+                            if (listener != null)
+                                listener.onFrameInput(connection, streamId, frame);
+                            if (mH2StreamListener != null)
+                                mH2StreamListener.onFrameInput(connection, streamId, frame);
+                        }
+
+                        @Override
+                        public void onFrameOutput(HttpConnection connection, int streamId, RawFrame frame) {
+                            if (listener != null)
+                                listener.onFrameOutput(connection, streamId, frame);
+                            if (mH2StreamListener != null)
+                                mH2StreamListener.onFrameOutput(connection, streamId, frame);
+                        }
+
+                        @Override
+                        public void onInputFlowControl(HttpConnection connection, int streamId, int delta, int actualSize) {
+                            if (listener != null)
+                                listener.onInputFlowControl(connection, streamId, delta, actualSize);
+                            if (mH2StreamListener != null)
+                                mH2StreamListener.onInputFlowControl(connection, streamId, delta, actualSize);
+                        }
+
+                        @Override
+                        public void onOutputFlowControl(HttpConnection connection, int streamId, int delta, int actualSize) {
+                            if (listener != null)
+                                listener.onOutputFlowControl(connection, streamId, delta, actualSize);
+                            if (mH2StreamListener != null)
+                                mH2StreamListener.onOutputFlowControl(connection, streamId, delta, actualSize);
                         }
                     });
 
@@ -392,6 +458,17 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
     }
 
     /**
+     * Assigns {@link H2Config} instance.
+     * Pair definition:
+     * Left: Http config (Nullable)
+     * Right: Whether overridable (NonNull)
+     */
+    @NonNull
+    protected Pair<H2Config, Boolean> requestH2Config() {
+        return Pair.of(null, true);
+    }
+
+    /**
      * Assigns {@link CharCodingConfig} instance.
      * Pair definition:
      * Left: Char coding config (Nullable)
@@ -403,13 +480,13 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
     }
 
     /**
-     * Assigns {@link ConnectionReuseStrategy} instance.
+     * Assigns {@link HttpVersionPolicy} instance.
      * Pair definition:
-     * Left: Connection reuse strategy (Nullable)
+     * Left: Http version policy (Nullable)
      * Right: Whether overridable (NonNull)
      */
     @NonNull
-    protected Pair<ConnectionReuseStrategy, Boolean> requestConnectionReuseStrategy() {
+    protected Pair<HttpVersionPolicy, Boolean> requestVersionPolicy() {
         return Pair.of(null, true);
     }
 
@@ -456,6 +533,15 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
      */
     @Nullable
     protected Http1StreamListener requestHttp1StreamListener() {
+        return null;
+    }
+
+
+    /**
+     * Assigns {@link H2StreamListener} instance.
+     */
+    @Nullable
+    protected H2StreamListener requestH2StreamListener() {
         return null;
     }
 
@@ -533,12 +619,6 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
 
     @Nullable
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    public ConnectionReuseStrategy getConnectionReuseStrategy() {
-        return mConnectionReuseStrategy;
-    }
-
-    @Nullable
-    @RestrictTo(RestrictTo.Scope.LIBRARY)
     public TlsStrategy getTlsStrategy() {
         return mTlsStrategy;
     }
@@ -582,12 +662,14 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
         return mHttpServer;
     }
 
-    protected abstract static class Builder<T extends Builder<T, S>, S extends BasicAsyncServer<T>>
-            implements AsyncServer.Builder<T, S> {
+    protected abstract static class Builder<T extends Builder<T, S>, S extends BasicH2Server<T>>
+            implements H2Server.Builder<T, S> {
 
         String canonicalHostName;
         IOReactorConfig ioReactorConfig;
+        HttpVersionPolicy versionPolicy;
         Http1Config http1Config;
+        H2Config h2Config;
         CharCodingConfig charCodingConfig;
         HttpProcessor httpProcessor;
         ConnectionReuseStrategy connectionReuseStrategy;
@@ -596,8 +678,9 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
         Decorator<IOSession> ioSessionDecorator;
         Callback<Exception> exceptionCallback;
         IOSessionListener ioSessionListener;
-        Http1StreamListener streamListener;
-        AsyncServer.ServerListener listener;
+        Http1StreamListener http1StreamListener;
+        H2StreamListener h2StreamListener;
+        ServerListener listener;
 
         Builder() {
         }
@@ -617,8 +700,22 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
         }
 
         @Override
+        public T setVersionPolicy(com.yanzhenjie.andserver.http2.HttpVersionPolicy versionPolicy) {
+            this.versionPolicy = versionPolicy.wrapped();
+            //noinspection unchecked
+            return (T) this;
+        }
+
+        @Override
         public T setHttp1Config(Http1ConfigDelegate http1Config) {
             this.http1Config = http1Config.getHttp1Config();
+            //noinspection unchecked
+            return (T) this;
+        }
+
+        @Override
+        public T setH2Config(H2ConfigDelegate h2Config) {
+            this.h2Config = h2Config.getH2Config();
             //noinspection unchecked
             return (T) this;
         }
@@ -683,13 +780,20 @@ public abstract class BasicAsyncServer<T extends BasicAsyncServer.Builder<T, ?>>
 
         @Override
         public T setStreamListener(com.yanzhenjie.andserver.delegate.Http1StreamListener streamListener) {
-            this.streamListener = streamListener.wrapped();
+            this.http1StreamListener = streamListener.wrapped();
             //noinspection unchecked
             return (T) this;
         }
 
         @Override
-        public T setListener(AsyncServer.ServerListener listener) {
+        public T setStreamListener(com.yanzhenjie.andserver.delegate.H2StreamListener streamListener) {
+            this.h2StreamListener = streamListener.wrapped();
+            //noinspection unchecked
+            return (T) this;
+        }
+
+        @Override
+        public T setListener(ServerListener listener) {
             this.listener = listener;
             //noinspection unchecked
             return (T) this;
