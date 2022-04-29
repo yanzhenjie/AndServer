@@ -26,12 +26,11 @@ android {
 }
 
 dependencies {
-    api project(':annotation')
+    api project(':api')
 
     implementation deps.apache.lang
-    implementation deps.apache.httpcore
-    implementation deps.apache.fileupload
-    compileOnly deps.android.annotation
+    implementation deps.apache.httpcoreH2
+    implementation deps.android.annotation
 }
 
 apply from: '../publish.gradle'
