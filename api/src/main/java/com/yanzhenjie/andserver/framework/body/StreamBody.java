@@ -33,6 +33,7 @@ import java.io.OutputStream;
 public class StreamBody implements ResponseBody {
 
     private InputStream mStream;
+    private boolean mChunked;
     private long mLength;
     private MediaType mMediaType;
 
@@ -45,11 +46,16 @@ public class StreamBody implements ResponseBody {
     }
 
     public StreamBody(InputStream stream, MediaType mediaType) {
-        this(stream, 0, mediaType);
+        this(stream, true, 0, mediaType);
     }
 
     public StreamBody(InputStream stream, long length, MediaType mediaType) {
+        this(stream, false, length, mediaType);
+    }
+
+    public StreamBody(InputStream stream, boolean chunked, long length, MediaType mediaType) {
         this.mStream = stream;
+        this.mChunked = chunked;
         this.mLength = length;
         this.mMediaType = mediaType;
     }
@@ -57,6 +63,11 @@ public class StreamBody implements ResponseBody {
     @Override
     public boolean isRepeatable() {
         return false;
+    }
+
+    @Override
+    public boolean isChunked() {
+        return mChunked;
     }
 
     @Override
