@@ -35,9 +35,9 @@ public class AppConfig implements WebConfig {
         delegate.addWebsite(new AssetsWebsite(context, "/web"));
 
         delegate.setMultipart(Multipart.newBuilder()
-            .allFileMaxSize(1024 * 1024 * 20) // 20M
-            .fileMaxSize(1024 * 1024 * 5) // 5M
-            .maxInMemorySize(1024 * 10) // 1024 * 10 bytes
+//            .allFileMaxSize(1024 * 1024 * 20) // 20M
+//            .fileMaxSize(1024 * 1024 * 5) // 5M
+//            .maxInMemorySize(1024 * 10) // 1024 * 10 bytes
             .uploadTempDir(new File(context.getCacheDir(), "_server_upload_cache_"))
             .build());
     }
