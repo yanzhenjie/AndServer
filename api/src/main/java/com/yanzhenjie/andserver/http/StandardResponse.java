@@ -156,12 +156,12 @@ public class StandardResponse implements HttpResponse {
 
         @Override
         public boolean isRepeatable() {
-            return false;
+            return mBody.isRepeatable();
         }
 
         @Override
         public boolean isChunked() {
-            return false;
+            return mBody.isChunked();
         }
 
         @Override

@@ -16,12 +16,9 @@
 package com.yanzhenjie.andserver.sample;
 
 import android.app.Application;
-import android.content.Context;
-import android.os.Environment;
 
 import androidx.annotation.NonNull;
 
-import com.yanzhenjie.andserver.sample.util.FileUtils;
 import com.yanzhenjie.andserver.util.IOUtils;
 
 import java.io.File;
@@ -41,7 +38,7 @@ public class App extends Application {
 
         if (mInstance == null) {
             mInstance = this;
-            initRootPath(this);
+            initRootPath();
         }
     }
 
@@ -55,17 +52,12 @@ public class App extends Application {
         return mRootDir;
     }
 
-    private void initRootPath(Context context) {
+    private void initRootPath() {
         if (mRootDir != null) {
             return;
         }
 
-        if (FileUtils.storageAvailable()) {
-            mRootDir = Environment.getExternalStorageDirectory();
-        } else {
-            mRootDir = context.getFilesDir();
-        }
-        mRootDir = new File(mRootDir, "AndServer");
+        mRootDir = new File(getFilesDir(), "AndServer");
         IOUtils.createFolder(mRootDir);
     }
 }

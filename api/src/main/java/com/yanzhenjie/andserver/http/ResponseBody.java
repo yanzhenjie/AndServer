@@ -36,6 +36,16 @@ public interface ResponseBody {
     boolean isRepeatable();
 
     /**
+     * Tells about chunked encoding for this entity.
+     * <p>
+     * The behavior of wrapping entities is implementation dependent, but should respect the primary purpose.
+     * </p>
+     *
+     * @return {@code true} if chunked encoding is preferred for this entity, or {@code false} if it is not
+     */
+    boolean isChunked();
+
+    /**
      * Get the content-length of the message body, if the length is unknown, return a negative value.
      *
      * @return message length.

@@ -14,4 +14,4 @@ dependencies {
     implementation deps.poet
 }
 
-apply from: '../publish.gradle'
+apply from: publishScript

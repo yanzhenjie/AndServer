@@ -9,7 +9,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.3'
-        classpath 'com.yanzhenjie.andserver:plugin:2.1.10'
+        classpath 'com.yanzhenjie.andserver:plugin:2.1.11'
     }
 }
 
@@ -17,7 +17,6 @@ allprojects {
     repositories {
         mavenLocal()
         google()
-        jcenter()
         mavenCentral()
     }
 }

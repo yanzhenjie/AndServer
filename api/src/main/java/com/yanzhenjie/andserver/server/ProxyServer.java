@@ -232,7 +232,7 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
         private ServerSocket mServerSocket;
 
         public HttpServer(InetAddress inetAddress, int port, int timeout, ServerSocketFactory socketFactory,
-            SSLSocketInitializer sslSocketInitializer, HttpRequestHandler handler) {
+                          SSLSocketInitializer sslSocketInitializer, HttpRequestHandler handler) {
             this.mInetAddress = inetAddress;
             this.mPort = port;
             this.mTimeout = timeout;
@@ -255,8 +255,9 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
         public void startServer() throws IOException {
             mServerSocket = mSocketFactory.createServerSocket();
             mServerSocket.setReuseAddress(true);
-            mServerSocket.bind(new InetSocketAddress(mInetAddress, mPort), BUFFER);
-            mServerSocket.setReceiveBufferSize(BUFFER);
+//            mServerSocket.bind(new InetSocketAddress(mInetAddress, mPort), BUFFER);
+//            mServerSocket.setReceiveBufferSize(BUFFER);
+            mServerSocket.bind(new InetSocketAddress(mInetAddress, mPort));
             if (mSSLSocketInitializer != null && mServerSocket instanceof SSLServerSocket) {
                 mSSLSocketInitializer.onCreated((SSLServerSocket) mServerSocket);
             }
@@ -280,7 +281,7 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
             }
 
             Set<Worker> workers = mWorkerSet.keySet();
-            for (Worker worker : workers) {
+            for (Worker worker: workers) {
                 HttpServerConnection conn = worker.getServerConn();
                 try {
                     conn.shutdown();
@@ -297,14 +298,14 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
                     socket.setSoTimeout(mTimeout);
                     socket.setKeepAlive(true);
                     socket.setTcpNoDelay(true);
-                    socket.setReceiveBufferSize(BUFFER);
-                    socket.setSendBufferSize(BUFFER);
+//                    socket.setReceiveBufferSize(BUFFER);
+//                    socket.setSendBufferSize(BUFFER);
                     socket.setSoLinger(true, 0);
 
-                    DefaultBHttpServerConnection serverConn = new DefaultBHttpServerConnection(BUFFER);
+                    DefaultBHttpServerConnection serverConn = new DefaultBHttpServerConnection(8192);
                     serverConn.bind(socket);
 
-                    DefaultBHttpClientConnection clientConn = new DefaultBHttpClientConnection(BUFFER);
+                    DefaultBHttpClientConnection clientConn = new DefaultBHttpClientConnection(8192);
                     Worker worker = new Worker(mHttpService, serverConn, clientConn);
 
                     mWorkerExecutor.execute(worker);
@@ -321,7 +322,7 @@ public class ProxyServer extends BasicServer<ProxyServer.Builder> {
         private final DefaultBHttpClientConnection mClientConn;
 
         public Worker(HttpService httpservice,
-            DefaultBHttpServerConnection serverConn, DefaultBHttpClientConnection clientConn) {
+                      DefaultBHttpServerConnection serverConn, DefaultBHttpClientConnection clientConn) {
             this.mHttpService = httpservice;
             this.mServerConn = serverConn;
             this.mClientConn = clientConn;

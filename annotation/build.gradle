@@ -5,4 +5,4 @@ compileJava {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-apply from: '../publish.gradle'
+apply from: publishScript

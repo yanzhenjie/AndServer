@@ -63,6 +63,11 @@ public class StringBody implements ResponseBody {
     }
 
     @Override
+    public boolean isChunked() {
+        return false;
+    }
+
+    @Override
     public long contentLength() {
         return mBody.length;
     }
