@@ -11,12 +11,12 @@ ext {
 
     androidBuild = [
         applicationId          : 'com.yanzhenjie.andserver.sample',
-        compileSdkVersion      : 29,
+        compileSdkVersion      : 30,
 
         libraryMinSdkVersion   : 9,
-        libraryTargetSdkVersion: 29,
+        libraryTargetSdkVersion: 30,
         sampleMinSdkVersion    : 14,
-        sampleTargetSdkVersion : 22
+        sampleTargetSdkVersion : 30
     ]
 
     deps = [

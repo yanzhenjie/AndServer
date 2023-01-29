@@ -38,6 +38,7 @@ import com.yanzhenjie.andserver.sample.component.LoginInterceptor;
 import com.yanzhenjie.andserver.sample.model.UserInfo;
 import com.yanzhenjie.andserver.sample.util.FileUtils;
 import com.yanzhenjie.andserver.sample.util.Logger;
+import com.yanzhenjie.andserver.util.Executors;
 import com.yanzhenjie.andserver.util.MediaType;
 
 import java.io.File;
@@ -110,9 +111,23 @@ class TestController {
     }
 
     @PostMapping(path = "/upload", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    String upload(@RequestParam(name = "avatar") MultipartFile file) throws IOException {
-        File localFile = FileUtils.createRandomFile(file);
-        file.transferTo(localFile);
+    String upload(@RequestParam(name = "avatar") final MultipartFile file) {
+        final File localFile = FileUtils.createRandomFile(file);
+
+        // We use a sub-thread to process files so that the api '/upload' can respond faster
+        Executors.getInstance().submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    file.transferTo(localFile);
+
+                    // Do something ...
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         return localFile.getAbsolutePath();
     }
 

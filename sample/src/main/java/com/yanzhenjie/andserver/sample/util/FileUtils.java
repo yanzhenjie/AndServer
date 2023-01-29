@@ -45,18 +45,4 @@ public class FileUtils {
         String uuid = UUID.randomUUID().toString();
         return new File(App.getInstance().getRootDir(), uuid + "." + extension);
     }
-
-    /**
-     * SD is available.
-     *
-     * @return true, otherwise is false.
-     */
-    public static boolean storageAvailable() {
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            File sd = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
-            return sd.canWrite();
-        } else {
-            return false;
-        }
-    }
 }
