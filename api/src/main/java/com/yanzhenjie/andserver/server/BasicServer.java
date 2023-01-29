@@ -42,7 +42,7 @@ import javax.net.ssl.SSLServerSocket;
  */
 public abstract class BasicServer<T extends BasicServer.Builder> implements Server {
 
-    static final int BUFFER = 8 * 1024;
+//    static final int BUFFER = 8 * 1024;
 
     protected final InetAddress mInetAddress;
     protected final int mPort;
@@ -88,9 +88,9 @@ public abstract class BasicServer<T extends BasicServer.Builder> implements Serv
                                 .setSoReuseAddress(true)
                                 .setTcpNoDelay(true)
                                 .setSoTimeout(mTimeout)
-                                .setBacklogSize(BUFFER)
-                                .setRcvBufSize(BUFFER)
-                                .setSndBufSize(BUFFER)
+//                                .setBacklogSize(BUFFER)
+//                                .setRcvBufSize(BUFFER)
+//                                .setSndBufSize(BUFFER)
                                 .setSoLinger(0)
                                 .build()
                         )
