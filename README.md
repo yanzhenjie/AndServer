@@ -126,7 +126,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.yanzhenjie.andserver:plugin:2.1.10'
+        classpath 'com.yanzhenjie.andserver:plugin:2.1.11'
         ...
     }
 }
@@ -148,8 +148,8 @@ apply plugin: 'com.yanzhenjie.andserver'
 ...
 
 dependencies {
-    implementation 'com.yanzhenjie.andserver:api:2.1.10'
-    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.10'
+    implementation 'com.yanzhenjie.andserver:api:2.1.11'
+    annotationProcessor 'com.yanzhenjie.andserver:processor:2.1.11'
     ...
 }
 ```
@@ -163,7 +163,7 @@ Before submitting pull requests, contributors must abide by the [agreement](./CO
 ## License
 
 ```text
-Copyright 2021 Zhenjie Yan
+Copyright Zhenjie Yan
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
