@@ -2,7 +2,6 @@ apply plugin: plugin.androidLibrary
 
 android {
     compileSdkVersion androidBuild.compileSdkVersion
-    buildToolsVersion androidBuild.buildToolsVersion
 
     defaultConfig {
         minSdkVersion androidBuild.libraryMinSdkVersion
@@ -33,4 +32,4 @@ dependencies {
     compileOnly deps.android.annotation
 }
 
-apply from: '../publish.gradle'
+apply from: publishScript

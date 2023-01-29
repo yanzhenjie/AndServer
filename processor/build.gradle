@@ -13,4 +13,4 @@ dependencies {
     implementation deps.apache.collections
 }
 
-apply from: '../publish.gradle'
+apply from: publishScript

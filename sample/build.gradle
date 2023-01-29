@@ -3,14 +3,13 @@ apply plugin: plugin.andServer
 
 android {
     compileSdkVersion androidBuild.compileSdkVersion
-    buildToolsVersion androidBuild.buildToolsVersion
 
     defaultConfig {
         applicationId androidBuild.applicationId
         minSdkVersion androidBuild.sampleMinSdkVersion
         targetSdkVersion androidBuild.sampleTargetSdkVersion
-        versionCode androidBuild.versionCode
-        versionName androidBuild.versionName
+        versionCode 1
+        versionName POM_VERSION
     }
 
     compileOptions {
