@@ -9,7 +9,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.2'
-        classpath 'com.yanzhenjie.andserver:plugin:2.1.11'
+        classpath 'com.yanzhenjie.andserver:plugin:2.1.12'
     }
 }
 
